@@ -1,0 +1,11 @@
+# Dados pessoais — NUNCA versionar histórico do Mercado Steam
+*.csv
+
+# Scripts/validação locais (não fazem parte do site)
+verify.ps1
+serve.ps1
+
+# Lixo de sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise do Mercado Steam — Lucro & Prejuízo</title>
+<style>
+  :root{
+    --bg:#0e1622; --bg2:#16212e; --card:#1b2735; --line:#2a3b4d;
+    --txt:#e6edf3; --mut:#8aa0b4; --acc:#66c0f4; --acc2:#4b8fd6;
+    --green:#4ade80; --green-bg:#143024; --red:#f87171; --red-bg:#341a1c;
+    --shadow:0 6px 22px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:linear-gradient(160deg,#0b1320,#0e1622 40%,#101b29);
+    color:var(--txt); font-family:"Segoe UI",system-ui,Roboto,Arial,sans-serif;
+    min-height:100vh; line-height:1.45;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:24px 18px 60px}
+  header.top{display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap}
+  header.top h1{font-size:22px; margin:0; font-weight:700}
+  header.top h1 span{color:var(--acc)}
+  .sub{color:var(--mut); font-size:13px; margin:2px 0 18px}
+  .privacy{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--green);
+    background:var(--green-bg); border:1px solid #1d5038; padding:4px 10px; border-radius:999px}
+
+  /* dropzone */
+  .drop{
+    border:2px dashed var(--line); border-radius:16px; background:var(--bg2);
+    padding:38px 20px; text-align:center; cursor:pointer; transition:.15s; margin-bottom:18px;
+  }
+  .drop:hover,.drop.over{border-color:var(--acc); background:#17273a}
+  .drop h2{margin:0 0 6px; font-size:18px}
+  .drop p{margin:4px 0; color:var(--mut); font-size:13px}
+  .drop .big{font-size:40px; margin-bottom:6px}
+  .drop input{display:none}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer; border:none;
+    background:var(--acc2); color:#fff; font-weight:600; font-size:14px;
+    padding:9px 16px; border-radius:9px; transition:.15s;
+  }
+  .btn:hover{background:var(--acc)}
+  .btn.ghost{background:transparent; border:1px solid var(--line); color:var(--txt)}
+  .btn.ghost:hover{border-color:var(--acc); color:var(--acc)}
+  .btn.green{background:#1f7a4d}
+  .btn.green:hover{background:#249a5f}
+
+  .howto{background:var(--bg2); border:1px solid var(--line); border-radius:14px; padding:6px 22px 18px; margin-bottom:18px}
+  .howto h3{font-size:15px; margin:16px 0 8px; color:var(--acc)}
+  .howto ol{margin:0; padding-left:20px}
+  .howto li{margin:7px 0; font-size:14px; color:var(--txt)}
+  .howto a{color:var(--acc)}
+  .howto .tip{font-size:12px; color:var(--mut); margin:10px 0 0}
+
+  .hidden{display:none!important}
+  .err{background:var(--red-bg); border:1px solid #6b2b2e; color:#ffd7d7; padding:12px 14px; border-radius:10px; margin-bottom:16px; font-size:14px}
+
+  /* cards */
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin:6px 0 22px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
+  .card .lbl{color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px}
+  .card .val{font-size:24px; font-weight:700}
+  .card .sm{font-size:12px; color:var(--mut); margin-top:4px}
+  .card.big{grid-column:span 2}
+  .pos{color:var(--green)} .neg{color:var(--red)}
+  @media(max-width:560px){ .card.big{grid-column:span 1} }
+
+  /* toolbar */
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 12px}
+  .toolbar input[type=text], .toolbar select{
+    background:var(--bg2); border:1px solid var(--line); color:var(--txt);
+    padding:8px 11px; border-radius:9px; font-size:13px; outline:none;
+  }
+  .toolbar input[type=text]{min-width:200px; flex:1}
+  .toolbar input:focus,.toolbar select:focus{border-color:var(--acc)}
+  .spacer{flex:1}
+  .count{color:var(--mut); font-size:12px}
+
+  /* table */
+  .tablewrap{background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:auto; box-shadow:var(--shadow); max-height:65vh}
+  table{border-collapse:collapse; width:100%; font-size:13px; min-width:780px}
+  thead th{
+    position:sticky; top:0; background:#1f2d3d; color:var(--mut); text-align:right;
+    padding:11px 12px; font-weight:600; white-space:nowrap; cursor:pointer; user-select:none; border-bottom:1px solid var(--line);
+  }
+  thead th.l{text-align:left}
+  thead th:hover{color:var(--acc)}
+  thead th .arrow{font-size:10px; opacity:.7}
+  tbody td{padding:9px 12px; text-align:right; border-bottom:1px solid #21303f; white-space:nowrap}
+  tbody td.l{text-align:left; white-space:normal}
+  tbody tr:hover{background:#18293a}
+  .item-name{font-weight:600}
+  .game-name{color:var(--mut); font-size:11px}
+  .tag{display:inline-block; font-size:10px; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:middle}
+  .tag.hold{background:#13303f; color:var(--acc)}
+  td.money{font-variant-numeric:tabular-nums}
+
+  details.method{margin-top:24px; background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:6px 16px}
+  details.method summary{cursor:pointer; color:var(--acc); font-size:13px; padding:8px 0}
+  details.method div{font-size:13px; color:var(--mut); padding:0 0 12px}
+  details.method li{margin:4px 0}
+  footer.ft{text-align:center; color:#5d7188; font-size:12px; margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>📊 Análise do Mercado <span>Steam</span></h1>
+    <span class="privacy">🔒 Seus dados ficam só no seu navegador</span>
+  </header>
+  <p class="sub">Importe seu histórico do Mercado (CSV) e veja lucro realizado, prejuízo e o que ainda está na sua carteira.</p>
+
+  <div id="landing">
+  <div id="dropzone" class="drop">
+    <div class="big">📂</div>
+    <h2>Clique aqui ou arraste seu arquivo CSV</h2>
+    <p>O arquivo <code>my_market_history_…csv</code> do seu histórico do Mercado Steam.</p>
+    <p style="margin-top:12px"><span class="btn">Escolher arquivo CSV</span></p>
+    <input type="file" id="fileInput" accept=".csv,text/csv">
+  </div>
+
+  <section id="tutorial" class="howto">
+    <h3>❓ Como gerar o seu arquivo CSV</h3>
+    <ol>
+      <li>Instale a extensão <a href="https://steaminventoryhelper.com/" target="_blank" rel="noopener">Steam Inventory Helper</a> no seu navegador (Chrome, Edge ou Firefox).</li>
+      <li>Entre no Steam e acesse <b>Comunidade → Mercado</b>.</li>
+      <li>Abra o seu <b>histórico do Mercado</b> (link “Ver histórico do mercado”).</li>
+      <li>A extensão adiciona um botão <b>Export .csv file</b> — clique nele.</li>
+      <li>Salve o arquivo <code>my_market_history_….csv</code> e carregue ele aqui em cima. 🔒 Ele não sai do seu navegador.</li>
+    </ol>
+    <p class="tip">💡 Se o download não vier de primeira, atualize a página do histórico e clique no botão de novo. Histórico grande pode levar alguns segundos.</p>
+    <p class="tip">Funciona também com o CSV de extensões equivalentes que geram as mesmas colunas (ex.: <i>Steam Market History Helper</i> ou <i>CSGO Trader</i>).</p>
+  </section>
+  </div>
+
+  <div id="error" class="err hidden"></div>
+
+  <section id="results" class="hidden">
+    <div class="toolbar" style="margin-bottom:4px">
+      <button class="btn ghost" id="resetBtn">↺ Trocar arquivo</button>
+      <span class="count" id="fileInfo"></span>
+      <span class="spacer"></span>
+      <button class="btn green" id="exportBtn">⬇ Baixar Excel (.xlsx)</button>
+    </div>
+
+    <div class="cards" id="cards"></div>
+
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="🔎 Buscar item…">
+      <select id="gameFilter"><option value="">Todos os jogos</option></select>
+      <select id="statusFilter">
+        <option value="all">Todos os itens</option>
+        <option value="hold">Ainda tenho (em carteira)</option>
+        <option value="profit">Com lucro</option>
+        <option value="loss">Com prejuízo</option>
+        <option value="soldout">Vendi tudo</option>
+        <option value="onlybuy">Só comprei (nunca vendi)</option>
+      </select>
+      <span class="spacer"></span>
+      <span class="count" id="tableCount"></span>
+    </div>
+
+    <div class="tablewrap">
+      <table id="tbl">
+        <thead><tr id="head"></tr></thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+
+    <details class="method">
+      <summary>Como os números são calculados (metodologia)</summary>
+      <div>
+        <ul>
+          <li><b>Custo médio:</b> para cada item, o preço de compra usado é a média de todas as suas compras daquele item.</li>
+          <li><b>Lucro/prejuízo realizado</b> = o que você recebeu nas vendas − o custo médio das unidades vendidas. Só conta o que já foi vendido.</li>
+          <li><b>Venda = valor líquido:</b> o preço de venda do CSV já é o valor que você recebeu (a taxa da Steam já está descontada). Por isso nada é descontado a mais.</li>
+          <li><b>Itens restantes</b> = comprados − vendidos. O "custo parado" é o preço de compra desses itens — <b>não</b> é o preço de mercado atual (essa parte não usa internet).</li>
+          <li><b>Drops</b> (itens que você ganhou e vendeu sem ter comprado) entram como lucro puro, pois não tiveram custo.</li>
+          <li><b>Quantidade:</b> nomes como "2 Pearl" são lidos como 2 unidades. Os cálculos usam a coluna <code>Price in Cents</code>, então funciona em qualquer moeda.</li>
+        </ul>
+        <p>Observação: como cartas viram emblemas, itens são consumidos no jogo, etc., a carteira é uma <b>estimativa</b> baseada nas transações do Mercado.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer class="ft">Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador</footer>
+</div>
+
+<script>
+"use strict";
+
+/* ============== Detecção de moeda ============== */
+const CUR = { symbol:"R$", locale:"pt-BR" };
+function detectCurrency(display){
+  if(!display) return;
+  const sym = display.replace(/[\d.,\s ]/g,"").trim();
+  if(sym) CUR.symbol = sym;
+  CUR.locale = /,\d{2}\s*$/.test(display.trim()) ? "pt-BR" : "en-US";
+}
+function money(cents){
+  const v = cents/100;
+  return CUR.symbol + " " + v.toLocaleString(CUR.locale,{minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function moneySigned(cents){
+  return (cents>=0?"+":"−") + " " + money(Math.abs(cents));
+}
+function intFmt(n){ return Math.round(n).toLocaleString(CUR.locale); }
+
+/* ============== Parser CSV (RFC-4180) ============== */
+function parseCSV(text){
+  const rows = []; let field = ""; let row = []; let i = 0; let inQ = false;
+  if(text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // BOM
+  const n = text.length;
+  while(i < n){
+    const c = text[i];
+    if(inQ){
+      if(c === '"'){
+        if(text[i+1] === '"'){ field += '"'; i += 2; continue; }
+        inQ = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if(c === '"'){ inQ = true; i++; continue; }
+    if(c === ','){ row.push(field); field = ""; i++; continue; }
+    if(c === '\r'){ i++; continue; }
+    if(c === '\n'){ row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+    field += c; i++;
+  }
+  if(field.length || row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+
+/* ============== Núcleo: agregação ============== */
+function analyze(rows){
+  if(!rows.length) throw new Error("Arquivo vazio.");
+  const header = rows[0].map(h => h.trim().toLowerCase());
+  const col = name => header.indexOf(name);
+  const idx = {
+    item:   col("item name"),
+    game:   col("game name"),
+    disp:   col("display price"),
+    cents:  col("price in cents"),
+    type:   col("type"),
+    market: col("market name"),
+    appid:  col("app id"),
+  };
+  if(idx.type < 0 || idx.cents < 0)
+    throw new Error("Não encontrei as colunas esperadas (Type / Price in Cents). Esse CSV é o histórico do Mercado Steam?");
+
+  // moeda a partir do primeiro Display Price preenchido
+  if(idx.disp >= 0){
+    for(let r=1; r<rows.length; r++){ if(rows[r][idx.disp]){ detectCurrency(rows[r][idx.disp]); break; } }
+  }
+
+  const agg = new Map();
+  let nBuy = 0, nSell = 0, used = 0;
+  for(let r = 1; r < rows.length; r++){
+    const row = rows[r];
+    if(row.length < 2) continue;
+    const type = (row[idx.type]||"").trim();
+    const market = (idx.market>=0 ? row[idx.market] : "") || row[idx.item] || "";
+    const item = row[idx.item] || "";
+    const appid = idx.appid>=0 ? (row[idx.appid]||"") : "";
+    const game = idx.game>=0 ? (row[idx.game]||"") : "";
+    let cents = parseInt(row[idx.cents],10); if(!Number.isFinite(cents)) cents = 0;
+
+    let qty = 1;
+    const m = item.match(/^(\d+)\s+(.*)$/);
+    if(m && m[2] === market) qty = parseInt(m[1],10) || 1;
+
+    const key = appid + "|" + market;
+    let a = agg.get(key);
+    if(!a){ a = { market, game, appid, ub:0, vb:0, us:0, vs:0 }; agg.set(key, a); }
+
+    if(type === "purchase"){ a.ub += qty; a.vb += cents; nBuy++; used++; }
+    else if(type === "sale"){ a.us += qty; a.vs += cents; nSell++; used++; }
+  }
+  if(used === 0) throw new Error("Nenhuma compra/venda reconhecida no arquivo.");
+
+  const items = [];
+  let totBuy=0, totSell=0, realTot=0, lucro=0, prej=0, remUnits=0, remCost=0, held=0;
+  for(const a of agg.values()){
+    let cogs, ru, rc;
+    if(a.us >= a.ub){ cogs = a.vb; ru = 0; rc = 0; }
+    else {
+      const avg = a.ub>0 ? a.vb/a.ub : 0;
+      cogs = a.us * avg; ru = a.ub - a.us; rc = a.vb - cogs;
+    }
+    const realized = a.vs - cogs;
+    totBuy += a.vb; totSell += a.vs; realTot += realized;
+    if(realized > 0) lucro += realized; else if(realized < 0) prej += realized;
+    remUnits += ru; remCost += rc; if(ru > 0) held++;
+    items.push({ market:a.market, game:a.game, ub:a.ub, us:a.us, ru, vb:a.vb, vs:a.vs, rc, realized });
+  }
+  return {
+    items,
+    totals:{ rows:nBuy+nSell, nBuy, nSell, distinct:agg.size, totBuy, totSell, realTot, lucro, prej, remUnits, remCost, held }
+  };
+}
+
+/* ============== Estado + UI ============== */
+let RESULT = null;
+const COLS = [
+  { key:"market",   label:"Item",         l:true,  fmt:(it)=>itemCell(it) },
+  { key:"game",     label:"Jogo",         l:true,  fmt:(it)=>esc(it.game) },
+  { key:"ub",       label:"Comprei",      fmt:(it)=>intFmt(it.ub) },
+  { key:"us",       label:"Vendi",        fmt:(it)=>intFmt(it.us) },
+  { key:"ru",       label:"Restam",       fmt:(it)=>it.ru>0?('<b>'+intFmt(it.ru)+'</b>'):'0' },
+  { key:"vb",       label:"Gastei",       money:true, fmt:(it)=>money(it.vb) },
+  { key:"vs",       label:"Recebi",       money:true, fmt:(it)=>money(it.vs) },
+  { key:"realized", label:"Resultado",    money:true, fmt:(it)=>'<span class="'+(it.realized>=0?'pos':'neg')+'">'+moneySigned(it.realized)+'</span>' },
+  { key:"rc",       label:"Custo parado", money:true, fmt:(it)=>it.rc>0?money(it.rc):'—' },
+];
+let sortKey = "realized", sortDir = -1;
+
+const $ = id => document.getElementById(id);
+
+function showError(msg){ const e=$("error"); e.textContent="⚠ "+msg; e.classList.remove("hidden"); }
+function clearError(){ $("error").classList.add("hidden"); }
+
+function handleCSVText(text, filename){
+  clearError();
+  try{
+    const rows = parseCSV(text);
+    RESULT = analyze(rows);
+    $("fileInfo").textContent = (filename?filename+" · ":"") + intFmt(RESULT.totals.rows) + " transações · " +
+      intFmt(RESULT.totals.distinct) + " itens · moeda " + CUR.symbol;
+    buildGameFilter();
+    renderCards();
+    renderTable();
+    $("landing").classList.add("hidden");
+    $("results").classList.remove("hidden");
+  }catch(err){
+    RESULT = null;
+    $("results").classList.add("hidden");
+    $("landing").classList.remove("hidden");
+    showError(err.message || String(err));
+  }
+}
+
+function handleFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => handleCSVText(e.target.result, file.name);
+  reader.onerror = () => showError("Não consegui ler o arquivo.");
+  reader.readAsText(file, "UTF-8");
+}
+
+function renderCards(){
+  const t = RESULT.totals;
+  const netCls = t.realTot>=0 ? "pos":"neg";
+  const cards = [
+    { lbl:"Resultado líquido realizado", val:moneySigned(t.realTot), cls:netCls, big:true,
+      sm:"o que você já vendeu, menos o custo" },
+    { lbl:"Lucro realizado",   val:"+ "+money(t.lucro),       cls:"pos", sm:"soma dos itens no lucro" },
+    { lbl:"Prejuízo realizado",val:"− "+money(Math.abs(t.prej)), cls:"neg", sm:"soma dos itens no prejuízo" },
+    { lbl:"Total gasto (compras)",   val:money(t.totBuy),  sm:intFmt(t.nBuy)+" compras" },
+    { lbl:"Total recebido (vendas)", val:money(t.totSell), sm:intFmt(t.nSell)+" vendas" },
+    { lbl:"Ainda na carteira", val:intFmt(t.held)+" itens", sm:intFmt(t.remUnits)+" unidades restantes" },
+    { lbl:"Custo parado na carteira", val:money(t.remCost), sm:"preço de compra (não é mercado atual)" },
+  ];
+  $("cards").innerHTML = cards.map(c =>
+    '<div class="card'+(c.big?' big':'')+'">'+
+      '<div class="lbl">'+c.lbl+'</div>'+
+      '<div class="val '+(c.cls||'')+'">'+c.val+'</div>'+
+      (c.sm?'<div class="sm">'+c.sm+'</div>':'')+
+    '</div>'
+  ).join("");
+}
+
+function buildGameFilter(){
+  const games = [...new Set(RESULT.items.map(i=>i.game).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const sel = $("gameFilter");
+  sel.innerHTML = '<option value="">Todos os jogos</option>' +
+    games.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");
+}
+
+function currentRows(){
+  const q = $("search").value.trim().toLowerCase();
+  const game = $("gameFilter").value;
+  const st = $("statusFilter").value;
+  let list = RESULT.items.filter(it=>{
+    if(q && !it.market.toLowerCase().includes(q)) return false;
+    if(game && it.game !== game) return false;
+    switch(st){
+      case "hold":    return it.ru > 0;
+      case "profit":  return it.realized > 0;
+      case "loss":    return it.realized < 0;
+      case "soldout": return it.us > 0 && it.ru === 0;
+      case "onlybuy": return it.us === 0 && it.ub > 0;
+    }
+    return true;
+  });
+  const dir = sortDir;
+  list.sort((a,b)=>{
+    let x=a[sortKey], y=b[sortKey];
+    if(typeof x === "string"){ return x.localeCompare(y)*dir; }
+    return (x-y)*dir;
+  });
+  return list;
+}
+
+function itemCell(it){
+  return '<span class="item-name">'+esc(it.market)+'</span>'+(it.ru>0?'<span class="tag hold">tenho '+intFmt(it.ru)+'</span>':'');
+}
+
+function renderTable(){
+  const head = $("head");
+  head.innerHTML = COLS.map(c=>{
+    const arrow = c.key===sortKey ? ' <span class="arrow">'+(sortDir<0?'▼':'▲')+'</span>' : '';
+    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'">'+c.label+arrow+'</th>';
+  }).join("");
+  head.querySelectorAll("th").forEach(th=>{
+    th.onclick = ()=>{
+      const k = th.dataset.k;
+      if(k===sortKey) sortDir=-sortDir; else { sortKey=k; sortDir = (k==="market"||k==="game")?1:-1; }
+      renderTable();
+    };
+  });
+  const list = currentRows();
+  const body = $("body");
+  body.innerHTML = list.map(it=>
+    "<tr>"+COLS.map(c=>'<td class="'+(c.l?'l':'')+(c.money?' money':'')+'">'+c.fmt(it)+'</td>').join("")+"</tr>"
+  ).join("");
+  $("tableCount").textContent = intFmt(list.length)+" itens exibidos";
+}
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ============== Exportar XLSX (sem biblioteca) ============== */
+function crc32(bytes){
+  let table = crc32._t;
+  if(!table){ table=crc32._t=new Uint32Array(256);
+    for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = (c&1)?(0xEDB88320^(c>>>1)):(c>>>1); table[n]=c>>>0; } }
+  let crc = 0xFFFFFFFF;
+  for(let i=0;i<bytes.length;i++) crc = (crc>>>8) ^ table[(crc^bytes[i]) & 0xFF];
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+function zipStore(files){
+  const enc = new TextEncoder(); const chunks=[]; let offset=0; const central=[];
+  const u16=v=>new Uint8Array([v&255,(v>>8)&255]);
+  const u32=v=>new Uint8Array([v&255,(v>>8)&255,(v>>16)&255,(v>>>24)&255]);
+  const push=u=>{ chunks.push(u); offset+=u.length; };
+  for(const f of files){
+    const name=enc.encode(f.name); const data=f.data; const crc=crc32(data); const off=offset;
+    push(u32(0x04034b50)); push(u16(20)); push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0));
+    push(u32(crc)); push(u32(data.length)); push(u32(data.length)); push(u16(name.length)); push(u16(0));
+    push(name); push(data);
+    central.push({name,crc,size:data.length,off});
+  }
+  const cdStart=offset;
+  for(const c of central){
+    push(u32(0x02014b50)); push(u16(20)); push(u16(20)); push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0));
+    push(u32(c.crc)); push(u32(c.size)); push(u32(c.size)); push(u16(c.name.length));
+    push(u16(0)); push(u16(0)); push(u16(0)); push(u16(0)); push(u32(0)); push(u32(c.off)); push(c.name);
+  }
+  const cdSize=offset-cdStart;
+  push(u32(0x06054b50)); push(u16(0)); push(u16(0)); push(u16(central.length)); push(u16(central.length));
+  push(u32(cdSize)); push(u32(cdStart)); push(u16(0));
+  const out=new Uint8Array(offset); let p=0; for(const c of chunks){ out.set(c,p); p+=c.length; }
+  return out;
+}
+function xmlEsc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c])); }
+function colRef(n){ let s=""; n++; while(n>0){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=Math.floor((n-1)/26); } return s; }
+function sheetXml(rowsData){
+  // rowsData: array de linhas; cada célula = {t:'s'|'n', v}
+  let body="";
+  for(let r=0;r<rowsData.length;r++){
+    const cells=rowsData[r]; let cs="";
+    for(let c=0;c<cells.length;c++){
+      const cell=cells[c]; if(cell==null) continue;
+      const ref=colRef(c)+(r+1);
+      if(cell.t==="n") cs+='<c r="'+ref+'"><v>'+cell.v+'</v></c>';
+      else cs+='<c r="'+ref+'" t="inlineStr"><is><t xml:space="preserve">'+xmlEsc(cell.v)+'</t></is></c>';
+    }
+    body+='<row r="'+(r+1)+'">'+cs+'</row>';
+  }
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+body+'</sheetData></worksheet>';
+}
+function S(v){ return {t:"s", v}; }
+function N(cents){ return {t:"n", v:(cents/100)}; }   // exporta em reais (número)
+function Ni(v){ return {t:"n", v}; }
+
+function exportXlsx(){
+  if(!RESULT) return;
+  const t = RESULT.totals;
+  const resumo = [
+    [S("Análise do Mercado Steam")],
+    [S("Moeda"), S(CUR.symbol)],
+    [],
+    [S("Transações"), Ni(t.rows)],
+    [S("Compras"), Ni(t.nBuy)],
+    [S("Vendas"), Ni(t.nSell)],
+    [S("Itens distintos"), Ni(t.distinct)],
+    [],
+    [S("Total gasto em compras"), N(t.totBuy)],
+    [S("Total recebido em vendas"), N(t.totSell)],
+    [S("Lucro realizado"), N(t.lucro)],
+    [S("Prejuízo realizado"), N(t.prej)],
+    [S("Resultado líquido realizado"), N(t.realTot)],
+    [],
+    [S("Itens ainda na carteira"), Ni(t.held)],
+    [S("Unidades restantes"), Ni(t.remUnits)],
+    [S("Custo parado (preço de compra)"), N(t.remCost)],
+  ];
+  const header = ["Item","Jogo","Comprei (un)","Vendi (un)","Restam (un)","Gastei","Recebi","Resultado","Custo parado"];
+  const itens = [ header.map(S) ];
+  const sorted = RESULT.items.slice().sort((a,b)=>b.realized-a.realized);
+  for(const it of sorted){
+    itens.push([ S(it.market), S(it.game), Ni(it.ub), Ni(it.us), Ni(it.ru), N(it.vb), N(it.vs), N(it.realized), N(it.rc) ]);
+  }
+  const enc = new TextEncoder();
+  const files = [
+    { name:"[Content_Types].xml", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>') },
+    { name:"_rels/.rels", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>') },
+    { name:"xl/workbook.xml", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Resumo" sheetId="1" r:id="rId1"/><sheet name="Itens" sheetId="2" r:id="rId2"/></sheets></workbook>') },
+    { name:"xl/_rels/workbook.xml.rels", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/></Relationships>') },
+    { name:"xl/worksheets/sheet1.xml", data:enc.encode(sheetXml(resumo)) },
+    { name:"xl/worksheets/sheet2.xml", data:enc.encode(sheetXml(itens)) },
+  ];
+  const zip = zipStore(files);
+  const blob = new Blob([zip], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "analise-mercado-steam.xlsx";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+}
+
+/* ============== Wiring ============== */
+const dz = $("dropzone"), fi = $("fileInput");
+dz.addEventListener("click", ()=>fi.click());
+fi.addEventListener("change", e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add("over"); }));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove("over"); }));
+dz.addEventListener("drop", e=>{ const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+$("resetBtn").onclick = ()=>{ RESULT=null; fi.value=""; $("results").classList.add("hidden"); $("landing").classList.remove("hidden"); clearError(); };
+$("exportBtn").onclick = exportXlsx;
+$("search").addEventListener("input", ()=>{ if(RESULT) renderTable(); });
+$("gameFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
+$("statusFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
+
+/* hook para testes automatizados */
+window.__loadCSVText = handleCSVText;
+window.__getResult = ()=>RESULT && RESULT.totals;
+</script>
+</body>
+</html>
