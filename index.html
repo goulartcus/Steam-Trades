@@ -149,6 +149,21 @@
   .wallet .cp{color:var(--mut); font-size:12px; white-space:nowrap}
   .wallet.copied{border-color:var(--green)}
   .wallet.copied .cp{color:var(--green)}
+
+  /* emoji flag fix — prioritise emoji fonts for the language selector */
+  .langsel{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Segoe UI",system-ui,Roboto,Arial,sans-serif}
+
+  /* price check column */
+  .pc-btn{background:transparent;border:1px solid var(--line);color:var(--acc);border-radius:6px;
+    padding:2px 7px;font-size:12px;cursor:pointer;transition:.15s;line-height:1.4}
+  .pc-btn:hover:not(:disabled){border-color:var(--acc);background:#17273a}
+  .pc-btn:disabled{opacity:.5;cursor:default}
+  .pc-val{margin-left:4px;font-size:12px;font-variant-numeric:tabular-nums}
+  .pc-val b{color:var(--txt)}
+  .pc-val .pc-med{color:var(--mut);font-size:11px}
+  .pc-warn{font-size:11px;color:var(--orange);background:rgba(247,160,114,.08);
+    border:1px solid rgba(247,160,114,.22);border-radius:8px;padding:6px 10px;margin-bottom:8px;display:none}
+  .pc-warn.vis{display:block}
 </style>
 </head>
 <body>
@@ -189,7 +204,6 @@
       <li data-i18n="tut_5"></li>
     </ol>
     <p class="tip" data-i18n="tut_tip1"></p>
-    <p class="tip" data-i18n="tut_tip2"></p>
   </section>
   </div>
 
@@ -231,6 +245,7 @@
       <span class="count" id="tableCount"></span>
     </div>
 
+    <div id="pcWarn" class="pc-warn" data-i18n="pc_warn"></div>
     <div class="tablewrap">
       <table id="tbl">
         <thead><tr id="head"></tr></thead>
@@ -290,7 +305,6 @@ const I18N = {
     tut_4:"A extensão adiciona um botão <b>Export .csv file</b> — clique nele.",
     tut_5:"Salve o arquivo <code>my_market_history_….csv</code> e carregue ele aqui em cima. 🔒 Ele não sai do seu navegador.",
     tut_tip1:"💡 Se o download não vier de primeira, atualize a página do histórico e clique no botão de novo. Histórico grande pode levar alguns segundos.",
-    tut_tip2:"Funciona também com o CSV de extensões equivalentes que geram as mesmas colunas (ex.: <i>Steam Market History Helper</i> ou <i>CSGO Trader</i>).",
     btn_reset:"↺ Trocar arquivo", btn_export:"⬇ Baixar Excel (.xlsx)",
     fileinfo:"{tx} transações · {items} itens · moeda {cur}",
     search_ph:"🔎 Buscar item…", all_games:"Todos os jogos",
@@ -327,7 +341,8 @@ const I18N = {
     lbl_summary:"Resumo", lbl_items:"Itens",
     err_empty:"Arquivo vazio.",
     err_cols:"Não encontrei as colunas esperadas (Type / Price in Cents). Esse CSV é o histórico do Mercado Steam?",
-    err_none:"Nenhuma compra/venda reconhecida no arquivo.", err_read:"Não consegui ler o arquivo."
+    err_none:"Nenhuma compra/venda reconhecida no arquivo.", err_read:"Não consegui ler o arquivo.",
+    th_pricechk:"Price Check", pc_warn:"⚠ Clique devagar — a Steam bloqueia consultas em excesso. Aguarde alguns segundos entre cada clique.", pc_error:"erro"
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -344,7 +359,6 @@ const I18N = {
     tut_4:"The extension adds an <b>Export .csv file</b> button — click it.",
     tut_5:"Save the <code>my_market_history_….csv</code> file and load it above. 🔒 It never leaves your browser.",
     tut_tip1:"💡 If the download doesn't work the first time, refresh the history page and click the button again. A large history can take a few seconds.",
-    tut_tip2:"It also works with CSVs from equivalent extensions that produce the same columns (e.g. <i>Steam Market History Helper</i> or <i>CSGO Trader</i>).",
     btn_reset:"↺ Change file", btn_export:"⬇ Download Excel (.xlsx)",
     fileinfo:"{tx} transactions · {items} items · currency {cur}",
     search_ph:"🔎 Search item…", all_games:"All games",
@@ -381,7 +395,8 @@ const I18N = {
     lbl_summary:"Summary", lbl_items:"Items",
     err_empty:"Empty file.",
     err_cols:"Couldn't find the expected columns (Type / Price in Cents). Is this CSV your Steam Market history?",
-    err_none:"No purchase/sale recognized in the file.", err_read:"Couldn't read the file."
+    err_none:"No purchase/sale recognized in the file.", err_read:"Couldn't read the file.",
+    th_pricechk:"Price Check", pc_warn:"⚠ Click slowly — Steam blocks too many requests. Wait a few seconds between each click.", pc_error:"error"
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -398,7 +413,6 @@ const I18N = {
     tut_4:"La extensión añade un botón <b>Export .csv file</b> — haz clic en él.",
     tut_5:"Guarda el archivo <code>my_market_history_….csv</code> y cárgalo aquí arriba. 🔒 No sale de tu navegador.",
     tut_tip1:"💡 Si la descarga no funciona a la primera, actualiza la página del historial y vuelve a pulsar el botón. Un historial grande puede tardar unos segundos.",
-    tut_tip2:"También funciona con el CSV de extensiones equivalentes que generan las mismas columnas (p. ej. <i>Steam Market History Helper</i> o <i>CSGO Trader</i>).",
     btn_reset:"↺ Cambiar archivo", btn_export:"⬇ Descargar Excel (.xlsx)",
     fileinfo:"{tx} transacciones · {items} ítems · moneda {cur}",
     search_ph:"🔎 Buscar ítem…", all_games:"Todos los juegos",
@@ -435,7 +449,8 @@ const I18N = {
     lbl_summary:"Resumen", lbl_items:"Ítems",
     err_empty:"Archivo vacío.",
     err_cols:"No encontré las columnas esperadas (Type / Price in Cents). ¿Este CSV es tu historial del Mercado de Steam?",
-    err_none:"No se reconoció ninguna compra/venta en el archivo.", err_read:"No pude leer el archivo."
+    err_none:"No se reconoció ninguna compra/venta en el archivo.", err_read:"No pude leer el archivo.",
+    th_pricechk:"Price Check", pc_warn:"⚠ Haz clic despacio — Steam bloquea demasiadas consultas. Espera unos segundos entre cada clic.", pc_error:"error"
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -452,7 +467,6 @@ const I18N = {
     tut_4:"L'extension ajoute un bouton <b>Export .csv file</b> — cliquez dessus.",
     tut_5:"Enregistrez le fichier <code>my_market_history_….csv</code> et chargez-le ci-dessus. 🔒 Il ne quitte pas votre navigateur.",
     tut_tip1:"💡 Si le téléchargement ne marche pas du premier coup, rafraîchissez la page d'historique et recliquez sur le bouton. Un gros historique peut prendre quelques secondes.",
-    tut_tip2:"Fonctionne aussi avec le CSV d'extensions équivalentes qui produisent les mêmes colonnes (ex. : <i>Steam Market History Helper</i> ou <i>CSGO Trader</i>).",
     btn_reset:"↺ Changer de fichier", btn_export:"⬇ Télécharger Excel (.xlsx)",
     fileinfo:"{tx} transactions · {items} objets · devise {cur}",
     search_ph:"🔎 Rechercher un objet…", all_games:"Tous les jeux",
@@ -489,7 +503,8 @@ const I18N = {
     lbl_summary:"Résumé", lbl_items:"Objets",
     err_empty:"Fichier vide.",
     err_cols:"Colonnes attendues introuvables (Type / Price in Cents). Ce CSV est-il votre historique du Marché Steam ?",
-    err_none:"Aucun achat/vente reconnu dans le fichier.", err_read:"Impossible de lire le fichier."
+    err_none:"Aucun achat/vente reconnu dans le fichier.", err_read:"Impossible de lire le fichier.",
+    th_pricechk:"Price Check", pc_warn:"⚠ Cliquez lentement — Steam bloque les requêtes excessives. Attendez quelques secondes entre chaque clic.", pc_error:"erreur"
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -506,7 +521,6 @@ const I18N = {
     tut_4:"Die Erweiterung fügt einen Button <b>Export .csv file</b> hinzu — klicke darauf.",
     tut_5:"Speichere die Datei <code>my_market_history_….csv</code> und lade sie oben hoch. 🔒 Sie verlässt deinen Browser nicht.",
     tut_tip1:"💡 Wenn der Download beim ersten Mal nicht klappt, lade die Verlaufsseite neu und klicke erneut auf den Button. Ein großer Verlauf kann ein paar Sekunden dauern.",
-    tut_tip2:"Funktioniert auch mit CSVs gleichwertiger Erweiterungen, die dieselben Spalten erzeugen (z. B. <i>Steam Market History Helper</i> oder <i>CSGO Trader</i>).",
     btn_reset:"↺ Datei wechseln", btn_export:"⬇ Excel (.xlsx) herunterladen",
     fileinfo:"{tx} Transaktionen · {items} Artikel · Währung {cur}",
     search_ph:"🔎 Artikel suchen…", all_games:"Alle Spiele",
@@ -543,7 +557,8 @@ const I18N = {
     lbl_summary:"Übersicht", lbl_items:"Artikel",
     err_empty:"Leere Datei.",
     err_cols:"Erwartete Spalten nicht gefunden (Type / Price in Cents). Ist diese CSV dein Steam-Markt-Verlauf?",
-    err_none:"Kein Kauf/Verkauf in der Datei erkannt.", err_read:"Datei konnte nicht gelesen werden."
+    err_none:"Kein Kauf/Verkauf in der Datei erkannt.", err_read:"Datei konnte nicht gelesen werden.",
+    th_pricechk:"Price Check", pc_warn:"⚠ Langsam klicken — Steam blockiert zu viele Anfragen. Warte einige Sekunden zwischen den Klicks.", pc_error:"Fehler"
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -560,7 +575,6 @@ const I18N = {
     tut_4:"该扩展会添加一个 <b>Export .csv file</b> 按钮 — 点击它。",
     tut_5:"保存 <code>my_market_history_….csv</code> 文件并在上方加载。🔒 它不会离开你的浏览器。",
     tut_tip1:"💡 如果第一次下载失败，请刷新历史记录页面并再次点击按钮。历史记录很大时可能需要几秒钟。",
-    tut_tip2:"也支持生成相同列的同类扩展的 CSV（例如 <i>Steam Market History Helper</i> 或 <i>CSGO Trader</i>）。",
     btn_reset:"↺ 更换文件", btn_export:"⬇ 下载 Excel (.xlsx)",
     fileinfo:"{tx} 笔交易 · {items} 个物品 · 货币 {cur}",
     search_ph:"🔎 搜索物品…", all_games:"所有游戏",
@@ -597,7 +611,8 @@ const I18N = {
     lbl_summary:"摘要", lbl_items:"物品",
     err_empty:"文件为空。",
     err_cols:"找不到预期的列（Type / Price in Cents）。这个 CSV 是你的 Steam 市场历史记录吗？",
-    err_none:"文件中未识别到任何购买/出售。", err_read:"无法读取该文件。"
+    err_none:"文件中未识别到任何购买/出售。", err_read:"无法读取该文件。",
+    th_pricechk:"Price Check", pc_warn:"⚠ 请慢点点击 — Steam 会封锁频繁的价格查询。每次点击之间请等待几秒。", pc_error:"错误"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -614,7 +629,6 @@ const I18N = {
     tut_4:"Расширение добавляет кнопку <b>Export .csv file</b> — нажмите на неё.",
     tut_5:"Сохраните файл <code>my_market_history_….csv</code> и загрузите его выше. 🔒 Он не покидает ваш браузер.",
     tut_tip1:"💡 Если загрузка не сработала с первого раза, обновите страницу истории и нажмите кнопку снова. Большая история может занять несколько секунд.",
-    tut_tip2:"Также работает с CSV от аналогичных расширений с теми же столбцами (например, <i>Steam Market History Helper</i> или <i>CSGO Trader</i>).",
     btn_reset:"↺ Сменить файл", btn_export:"⬇ Скачать Excel (.xlsx)",
     fileinfo:"{tx} операций · {items} предметов · валюта {cur}",
     search_ph:"🔎 Поиск предмета…", all_games:"Все игры",
@@ -651,7 +665,8 @@ const I18N = {
     lbl_summary:"Сводка", lbl_items:"Предметы",
     err_empty:"Пустой файл.",
     err_cols:"Не найдены ожидаемые столбцы (Type / Price in Cents). Это CSV истории торговой площадки Steam?",
-    err_none:"В файле не распознано ни одной покупки/продажи.", err_read:"Не удалось прочитать файл."
+    err_none:"В файле не распознано ни одной покупки/продажи.", err_read:"Не удалось прочитать файл.",
+    th_pricechk:"Price Check", pc_warn:"⚠ Нажимайте медленно — Steam блокирует лишние запросы. Подождите несколько секунд между кликами.", pc_error:"ошибка"
   }
 };
 
@@ -809,9 +824,10 @@ function analyze(rows){
 let RESULT = null;
 let FILENAME = "";
 const COLS = [
-  { key:"market",   lk:"th_item",   l:true,  fmt:(it)=>itemCell(it) },
-  { key:"game",     lk:"th_game",   l:true,  fmt:(it)=>esc(it.game) },
-  { key:"ub",       lk:"th_bought", fmt:(it)=>intFmt(it.ub) },
+  { key:"market",     lk:"th_item",     l:true,  fmt:(it)=>itemCell(it) },
+  { key:"game",       lk:"th_game",     l:true,  fmt:(it)=>esc(it.game) },
+  { key:"pricecheck", lk:"th_pricechk", l:true,  nosort:true, fmt:(it)=>priceCheckCell(it) },
+  { key:"ub",         lk:"th_bought",   fmt:(it)=>intFmt(it.ub) },
   { key:"us",       lk:"th_sold",   fmt:(it)=>intFmt(it.us) },
   { key:"ru",       lk:"th_left",   fmt:(it)=>it.ru>0?('<b>'+intFmt(it.ru)+'</b>'):'0' },
   { key:"vb",       lk:"th_spent",  money:true, fmt:(it)=>money(it.vb) },
@@ -999,13 +1015,20 @@ function itemCell(it){
   return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'">'+esc(it.market)+'<span class="ext">↗</span></a>'+tag;
 }
 
+function priceCheckCell(it){
+  if(!it.appid) return '—';
+  return '<button class="pc-btn" data-appid="'+esc(it.appid)+'" data-mkt="'+esc(it.market)+'">🔍</button><span class="pc-val"></span>';
+}
+
 function renderTable(){
   const head = $("head");
   head.innerHTML = COLS.map(c=>{
     const arrow = c.key===sortKey ? ' <span class="arrow">'+(sortDir<0?'▼':'▲')+'</span>' : '';
-    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'">'+(c.key==="pct"?t("card_pct")+" %":t(c.lk))+arrow+'</th>';
+    const nosort = c.nosort ? ' data-nosort="1"' : '';
+    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'"'+nosort+'>'+(c.key==="pct"?t("card_pct")+" %":t(c.lk))+arrow+'</th>';
   }).join("");
   head.querySelectorAll("th").forEach(th=>{
+    if(th.dataset.nosort){ th.style.cursor="default"; return; }
     th.onclick = ()=>{
       const k = th.dataset.k;
       if(k===sortKey) sortDir=-sortDir; else { sortKey=k; sortDir = (k==="market"||k==="game")?1:-1; }
@@ -1135,6 +1158,27 @@ $("exportBtn").onclick = exportXlsx;
 $("search").addEventListener("input", ()=>{ if(RESULT) renderTable(); });
 $("gameFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 $("statusFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
+
+$("tbl").addEventListener("click", async function(e){
+  const btn = e.target.closest(".pc-btn");
+  if(!btn || btn.disabled) return;
+  const appid = btn.dataset.appid, mkt = btn.dataset.mkt;
+  const val = btn.nextElementSibling;
+  btn.disabled = true; btn.textContent = "⏳"; val.textContent = "";
+  const warn = $("pcWarn");
+  if(warn) warn.classList.add("vis");
+  try{
+    const url = "https://steamcommunity.com/market/priceoverview/?appid="+encodeURIComponent(appid)+"&market_hash_name="+encodeURIComponent(mkt)+"&currency=1";
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const j = await res.json();
+    if(j.success && j.lowest_price){
+      btn.textContent = "✓";
+      val.innerHTML = "<b>"+esc(j.lowest_price)+"</b>"+(j.median_price?" <span class='pc-med'>med "+esc(j.median_price)+"</span>":"");
+    } else { btn.textContent = "🔍"; val.textContent = "—"; }
+  }catch(ex){ btn.textContent = "🔍"; val.textContent = t("pc_error"); }
+  btn.disabled = false;
+});
 
 const langSel = $("langSel");
 langSel.addEventListener("change", ()=>{
