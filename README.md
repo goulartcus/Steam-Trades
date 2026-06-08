@@ -12,7 +12,7 @@ Aplicativo web (um único arquivo, sem servidor) que lê o seu **histórico do M
 
 ## 🔗 Acesse
 
-👉 **[ABRA O APP AQUI](https://SEU-USUARIO.github.io/steam-market-pnl/)** — *troque por este link pelo seu, depois de publicar.*
+👉 **[ABRA O APP AQUI](https://goulartcus.github.io/Steam-Trades/)**
 
 ## ▶️ Como usar
 
