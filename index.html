@@ -9,7 +9,7 @@
     --bg:#0e1622; --bg2:#16212e; --card:#1b2735; --line:#2a3b4d;
     --txt:#e6edf3; --mut:#8aa0b4; --acc:#66c0f4; --acc2:#4b8fd6;
     --green:#4ade80; --green-bg:#143024; --red:#f87171; --red-bg:#341a1c;
-    --shadow:0 6px 22px rgba(0,0,0,.35);
+    --orange:#f7a072; --shadow:0 6px 22px rgba(0,0,0,.35);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -21,10 +21,14 @@
   .wrap{max-width:1180px; margin:0 auto; padding:24px 18px 60px}
   header.top{display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap}
   header.top h1{font-size:22px; margin:0; font-weight:700}
-  header.top h1 span{color:var(--acc)}
+  header.top h1 .brand{color:var(--acc)}
   .sub{color:var(--mut); font-size:13px; margin:2px 0 18px}
   .privacy{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--green);
     background:var(--green-bg); border:1px solid #1d5038; padding:4px 10px; border-radius:999px}
+  .spacer{flex:1}
+  .langsel{background:var(--bg2); border:1px solid var(--line); color:var(--txt);
+    padding:7px 10px; border-radius:9px; font-size:13px; outline:none; cursor:pointer}
+  .langsel:focus{border-color:var(--acc)}
 
   /* dropzone */
   .drop{
@@ -54,18 +58,46 @@
   .howto a{color:var(--acc)}
   .howto .tip{font-size:12px; color:var(--mut); margin:10px 0 0}
 
+  .howto code, .drop code{background:#0d1622; border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-size:.9em}
+
   .hidden{display:none!important}
   .err{background:var(--red-bg); border:1px solid #6b2b2e; color:#ffd7d7; padding:12px 14px; border-radius:10px; margin-bottom:16px; font-size:14px}
 
+  /* hero (resultado + retorno) */
+  .hero{display:flex; gap:14px; flex-wrap:wrap; margin:6px 0 14px}
+  .hero .card{flex:1; min-width:230px; margin:0}
+  .card .val.xl{font-size:30px; font-weight:800}
+
   /* cards */
-  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin:6px 0 22px}
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin:0 0 18px}
   .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
   .card .lbl{color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.4px; margin-bottom:6px}
   .card .val{font-size:24px; font-weight:700}
   .card .sm{font-size:12px; color:var(--mut); margin-top:4px}
-  .card.big{grid-column:span 2}
   .pos{color:var(--green)} .neg{color:var(--red)}
-  @media(max-width:560px){ .card.big{grid-column:span 1} }
+
+  /* chart */
+  .chartbox{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px 10px; margin:0 0 18px; box-shadow:var(--shadow)}
+  .chartbox h3{margin:0 0 4px; font-size:14px; font-weight:600}
+  .chart-legend{display:flex; gap:18px; flex-wrap:wrap; font-size:12px; color:var(--mut); margin:2px 0 6px}
+  .chart-legend span.it{display:inline-flex; align-items:center; gap:6px}
+  .chart-legend i{width:16px; height:3px; border-radius:2px; display:inline-block}
+  .chart-host{position:relative; width:100%}
+  .chartsvg{width:100%; height:auto; display:block; overflow:visible}
+  .chartsvg .grid{stroke:#21303f; stroke-width:1}
+  .chartsvg .gridv{stroke:#192634; stroke-width:1}
+  .chartsvg .yl,.chartsvg .xl{fill:#6b8096; font-size:13px}
+  .chartsvg .ln{fill:none; stroke-width:2.5; vector-effect:non-scaling-stroke}
+  .chartsvg .ln.spent{stroke:var(--orange)}
+  .chartsvg .ln.recv{stroke:var(--green)}
+  .chartsvg .cvline{stroke:var(--acc); stroke-width:1; stroke-dasharray:4 3; vector-effect:non-scaling-stroke}
+  .ctip{position:absolute; top:6px; pointer-events:none; background:#0d1622; border:1px solid var(--line);
+    border-radius:8px; padding:7px 9px; font-size:12px; white-space:nowrap; box-shadow:0 4px 14px rgba(0,0,0,.5); z-index:5}
+  .ctip b{display:block; margin-bottom:3px; color:var(--txt)}
+  .ctip .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px}
+  .ctip .dot.s{background:var(--orange)} .ctip .dot.r{background:var(--green)} .ctip .dot.p{background:var(--acc)}
+  .chart-note{font-size:11px; color:#5d7188; margin:8px 2px 2px}
+  .chart-empty{color:var(--mut); font-size:13px; padding:24px; text-align:center}
 
   /* toolbar */
   .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0 12px}
@@ -75,7 +107,6 @@
   }
   .toolbar input[type=text]{min-width:200px; flex:1}
   .toolbar input:focus,.toolbar select:focus{border-color:var(--acc)}
-  .spacer{flex:1}
   .count{color:var(--mut); font-size:12px}
 
   /* table */
@@ -92,7 +123,6 @@
   tbody td.l{text-align:left; white-space:normal}
   tbody tr:hover{background:#18293a}
   .item-name{font-weight:600}
-  .game-name{color:var(--mut); font-size:11px}
   .tag{display:inline-block; font-size:10px; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:middle}
   .tag.hold{background:#13303f; color:var(--acc)}
   td.money{font-variant-numeric:tabular-nums}
@@ -108,31 +138,40 @@
 <div class="wrap">
 
   <header class="top">
-    <h1>📊 Análise do Mercado <span>Steam</span></h1>
-    <span class="privacy">🔒 Seus dados ficam só no seu navegador</span>
+    <h1>📊 <span data-i18n="title_market">Análise do Mercado</span> <span class="brand">Steam</span></h1>
+    <span class="privacy" data-i18n="privacy">🔒 Seus dados ficam só no seu navegador</span>
+    <span class="spacer"></span>
+    <select id="langSel" class="langsel" aria-label="Language">
+      <option value="pt">🇧🇷 Português</option>
+      <option value="en">🇺🇸 English</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="zh">🇨🇳 中文</option>
+    </select>
   </header>
-  <p class="sub">Importe seu histórico do Mercado (CSV) e veja lucro realizado, prejuízo e o que ainda está na sua carteira.</p>
+  <p class="sub" data-i18n="subtitle">Importe seu histórico do Mercado (CSV) e veja lucro realizado, prejuízo e o que ainda está na sua carteira.</p>
 
   <div id="landing">
   <div id="dropzone" class="drop">
     <div class="big">📂</div>
-    <h2>Clique aqui ou arraste seu arquivo CSV</h2>
-    <p>O arquivo <code>my_market_history_…csv</code> do seu histórico do Mercado Steam.</p>
-    <p style="margin-top:12px"><span class="btn">Escolher arquivo CSV</span></p>
+    <h2 data-i18n="drop_title">Clique aqui ou arraste seu arquivo CSV</h2>
+    <p data-i18n="drop_sub">O arquivo <code>my_market_history_…csv</code> do seu histórico do Mercado Steam.</p>
+    <p style="margin-top:12px"><span class="btn" data-i18n="drop_btn">Escolher arquivo CSV</span></p>
     <input type="file" id="fileInput" accept=".csv,text/csv">
   </div>
 
   <section id="tutorial" class="howto">
-    <h3>❓ Como gerar o seu arquivo CSV</h3>
+    <h3 data-i18n="tut_title">❓ Como gerar o seu arquivo CSV</h3>
     <ol>
-      <li>Instale a extensão <a href="https://steaminventoryhelper.com/" target="_blank" rel="noopener">Steam Inventory Helper</a> no seu navegador (Chrome, Edge ou Firefox).</li>
-      <li>Entre no Steam e acesse <b>Comunidade → Mercado</b>.</li>
-      <li>Abra o seu <b>histórico do Mercado</b> (link “Ver histórico do mercado”).</li>
-      <li>A extensão adiciona um botão <b>Export .csv file</b> — clique nele.</li>
-      <li>Salve o arquivo <code>my_market_history_….csv</code> e carregue ele aqui em cima. 🔒 Ele não sai do seu navegador.</li>
+      <li data-i18n="tut_1"></li>
+      <li data-i18n="tut_2"></li>
+      <li data-i18n="tut_3"></li>
+      <li data-i18n="tut_4"></li>
+      <li data-i18n="tut_5"></li>
     </ol>
-    <p class="tip">💡 Se o download não vier de primeira, atualize a página do histórico e clique no botão de novo. Histórico grande pode levar alguns segundos.</p>
-    <p class="tip">Funciona também com o CSV de extensões equivalentes que geram as mesmas colunas (ex.: <i>Steam Market History Helper</i> ou <i>CSGO Trader</i>).</p>
+    <p class="tip" data-i18n="tut_tip1"></p>
+    <p class="tip" data-i18n="tut_tip2"></p>
   </section>
   </div>
 
@@ -140,24 +179,35 @@
 
   <section id="results" class="hidden">
     <div class="toolbar" style="margin-bottom:4px">
-      <button class="btn ghost" id="resetBtn">↺ Trocar arquivo</button>
+      <button class="btn ghost" id="resetBtn" data-i18n="btn_reset">↺ Trocar arquivo</button>
       <span class="count" id="fileInfo"></span>
       <span class="spacer"></span>
-      <button class="btn green" id="exportBtn">⬇ Baixar Excel (.xlsx)</button>
+      <button class="btn green" id="exportBtn" data-i18n="btn_export">⬇ Baixar Excel (.xlsx)</button>
     </div>
 
+    <div class="hero" id="hero"></div>
     <div class="cards" id="cards"></div>
 
+    <div class="chartbox">
+      <h3 data-i18n="chart_title">Evolução: gasto × recebido ao longo do tempo</h3>
+      <div class="chart-legend">
+        <span class="it"><i style="background:#f7a072"></i><span data-i18n="chart_spent">Gasto acumulado</span></span>
+        <span class="it"><i style="background:#4ade80"></i><span data-i18n="chart_recv">Recebido acumulado</span></span>
+      </div>
+      <div id="chart" class="chart-host"></div>
+      <p class="chart-note" data-i18n="chart_note"></p>
+    </div>
+
     <div class="toolbar">
-      <input type="text" id="search" placeholder="🔎 Buscar item…">
-      <select id="gameFilter"><option value="">Todos os jogos</option></select>
+      <input type="text" id="search" data-i18n-ph="search_ph" placeholder="🔎 Buscar item…">
+      <select id="gameFilter"></select>
       <select id="statusFilter">
-        <option value="all">Todos os itens</option>
-        <option value="hold">Ainda tenho (em carteira)</option>
-        <option value="profit">Com lucro</option>
-        <option value="loss">Com prejuízo</option>
-        <option value="soldout">Vendi tudo</option>
-        <option value="onlybuy">Só comprei (nunca vendi)</option>
+        <option value="all" data-i18n="st_all">Todos os itens</option>
+        <option value="hold" data-i18n="st_hold">Ainda tenho (em carteira)</option>
+        <option value="profit" data-i18n="st_profit">Com lucro</option>
+        <option value="loss" data-i18n="st_loss">Com prejuízo</option>
+        <option value="soldout" data-i18n="st_soldout">Vendi tudo</option>
+        <option value="onlybuy" data-i18n="st_onlybuy">Só comprei (nunca vendi)</option>
       </select>
       <span class="spacer"></span>
       <span class="count" id="tableCount"></span>
@@ -171,32 +221,379 @@
     </div>
 
     <details class="method">
-      <summary>Como os números são calculados (metodologia)</summary>
+      <summary data-i18n="method_title">Como os números são calculados (metodologia)</summary>
       <div>
         <ul>
-          <li><b>Custo médio:</b> para cada item, o preço de compra usado é a média de todas as suas compras daquele item.</li>
-          <li><b>Lucro/prejuízo realizado</b> = o que você recebeu nas vendas − o custo médio das unidades vendidas. Só conta o que já foi vendido.</li>
-          <li><b>Venda = valor líquido:</b> o preço de venda do CSV já é o valor que você recebeu (a taxa da Steam já está descontada). Por isso nada é descontado a mais.</li>
-          <li><b>Itens restantes</b> = comprados − vendidos. O "custo parado" é o preço de compra desses itens — <b>não</b> é o preço de mercado atual (essa parte não usa internet).</li>
-          <li><b>Drops</b> (itens que você ganhou e vendeu sem ter comprado) entram como lucro puro, pois não tiveram custo.</li>
-          <li><b>Quantidade:</b> nomes como "2 Pearl" são lidos como 2 unidades. Os cálculos usam a coluna <code>Price in Cents</code>, então funciona em qualquer moeda.</li>
+          <li data-i18n="method_1"></li>
+          <li data-i18n="method_2"></li>
+          <li data-i18n="method_3"></li>
+          <li data-i18n="method_4"></li>
+          <li data-i18n="method_5"></li>
+          <li data-i18n="method_6"></li>
         </ul>
-        <p>Observação: como cartas viram emblemas, itens são consumidos no jogo, etc., a carteira é uma <b>estimativa</b> baseada nas transações do Mercado.</p>
+        <p data-i18n="method_note"></p>
       </div>
     </details>
   </section>
 
-  <footer class="ft">Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador</footer>
+  <footer class="ft" data-i18n="footer">Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador</footer>
 </div>
 
 <script>
 "use strict";
 
+/* ============== Idiomas (i18n) ============== */
+const LANGS = {
+  pt:{ htmlLang:"pt-BR" }, en:{ htmlLang:"en" }, es:{ htmlLang:"es" },
+  fr:{ htmlLang:"fr" }, de:{ htmlLang:"de" }, zh:{ htmlLang:"zh-CN" }
+};
+const I18N = {
+  pt:{
+    doc_title:"Análise do Mercado Steam — Lucro & Prejuízo",
+    title_market:"Análise do Mercado",
+    privacy:"🔒 Seus dados ficam só no seu navegador",
+    subtitle:"Importe seu histórico do Mercado (CSV) e veja lucro realizado, prejuízo e o que ainda está na sua carteira.",
+    drop_title:"Clique aqui ou arraste seu arquivo CSV",
+    drop_sub:"O arquivo <code>my_market_history_…csv</code> do seu histórico do Mercado Steam.",
+    drop_btn:"Escolher arquivo CSV",
+    tut_title:"❓ Como gerar o seu arquivo CSV",
+    tut_1:"Instale a extensão <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> no seu navegador (Chrome, Edge ou Firefox).",
+    tut_2:"Entre no Steam e acesse <b>Comunidade → Mercado</b>.",
+    tut_3:"Abra o seu <b>histórico do Mercado</b> (link “Ver histórico do mercado”).",
+    tut_4:"A extensão adiciona um botão <b>Export .csv file</b> — clique nele.",
+    tut_5:"Salve o arquivo <code>my_market_history_….csv</code> e carregue ele aqui em cima. 🔒 Ele não sai do seu navegador.",
+    tut_tip1:"💡 Se o download não vier de primeira, atualize a página do histórico e clique no botão de novo. Histórico grande pode levar alguns segundos.",
+    tut_tip2:"Funciona também com o CSV de extensões equivalentes que geram as mesmas colunas (ex.: <i>Steam Market History Helper</i> ou <i>CSGO Trader</i>).",
+    btn_reset:"↺ Trocar arquivo", btn_export:"⬇ Baixar Excel (.xlsx)",
+    fileinfo:"{tx} transações · {items} itens · moeda {cur}",
+    search_ph:"🔎 Buscar item…", all_games:"Todos os jogos",
+    st_all:"Todos os itens", st_hold:"Ainda tenho (em carteira)", st_profit:"Com lucro",
+    st_loss:"Com prejuízo", st_soldout:"Vendi tudo", st_onlybuy:"Só comprei (nunca vendi)",
+    items_shown:"{n} itens exibidos",
+    card_net:"Resultado líquido realizado", card_net_sm:"o que você já vendeu, menos o custo",
+    card_pct:"Retorno", card_pct_sm:"sobre o custo do que foi vendido",
+    card_profit:"Lucro realizado", card_profit_sm:"soma dos itens no lucro",
+    card_loss:"Prejuízo realizado", card_loss_sm:"soma dos itens no prejuízo",
+    card_spent:"Total gasto (compras)", card_spent_sm:"{n} compras",
+    card_recv:"Total recebido (vendas)", card_recv_sm:"{n} vendas",
+    card_wallet:"Ainda na carteira", card_wallet_val:"{n} itens", card_wallet_sm:"{n} unidades restantes",
+    card_parked:"Custo parado na carteira", card_parked_sm:"preço de compra (não é mercado atual)",
+    chart_title:"Evolução: gasto × recebido ao longo do tempo",
+    chart_spent:"Gasto acumulado", chart_recv:"Recebido acumulado", chart_profit:"Lucro (recebido − gasto)",
+    chart_note:"A diferença entre as linhas é o saldo de caixa (entrou − saiu). Difere do “resultado realizado” porque parte do gasto está em itens ainda na carteira.",
+    chart_empty:"Sem datas suficientes para montar o gráfico.",
+    th_item:"Item", th_game:"Jogo", th_bought:"Comprei", th_sold:"Vendi", th_left:"Restam",
+    th_spent:"Gastei", th_recv:"Recebi", th_result:"Resultado", th_parked:"Custo parado",
+    hold_tag:"tenho {n}",
+    method_title:"Como os números são calculados (metodologia)",
+    method_1:"<b>Custo médio:</b> para cada item, o preço de compra usado é a média de todas as suas compras daquele item.",
+    method_2:"<b>Lucro/prejuízo realizado</b> = o que você recebeu nas vendas − o custo médio das unidades vendidas. Só conta o que já foi vendido.",
+    method_3:"<b>Venda = valor líquido:</b> o preço de venda do CSV já é o valor que você recebeu (a taxa da Steam já está descontada).",
+    method_4:"<b>Itens restantes</b> = comprados − vendidos. O “custo parado” é o preço de compra desses itens — <b>não</b> é o preço de mercado atual.",
+    method_5:"<b>Drops</b> (itens que você ganhou e vendeu sem ter comprado) entram como lucro puro.",
+    method_6:"<b>Quantidade:</b> nomes como “2 Pearl” são lidos como 2 unidades. Os cálculos usam a coluna <code>Price in Cents</code>, então funciona em qualquer moeda.",
+    method_note:"Observação: como cartas viram emblemas, itens são consumidos no jogo, etc., a carteira é uma estimativa baseada nas transações do Mercado.",
+    footer:"Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador",
+    lbl_currency:"Moeda", lbl_tx:"Transações", lbl_buys:"Compras", lbl_sells:"Vendas",
+    lbl_distinct:"Itens distintos", lbl_units_left:"Unidades restantes",
+    lbl_summary:"Resumo", lbl_items:"Itens",
+    err_empty:"Arquivo vazio.",
+    err_cols:"Não encontrei as colunas esperadas (Type / Price in Cents). Esse CSV é o histórico do Mercado Steam?",
+    err_none:"Nenhuma compra/venda reconhecida no arquivo.", err_read:"Não consegui ler o arquivo."
+  },
+  en:{
+    doc_title:"Steam Market Analysis — Profit & Loss",
+    title_market:"Steam Market Analysis",
+    privacy:"🔒 Your data stays only in your browser",
+    subtitle:"Import your Market history (CSV) and see realized profit, loss and what is still in your inventory.",
+    drop_title:"Click here or drag your CSV file",
+    drop_sub:"The <code>my_market_history_…csv</code> file from your Steam Market history.",
+    drop_btn:"Choose CSV file",
+    tut_title:"❓ How to generate your CSV file",
+    tut_1:"Install the <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> extension in your browser (Chrome, Edge or Firefox).",
+    tut_2:"Go to Steam and open <b>Community → Market</b>.",
+    tut_3:"Open your <b>Market history</b> (the “View Market history” link).",
+    tut_4:"The extension adds an <b>Export .csv file</b> button — click it.",
+    tut_5:"Save the <code>my_market_history_….csv</code> file and load it above. 🔒 It never leaves your browser.",
+    tut_tip1:"💡 If the download doesn't work the first time, refresh the history page and click the button again. A large history can take a few seconds.",
+    tut_tip2:"It also works with CSVs from equivalent extensions that produce the same columns (e.g. <i>Steam Market History Helper</i> or <i>CSGO Trader</i>).",
+    btn_reset:"↺ Change file", btn_export:"⬇ Download Excel (.xlsx)",
+    fileinfo:"{tx} transactions · {items} items · currency {cur}",
+    search_ph:"🔎 Search item…", all_games:"All games",
+    st_all:"All items", st_hold:"Still owned (in inventory)", st_profit:"Profitable",
+    st_loss:"At a loss", st_soldout:"Fully sold", st_onlybuy:"Only bought (never sold)",
+    items_shown:"{n} items shown",
+    card_net:"Net realized result", card_net_sm:"what you've already sold, minus the cost",
+    card_pct:"Return", card_pct_sm:"on the cost of what was sold",
+    card_profit:"Realized profit", card_profit_sm:"sum of profitable items",
+    card_loss:"Realized loss", card_loss_sm:"sum of items at a loss",
+    card_spent:"Total spent (purchases)", card_spent_sm:"{n} purchases",
+    card_recv:"Total received (sales)", card_recv_sm:"{n} sales",
+    card_wallet:"Still in inventory", card_wallet_val:"{n} items", card_wallet_sm:"{n} units remaining",
+    card_parked:"Cost tied up in inventory", card_parked_sm:"purchase price (not current market)",
+    chart_title:"Evolution: spent vs. received over time",
+    chart_spent:"Cumulative spent", chart_recv:"Cumulative received", chart_profit:"Profit (received − spent)",
+    chart_note:"The gap between the lines is your cash balance (in − out). It differs from the “realized result” because part of the spending is in items still held.",
+    chart_empty:"Not enough dates to build the chart.",
+    th_item:"Item", th_game:"Game", th_bought:"Bought", th_sold:"Sold", th_left:"Left",
+    th_spent:"Spent", th_recv:"Received", th_result:"Result", th_parked:"Tied-up cost",
+    hold_tag:"own {n}",
+    method_title:"How the numbers are calculated (methodology)",
+    method_1:"<b>Average cost:</b> for each item, the buy price used is the average of all your purchases of that item.",
+    method_2:"<b>Realized profit/loss</b> = what you received in sales − the average cost of the units sold. Only counts what was already sold.",
+    method_3:"<b>Sale = net value:</b> the sale price in the CSV is already the amount you received (Steam's fee is already deducted).",
+    method_4:"<b>Remaining items</b> = bought − sold. The “tied-up cost” is the purchase price of those items — <b>not</b> the current market price.",
+    method_5:"<b>Drops</b> (items you got and sold without buying) count as pure profit.",
+    method_6:"<b>Quantity:</b> names like “2 Pearl” are read as 2 units. Calculations use the <code>Price in Cents</code> column, so it works in any currency.",
+    method_note:"Note: since cards become badges, items are consumed in-game, etc., the inventory is an estimate based on Market transactions.",
+    footer:"Made to review your Steam Market history · runs 100% offline in your browser",
+    lbl_currency:"Currency", lbl_tx:"Transactions", lbl_buys:"Purchases", lbl_sells:"Sales",
+    lbl_distinct:"Distinct items", lbl_units_left:"Units remaining",
+    lbl_summary:"Summary", lbl_items:"Items",
+    err_empty:"Empty file.",
+    err_cols:"Couldn't find the expected columns (Type / Price in Cents). Is this CSV your Steam Market history?",
+    err_none:"No purchase/sale recognized in the file.", err_read:"Couldn't read the file."
+  },
+  es:{
+    doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
+    title_market:"Análisis del Mercado de Steam",
+    privacy:"🔒 Tus datos quedan solo en tu navegador",
+    subtitle:"Importa tu historial del Mercado (CSV) y ve la ganancia realizada, la pérdida y lo que aún tienes en tu inventario.",
+    drop_title:"Haz clic aquí o arrastra tu archivo CSV",
+    drop_sub:"El archivo <code>my_market_history_…csv</code> de tu historial del Mercado de Steam.",
+    drop_btn:"Elegir archivo CSV",
+    tut_title:"❓ Cómo generar tu archivo CSV",
+    tut_1:"Instala la extensión <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> en tu navegador (Chrome, Edge o Firefox).",
+    tut_2:"Entra en Steam y abre <b>Comunidad → Mercado</b>.",
+    tut_3:"Abre tu <b>historial del Mercado</b> (enlace “Ver historial del Mercado”).",
+    tut_4:"La extensión añade un botón <b>Export .csv file</b> — haz clic en él.",
+    tut_5:"Guarda el archivo <code>my_market_history_….csv</code> y cárgalo aquí arriba. 🔒 No sale de tu navegador.",
+    tut_tip1:"💡 Si la descarga no funciona a la primera, actualiza la página del historial y vuelve a pulsar el botón. Un historial grande puede tardar unos segundos.",
+    tut_tip2:"También funciona con el CSV de extensiones equivalentes que generan las mismas columnas (p. ej. <i>Steam Market History Helper</i> o <i>CSGO Trader</i>).",
+    btn_reset:"↺ Cambiar archivo", btn_export:"⬇ Descargar Excel (.xlsx)",
+    fileinfo:"{tx} transacciones · {items} ítems · moneda {cur}",
+    search_ph:"🔎 Buscar ítem…", all_games:"Todos los juegos",
+    st_all:"Todos los ítems", st_hold:"Aún los tengo (en inventario)", st_profit:"Con ganancia",
+    st_loss:"Con pérdida", st_soldout:"Vendido todo", st_onlybuy:"Solo comprado (nunca vendido)",
+    items_shown:"{n} ítems mostrados",
+    card_net:"Resultado neto realizado", card_net_sm:"lo que ya vendiste, menos el costo",
+    card_pct:"Retorno", card_pct_sm:"sobre el costo de lo vendido",
+    card_profit:"Ganancia realizada", card_profit_sm:"suma de los ítems con ganancia",
+    card_loss:"Pérdida realizada", card_loss_sm:"suma de los ítems con pérdida",
+    card_spent:"Total gastado (compras)", card_spent_sm:"{n} compras",
+    card_recv:"Total recibido (ventas)", card_recv_sm:"{n} ventas",
+    card_wallet:"Aún en inventario", card_wallet_val:"{n} ítems", card_wallet_sm:"{n} unidades restantes",
+    card_parked:"Costo inmovilizado en inventario", card_parked_sm:"precio de compra (no es el mercado actual)",
+    chart_title:"Evolución: gastado vs. recibido a lo largo del tiempo",
+    chart_spent:"Gastado acumulado", chart_recv:"Recibido acumulado", chart_profit:"Ganancia (recibido − gastado)",
+    chart_note:"La diferencia entre las líneas es tu saldo de caja (entró − salió). Difiere del “resultado realizado” porque parte del gasto está en ítems aún en inventario.",
+    chart_empty:"No hay fechas suficientes para crear el gráfico.",
+    th_item:"Ítem", th_game:"Juego", th_bought:"Compré", th_sold:"Vendí", th_left:"Quedan",
+    th_spent:"Gasté", th_recv:"Recibí", th_result:"Resultado", th_parked:"Costo inmovil.",
+    hold_tag:"tengo {n}",
+    method_title:"Cómo se calculan los números (metodología)",
+    method_1:"<b>Costo promedio:</b> para cada ítem, el precio de compra usado es el promedio de todas tus compras de ese ítem.",
+    method_2:"<b>Ganancia/pérdida realizada</b> = lo que recibiste en las ventas − el costo promedio de las unidades vendidas. Solo cuenta lo ya vendido.",
+    method_3:"<b>Venta = valor neto:</b> el precio de venta del CSV ya es el importe que recibiste (la comisión de Steam ya está descontada).",
+    method_4:"<b>Ítems restantes</b> = comprados − vendidos. El “costo inmovilizado” es el precio de compra de esos ítems — <b>no</b> el precio de mercado actual.",
+    method_5:"<b>Drops</b> (ítems que conseguiste y vendiste sin comprar) cuentan como ganancia pura.",
+    method_6:"<b>Cantidad:</b> nombres como “2 Pearl” se leen como 2 unidades. Los cálculos usan la columna <code>Price in Cents</code>, así que funciona en cualquier moneda.",
+    method_note:"Nota: como los cromos se convierten en insignias, los ítems se consumen en el juego, etc., el inventario es una estimación basada en las transacciones del Mercado.",
+    footer:"Hecho para revisar tu historial del Mercado de Steam · funciona 100% sin conexión en tu navegador",
+    lbl_currency:"Moneda", lbl_tx:"Transacciones", lbl_buys:"Compras", lbl_sells:"Ventas",
+    lbl_distinct:"Ítems distintos", lbl_units_left:"Unidades restantes",
+    lbl_summary:"Resumen", lbl_items:"Ítems",
+    err_empty:"Archivo vacío.",
+    err_cols:"No encontré las columnas esperadas (Type / Price in Cents). ¿Este CSV es tu historial del Mercado de Steam?",
+    err_none:"No se reconoció ninguna compra/venta en el archivo.", err_read:"No pude leer el archivo."
+  },
+  fr:{
+    doc_title:"Analyse du Marché Steam — Profits & Pertes",
+    title_market:"Analyse du Marché Steam",
+    privacy:"🔒 Vos données restent uniquement dans votre navigateur",
+    subtitle:"Importez votre historique du Marché (CSV) et voyez le profit réalisé, les pertes et ce qui reste dans votre inventaire.",
+    drop_title:"Cliquez ici ou glissez votre fichier CSV",
+    drop_sub:"Le fichier <code>my_market_history_…csv</code> de votre historique du Marché Steam.",
+    drop_btn:"Choisir le fichier CSV",
+    tut_title:"❓ Comment générer votre fichier CSV",
+    tut_1:"Installez l'extension <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> dans votre navigateur (Chrome, Edge ou Firefox).",
+    tut_2:"Allez sur Steam et ouvrez <b>Communauté → Marché</b>.",
+    tut_3:"Ouvrez votre <b>historique du Marché</b> (lien « Voir l'historique du Marché »).",
+    tut_4:"L'extension ajoute un bouton <b>Export .csv file</b> — cliquez dessus.",
+    tut_5:"Enregistrez le fichier <code>my_market_history_….csv</code> et chargez-le ci-dessus. 🔒 Il ne quitte pas votre navigateur.",
+    tut_tip1:"💡 Si le téléchargement ne marche pas du premier coup, rafraîchissez la page d'historique et recliquez sur le bouton. Un gros historique peut prendre quelques secondes.",
+    tut_tip2:"Fonctionne aussi avec le CSV d'extensions équivalentes qui produisent les mêmes colonnes (ex. : <i>Steam Market History Helper</i> ou <i>CSGO Trader</i>).",
+    btn_reset:"↺ Changer de fichier", btn_export:"⬇ Télécharger Excel (.xlsx)",
+    fileinfo:"{tx} transactions · {items} objets · devise {cur}",
+    search_ph:"🔎 Rechercher un objet…", all_games:"Tous les jeux",
+    st_all:"Tous les objets", st_hold:"Encore possédés (en inventaire)", st_profit:"En bénéfice",
+    st_loss:"En perte", st_soldout:"Tout vendu", st_onlybuy:"Seulement achetés (jamais vendus)",
+    items_shown:"{n} objets affichés",
+    card_net:"Résultat net réalisé", card_net_sm:"ce que vous avez déjà vendu, moins le coût",
+    card_pct:"Rendement", card_pct_sm:"sur le coût de ce qui a été vendu",
+    card_profit:"Bénéfice réalisé", card_profit_sm:"somme des objets en bénéfice",
+    card_loss:"Perte réalisée", card_loss_sm:"somme des objets en perte",
+    card_spent:"Total dépensé (achats)", card_spent_sm:"{n} achats",
+    card_recv:"Total reçu (ventes)", card_recv_sm:"{n} ventes",
+    card_wallet:"Encore en inventaire", card_wallet_val:"{n} objets", card_wallet_sm:"{n} unités restantes",
+    card_parked:"Coût immobilisé en inventaire", card_parked_sm:"prix d'achat (pas le marché actuel)",
+    chart_title:"Évolution : dépensé vs. reçu au fil du temps",
+    chart_spent:"Dépensé cumulé", chart_recv:"Reçu cumulé", chart_profit:"Bénéfice (reçu − dépensé)",
+    chart_note:"L'écart entre les lignes est votre solde de trésorerie (entré − sorti). Il diffère du « résultat réalisé » car une partie des dépenses est dans des objets encore détenus.",
+    chart_empty:"Pas assez de dates pour créer le graphique.",
+    th_item:"Objet", th_game:"Jeu", th_bought:"Achetés", th_sold:"Vendus", th_left:"Restants",
+    th_spent:"Dépensé", th_recv:"Reçu", th_result:"Résultat", th_parked:"Coût immob.",
+    hold_tag:"j'ai {n}",
+    method_title:"Comment les chiffres sont calculés (méthodologie)",
+    method_1:"<b>Coût moyen :</b> pour chaque objet, le prix d'achat utilisé est la moyenne de tous vos achats de cet objet.",
+    method_2:"<b>Profit/perte réalisé</b> = ce que vous avez reçu aux ventes − le coût moyen des unités vendues. Ne compte que ce qui est déjà vendu.",
+    method_3:"<b>Vente = valeur nette :</b> le prix de vente du CSV est déjà le montant reçu (la commission de Steam est déjà déduite).",
+    method_4:"<b>Objets restants</b> = achetés − vendus. Le « coût immobilisé » est le prix d'achat de ces objets — <b>pas</b> le prix du marché actuel.",
+    method_5:"<b>Drops</b> (objets obtenus et vendus sans achat) comptent comme du bénéfice pur.",
+    method_6:"<b>Quantité :</b> des noms comme « 2 Pearl » sont lus comme 2 unités. Les calculs utilisent la colonne <code>Price in Cents</code>, donc ça marche dans n'importe quelle devise.",
+    method_note:"Note : comme les cartes deviennent des badges, les objets sont consommés en jeu, etc., l'inventaire est une estimation basée sur les transactions du Marché.",
+    footer:"Conçu pour vérifier votre historique du Marché Steam · fonctionne 100% hors ligne dans votre navigateur",
+    lbl_currency:"Devise", lbl_tx:"Transactions", lbl_buys:"Achats", lbl_sells:"Ventes",
+    lbl_distinct:"Objets distincts", lbl_units_left:"Unités restantes",
+    lbl_summary:"Résumé", lbl_items:"Objets",
+    err_empty:"Fichier vide.",
+    err_cols:"Colonnes attendues introuvables (Type / Price in Cents). Ce CSV est-il votre historique du Marché Steam ?",
+    err_none:"Aucun achat/vente reconnu dans le fichier.", err_read:"Impossible de lire le fichier."
+  },
+  de:{
+    doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
+    title_market:"Steam-Markt-Analyse",
+    privacy:"🔒 Deine Daten bleiben nur in deinem Browser",
+    subtitle:"Importiere deinen Markt-Verlauf (CSV) und sieh realisierten Gewinn, Verlust und was noch in deinem Inventar ist.",
+    drop_title:"Hier klicken oder CSV-Datei hierher ziehen",
+    drop_sub:"Die Datei <code>my_market_history_…csv</code> aus deinem Steam-Markt-Verlauf.",
+    drop_btn:"CSV-Datei auswählen",
+    tut_title:"❓ So erstellst du deine CSV-Datei",
+    tut_1:"Installiere die Erweiterung <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> in deinem Browser (Chrome, Edge oder Firefox).",
+    tut_2:"Gehe zu Steam und öffne <b>Community → Markt</b>.",
+    tut_3:"Öffne deinen <b>Markt-Verlauf</b> (Link „Markt-Verlauf ansehen“).",
+    tut_4:"Die Erweiterung fügt einen Button <b>Export .csv file</b> hinzu — klicke darauf.",
+    tut_5:"Speichere die Datei <code>my_market_history_….csv</code> und lade sie oben hoch. 🔒 Sie verlässt deinen Browser nicht.",
+    tut_tip1:"💡 Wenn der Download beim ersten Mal nicht klappt, lade die Verlaufsseite neu und klicke erneut auf den Button. Ein großer Verlauf kann ein paar Sekunden dauern.",
+    tut_tip2:"Funktioniert auch mit CSVs gleichwertiger Erweiterungen, die dieselben Spalten erzeugen (z. B. <i>Steam Market History Helper</i> oder <i>CSGO Trader</i>).",
+    btn_reset:"↺ Datei wechseln", btn_export:"⬇ Excel (.xlsx) herunterladen",
+    fileinfo:"{tx} Transaktionen · {items} Artikel · Währung {cur}",
+    search_ph:"🔎 Artikel suchen…", all_games:"Alle Spiele",
+    st_all:"Alle Artikel", st_hold:"Noch im Besitz (Inventar)", st_profit:"Im Gewinn",
+    st_loss:"Im Verlust", st_soldout:"Alles verkauft", st_onlybuy:"Nur gekauft (nie verkauft)",
+    items_shown:"{n} Artikel angezeigt",
+    card_net:"Realisiertes Nettoergebnis", card_net_sm:"was du schon verkauft hast, minus Kosten",
+    card_pct:"Rendite", card_pct_sm:"auf die Kosten des Verkauften",
+    card_profit:"Realisierter Gewinn", card_profit_sm:"Summe der Artikel im Gewinn",
+    card_loss:"Realisierter Verlust", card_loss_sm:"Summe der Artikel im Verlust",
+    card_spent:"Gesamt ausgegeben (Käufe)", card_spent_sm:"{n} Käufe",
+    card_recv:"Gesamt erhalten (Verkäufe)", card_recv_sm:"{n} Verkäufe",
+    card_wallet:"Noch im Inventar", card_wallet_val:"{n} Artikel", card_wallet_sm:"{n} Einheiten übrig",
+    card_parked:"Gebundene Kosten im Inventar", card_parked_sm:"Kaufpreis (nicht aktueller Markt)",
+    chart_title:"Entwicklung: ausgegeben vs. erhalten im Zeitverlauf",
+    chart_spent:"Ausgegeben kumuliert", chart_recv:"Erhalten kumuliert", chart_profit:"Gewinn (erhalten − ausgegeben)",
+    chart_note:"Der Abstand zwischen den Linien ist dein Kassenstand (ein − aus). Er weicht vom „realisierten Ergebnis“ ab, weil ein Teil der Ausgaben in noch gehaltenen Artikeln steckt.",
+    chart_empty:"Nicht genügend Daten für das Diagramm.",
+    th_item:"Artikel", th_game:"Spiel", th_bought:"Gekauft", th_sold:"Verkauft", th_left:"Übrig",
+    th_spent:"Ausgeg.", th_recv:"Erhalten", th_result:"Ergebnis", th_parked:"Geb. Kosten",
+    hold_tag:"habe {n}",
+    method_title:"Wie die Zahlen berechnet werden (Methodik)",
+    method_1:"<b>Durchschnittskosten:</b> für jeden Artikel ist der verwendete Kaufpreis der Durchschnitt all deiner Käufe dieses Artikels.",
+    method_2:"<b>Realisierter Gewinn/Verlust</b> = was du bei Verkäufen erhalten hast − die Durchschnittskosten der verkauften Einheiten. Zählt nur bereits Verkauftes.",
+    method_3:"<b>Verkauf = Nettowert:</b> der Verkaufspreis in der CSV ist bereits der erhaltene Betrag (Steams Gebühr ist schon abgezogen).",
+    method_4:"<b>Verbleibende Artikel</b> = gekauft − verkauft. Die „gebundenen Kosten“ sind der Kaufpreis dieser Artikel — <b>nicht</b> der aktuelle Marktpreis.",
+    method_5:"<b>Drops</b> (Artikel, die du erhalten und ohne Kauf verkauft hast) zählen als reiner Gewinn.",
+    method_6:"<b>Menge:</b> Namen wie „2 Pearl“ werden als 2 Einheiten gelesen. Berechnungen nutzen die Spalte <code>Price in Cents</code>, daher funktioniert es in jeder Währung.",
+    method_note:"Hinweis: Da Karten zu Abzeichen werden, Artikel im Spiel verbraucht werden usw., ist das Inventar eine Schätzung auf Basis der Markt-Transaktionen.",
+    footer:"Erstellt, um deinen Steam-Markt-Verlauf zu prüfen · läuft 100% offline in deinem Browser",
+    lbl_currency:"Währung", lbl_tx:"Transaktionen", lbl_buys:"Käufe", lbl_sells:"Verkäufe",
+    lbl_distinct:"Verschiedene Artikel", lbl_units_left:"Einheiten übrig",
+    lbl_summary:"Übersicht", lbl_items:"Artikel",
+    err_empty:"Leere Datei.",
+    err_cols:"Erwartete Spalten nicht gefunden (Type / Price in Cents). Ist diese CSV dein Steam-Markt-Verlauf?",
+    err_none:"Kein Kauf/Verkauf in der Datei erkannt.", err_read:"Datei konnte nicht gelesen werden."
+  },
+  zh:{
+    doc_title:"Steam 市场分析 — 盈亏",
+    title_market:"Steam 市场分析",
+    privacy:"🔒 你的数据只保留在你的浏览器里",
+    subtitle:"导入你的市场历史记录（CSV），查看已实现盈利、亏损以及仍在库存中的物品。",
+    drop_title:"点击这里或拖入你的 CSV 文件",
+    drop_sub:"来自你 Steam 市场历史的 <code>my_market_history_…csv</code> 文件。",
+    drop_btn:"选择 CSV 文件",
+    tut_title:"❓ 如何生成你的 CSV 文件",
+    tut_1:"在浏览器（Chrome、Edge 或 Firefox）中安装 <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> 扩展。",
+    tut_2:"进入 Steam，打开 <b>社区 → 市场</b>。",
+    tut_3:"打开你的 <b>市场历史记录</b>（“查看市场历史记录”链接）。",
+    tut_4:"该扩展会添加一个 <b>Export .csv file</b> 按钮 — 点击它。",
+    tut_5:"保存 <code>my_market_history_….csv</code> 文件并在上方加载。🔒 它不会离开你的浏览器。",
+    tut_tip1:"💡 如果第一次下载失败，请刷新历史记录页面并再次点击按钮。历史记录很大时可能需要几秒钟。",
+    tut_tip2:"也支持生成相同列的同类扩展的 CSV（例如 <i>Steam Market History Helper</i> 或 <i>CSGO Trader</i>）。",
+    btn_reset:"↺ 更换文件", btn_export:"⬇ 下载 Excel (.xlsx)",
+    fileinfo:"{tx} 笔交易 · {items} 个物品 · 货币 {cur}",
+    search_ph:"🔎 搜索物品…", all_games:"所有游戏",
+    st_all:"所有物品", st_hold:"仍持有（库存中）", st_profit:"盈利",
+    st_loss:"亏损", st_soldout:"已全部卖出", st_onlybuy:"仅购买（从未卖出）",
+    items_shown:"显示 {n} 个物品",
+    card_net:"已实现净盈亏", card_net_sm:"已卖出的金额减去成本",
+    card_pct:"回报率", card_pct_sm:"基于已卖出物品的成本",
+    card_profit:"已实现盈利", card_profit_sm:"盈利物品的合计",
+    card_loss:"已实现亏损", card_loss_sm:"亏损物品的合计",
+    card_spent:"总支出（购买）", card_spent_sm:"{n} 次购买",
+    card_recv:"总收入（出售）", card_recv_sm:"{n} 次出售",
+    card_wallet:"仍在库存", card_wallet_val:"{n} 个物品", card_wallet_sm:"剩余 {n} 件",
+    card_parked:"库存占用成本", card_parked_sm:"购买价格（非当前市场价）",
+    chart_title:"演变：支出与收入随时间变化",
+    chart_spent:"累计支出", chart_recv:"累计收入", chart_profit:"盈利（收入 − 支出）",
+    chart_note:"两条线之间的差额是你的现金余额（流入 − 流出）。它与“已实现盈亏”不同，因为部分支出仍在持有的物品中。",
+    chart_empty:"日期不足，无法生成图表。",
+    th_item:"物品", th_game:"游戏", th_bought:"买入", th_sold:"卖出", th_left:"剩余",
+    th_spent:"支出", th_recv:"收入", th_result:"结果", th_parked:"占用成本",
+    hold_tag:"持有 {n}",
+    method_title:"数字如何计算（方法说明）",
+    method_1:"<b>平均成本：</b>对每个物品，使用的买入价是你对该物品所有购买的平均值。",
+    method_2:"<b>已实现盈亏</b> = 出售所得 − 已卖出数量的平均成本。仅计算已卖出的部分。",
+    method_3:"<b>出售 = 净额：</b>CSV 中的出售价格已经是你实际收到的金额（Steam 手续费已扣除）。",
+    method_4:"<b>剩余物品</b> = 买入 − 卖出。“占用成本”是这些物品的买入价 — <b>不是</b>当前市场价。",
+    method_5:"<b>掉落物</b>（未购买就获得并卖出的物品）计为纯利润。",
+    method_6:"<b>数量：</b>诸如“2 Pearl”的名称会被读作 2 件。计算使用 <code>Price in Cents</code> 列，因此适用于任何货币。",
+    method_note:"注意：由于卡牌会合成徽章、物品会在游戏中消耗等，库存是基于市场交易的估算值。",
+    footer:"用于核对你的 Steam 市场历史 · 在你的浏览器中 100% 离线运行",
+    lbl_currency:"货币", lbl_tx:"交易", lbl_buys:"购买", lbl_sells:"出售",
+    lbl_distinct:"不同物品", lbl_units_left:"剩余件数",
+    lbl_summary:"摘要", lbl_items:"物品",
+    err_empty:"文件为空。",
+    err_cols:"找不到预期的列（Type / Price in Cents）。这个 CSV 是你的 Steam 市场历史记录吗？",
+    err_none:"文件中未识别到任何购买/出售。", err_read:"无法读取该文件。"
+  }
+};
+
+let LANG = "pt";
+function t(key, vars){
+  let s = (I18N[LANG] && I18N[LANG][key]);
+  if(s == null) s = I18N.pt[key];
+  if(s == null) s = key;
+  if(vars) for(const k in vars) s = s.split("{"+k+"}").join(vars[k]);
+  return s;
+}
+function detectLang(){
+  try{ const saved = localStorage.getItem("smpl_lang"); if(saved && I18N[saved]) return saved; }catch(e){}
+  const nav = (navigator.language || "pt").slice(0,2).toLowerCase();
+  return I18N[nav] ? nav : "pt";
+}
+function applyI18n(){
+  document.documentElement.lang = LANGS[LANG].htmlLang;
+  document.title = t("doc_title");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.innerHTML = t(el.getAttribute("data-i18n")); });
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
+  if(RESULT){ buildGameFilter(); renderCards(); renderChart(); renderTable(); updateFileInfo(); }
+}
+
 /* ============== Detecção de moeda ============== */
 const CUR = { symbol:"R$", locale:"pt-BR" };
 function detectCurrency(display){
   if(!display) return;
-  const sym = display.replace(/[\d.,\s ]/g,"").trim();
+  const sym = display.replace(/[\d.,\s ]/g,"").trim();
   if(sym) CUR.symbol = sym;
   CUR.locale = /,\d{2}\s*$/.test(display.trim()) ? "pt-BR" : "en-US";
 }
@@ -235,7 +632,7 @@ function parseCSV(text){
 
 /* ============== Núcleo: agregação ============== */
 function analyze(rows){
-  if(!rows.length) throw new Error("Arquivo vazio.");
+  if(!rows.length) throw new Error(t("err_empty"));
   const header = rows[0].map(h => h.trim().toLowerCase());
   const col = name => header.indexOf(name);
   const idx = {
@@ -246,9 +643,9 @@ function analyze(rows){
     type:   col("type"),
     market: col("market name"),
     appid:  col("app id"),
+    acted:  col("acted on"),
   };
-  if(idx.type < 0 || idx.cents < 0)
-    throw new Error("Não encontrei as colunas esperadas (Type / Price in Cents). Esse CSV é o histórico do Mercado Steam?");
+  if(idx.type < 0 || idx.cents < 0) throw new Error(t("err_cols"));
 
   // moeda a partir do primeiro Display Price preenchido
   if(idx.disp >= 0){
@@ -256,6 +653,7 @@ function analyze(rows){
   }
 
   const agg = new Map();
+  const months = new Map(); // 'YYYY-MM' -> {spent, recv}
   let nBuy = 0, nSell = 0, used = 0;
   for(let r = 1; r < rows.length; r++){
     const row = rows[r];
@@ -275,10 +673,21 @@ function analyze(rows){
     let a = agg.get(key);
     if(!a){ a = { market, game, appid, ub:0, vb:0, us:0, vs:0 }; agg.set(key, a); }
 
-    if(type === "purchase"){ a.ub += qty; a.vb += cents; nBuy++; used++; }
-    else if(type === "sale"){ a.us += qty; a.vs += cents; nSell++; used++; }
+    const isBuy = (type === "purchase"), isSell = (type === "sale");
+    if(isBuy){ a.ub += qty; a.vb += cents; nBuy++; used++; }
+    else if(isSell){ a.us += qty; a.vs += cents; nSell++; used++; }
+
+    // série temporal mensal (por data "Acted On" = DD/MM/YYYY)
+    if((isBuy || isSell) && idx.acted >= 0){
+      const dm = (row[idx.acted]||"").match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+      if(dm){
+        const mk = dm[3] + "-" + dm[2];
+        let mo = months.get(mk); if(!mo){ mo = { spent:0, recv:0 }; months.set(mk, mo); }
+        if(isBuy) mo.spent += cents; else mo.recv += cents;
+      }
+    }
   }
-  if(used === 0) throw new Error("Nenhuma compra/venda reconhecida no arquivo.");
+  if(used === 0) throw new Error(t("err_none"));
 
   const items = [];
   let totBuy=0, totSell=0, realTot=0, lucro=0, prej=0, remUnits=0, remCost=0, held=0;
@@ -295,24 +704,32 @@ function analyze(rows){
     remUnits += ru; remCost += rc; if(ru > 0) held++;
     items.push({ market:a.market, game:a.game, ub:a.ub, us:a.us, ru, vb:a.vb, vs:a.vs, rc, realized });
   }
+
+  // séries acumuladas por mês
+  const series = [];
+  const sortedM = [...months.keys()].sort();
+  let cs=0, cr=0;
+  for(const k of sortedM){ const mo = months.get(k); cs += mo.spent; cr += mo.recv; series.push({ month:k, spent:cs, recv:cr }); }
+
   return {
-    items,
+    items, series,
     totals:{ rows:nBuy+nSell, nBuy, nSell, distinct:agg.size, totBuy, totSell, realTot, lucro, prej, remUnits, remCost, held }
   };
 }
 
 /* ============== Estado + UI ============== */
 let RESULT = null;
+let FILENAME = "";
 const COLS = [
-  { key:"market",   label:"Item",         l:true,  fmt:(it)=>itemCell(it) },
-  { key:"game",     label:"Jogo",         l:true,  fmt:(it)=>esc(it.game) },
-  { key:"ub",       label:"Comprei",      fmt:(it)=>intFmt(it.ub) },
-  { key:"us",       label:"Vendi",        fmt:(it)=>intFmt(it.us) },
-  { key:"ru",       label:"Restam",       fmt:(it)=>it.ru>0?('<b>'+intFmt(it.ru)+'</b>'):'0' },
-  { key:"vb",       label:"Gastei",       money:true, fmt:(it)=>money(it.vb) },
-  { key:"vs",       label:"Recebi",       money:true, fmt:(it)=>money(it.vs) },
-  { key:"realized", label:"Resultado",    money:true, fmt:(it)=>'<span class="'+(it.realized>=0?'pos':'neg')+'">'+moneySigned(it.realized)+'</span>' },
-  { key:"rc",       label:"Custo parado", money:true, fmt:(it)=>it.rc>0?money(it.rc):'—' },
+  { key:"market",   lk:"th_item",   l:true,  fmt:(it)=>itemCell(it) },
+  { key:"game",     lk:"th_game",   l:true,  fmt:(it)=>esc(it.game) },
+  { key:"ub",       lk:"th_bought", fmt:(it)=>intFmt(it.ub) },
+  { key:"us",       lk:"th_sold",   fmt:(it)=>intFmt(it.us) },
+  { key:"ru",       lk:"th_left",   fmt:(it)=>it.ru>0?('<b>'+intFmt(it.ru)+'</b>'):'0' },
+  { key:"vb",       lk:"th_spent",  money:true, fmt:(it)=>money(it.vb) },
+  { key:"vs",       lk:"th_recv",   money:true, fmt:(it)=>money(it.vs) },
+  { key:"realized", lk:"th_result", money:true, fmt:(it)=>'<span class="'+(it.realized>=0?'pos':'neg')+'">'+moneySigned(it.realized)+'</span>' },
+  { key:"rc",       lk:"th_parked", money:true, fmt:(it)=>it.rc>0?money(it.rc):'—' },
 ];
 let sortKey = "realized", sortDir = -1;
 
@@ -321,15 +738,23 @@ const $ = id => document.getElementById(id);
 function showError(msg){ const e=$("error"); e.textContent="⚠ "+msg; e.classList.remove("hidden"); }
 function clearError(){ $("error").classList.add("hidden"); }
 
+function updateFileInfo(){
+  if(!RESULT) return;
+  const tot = RESULT.totals;
+  $("fileInfo").textContent = (FILENAME?FILENAME+" · ":"") +
+    t("fileinfo",{ tx:intFmt(tot.rows), items:intFmt(tot.distinct), cur:CUR.symbol });
+}
+
 function handleCSVText(text, filename){
   clearError();
   try{
     const rows = parseCSV(text);
     RESULT = analyze(rows);
-    $("fileInfo").textContent = (filename?filename+" · ":"") + intFmt(RESULT.totals.rows) + " transações · " +
-      intFmt(RESULT.totals.distinct) + " itens · moeda " + CUR.symbol;
+    FILENAME = filename || "";
+    updateFileInfo();
     buildGameFilter();
     renderCards();
+    renderChart();
     renderTable();
     $("landing").classList.add("hidden");
     $("results").classList.remove("hidden");
@@ -345,37 +770,111 @@ function handleFile(file){
   if(!file) return;
   const reader = new FileReader();
   reader.onload = e => handleCSVText(e.target.result, file.name);
-  reader.onerror = () => showError("Não consegui ler o arquivo.");
+  reader.onerror = () => showError(t("err_read"));
   reader.readAsText(file, "UTF-8");
 }
 
 function renderCards(){
-  const t = RESULT.totals;
-  const netCls = t.realTot>=0 ? "pos":"neg";
+  const tot = RESULT.totals;
+  const cogs = tot.totBuy - tot.remCost;
+  const pct = cogs>0 ? (tot.realTot/cogs*100) : null;
+  const netCls = tot.realTot>=0 ? "pos":"neg";
+  const pctCls = tot.realTot>=0 ? "pos":"neg";
+  const pctStr = pct==null ? "—" :
+    (pct>=0?"+":"−") + Math.abs(pct).toLocaleString(CUR.locale,{minimumFractionDigits:1,maximumFractionDigits:1}) + "%";
+  $("hero").innerHTML =
+    '<div class="card"><div class="lbl">'+t("card_net")+'</div><div class="val xl '+netCls+'">'+moneySigned(tot.realTot)+'</div><div class="sm">'+t("card_net_sm")+'</div></div>'+
+    '<div class="card"><div class="lbl">'+t("card_pct")+'</div><div class="val xl '+pctCls+'">'+pctStr+'</div><div class="sm">'+t("card_pct_sm")+'</div></div>';
+
   const cards = [
-    { lbl:"Resultado líquido realizado", val:moneySigned(t.realTot), cls:netCls, big:true,
-      sm:"o que você já vendeu, menos o custo" },
-    { lbl:"Lucro realizado",   val:"+ "+money(t.lucro),       cls:"pos", sm:"soma dos itens no lucro" },
-    { lbl:"Prejuízo realizado",val:"− "+money(Math.abs(t.prej)), cls:"neg", sm:"soma dos itens no prejuízo" },
-    { lbl:"Total gasto (compras)",   val:money(t.totBuy),  sm:intFmt(t.nBuy)+" compras" },
-    { lbl:"Total recebido (vendas)", val:money(t.totSell), sm:intFmt(t.nSell)+" vendas" },
-    { lbl:"Ainda na carteira", val:intFmt(t.held)+" itens", sm:intFmt(t.remUnits)+" unidades restantes" },
-    { lbl:"Custo parado na carteira", val:money(t.remCost), sm:"preço de compra (não é mercado atual)" },
+    { lbl:t("card_profit"), val:"+ "+money(tot.lucro),          cls:"pos", sm:t("card_profit_sm") },
+    { lbl:t("card_loss"),   val:"− "+money(Math.abs(tot.prej)), cls:"neg", sm:t("card_loss_sm") },
+    { lbl:t("card_spent"),  val:money(tot.totBuy),  sm:t("card_spent_sm",{n:intFmt(tot.nBuy)}) },
+    { lbl:t("card_recv"),   val:money(tot.totSell), sm:t("card_recv_sm",{n:intFmt(tot.nSell)}) },
+    { lbl:t("card_wallet"), val:t("card_wallet_val",{n:intFmt(tot.held)}), sm:t("card_wallet_sm",{n:intFmt(tot.remUnits)}) },
+    { lbl:t("card_parked"), val:money(tot.remCost), sm:t("card_parked_sm") },
   ];
   $("cards").innerHTML = cards.map(c =>
-    '<div class="card'+(c.big?' big':'')+'">'+
-      '<div class="lbl">'+c.lbl+'</div>'+
-      '<div class="val '+(c.cls||'')+'">'+c.val+'</div>'+
-      (c.sm?'<div class="sm">'+c.sm+'</div>':'')+
-    '</div>'
+    '<div class="card"><div class="lbl">'+c.lbl+'</div><div class="val '+(c.cls||'')+'">'+c.val+'</div>'+
+    (c.sm?'<div class="sm">'+c.sm+'</div>':'')+'</div>'
   ).join("");
+}
+
+/* ============== Gráfico (SVG, sem biblioteca) ============== */
+function fmtMonth(m){ const p=m.split("-"); return p[1]+"/"+p[0]; }
+function renderChart(){
+  const host = $("chart");
+  const series = RESULT.series || [];
+  if(series.length < 2){ host.innerHTML = '<div class="chart-empty">'+t("chart_empty")+'</div>'; return; }
+  const W=1000, H=320, P={l:84,r:18,t:18,b:34};
+  const pw=W-P.l-P.r, ph=H-P.t-P.b, n=series.length;
+  const maxY = Math.max(series[n-1].spent, series[n-1].recv, 1);
+  const X = i => P.l + (n===1?0:(i/(n-1))*pw);
+  const Y = v => P.t + ph - (v/maxY)*ph;
+
+  let grid="", ylabels="";
+  for(let g=0; g<=4; g++){
+    const v=maxY*g/4, y=Y(v);
+    grid += '<line x1="'+P.l+'" y1="'+y.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+y.toFixed(1)+'" class="grid"/>';
+    ylabels += '<text x="'+(P.l-8)+'" y="'+(y+4).toFixed(1)+'" class="yl" text-anchor="end">'+money(v)+'</text>';
+  }
+  let xlabels="", lastYear=null;
+  series.forEach((p,i)=>{
+    const yr=p.month.slice(0,4);
+    if(yr!==lastYear){ lastYear=yr; const x=X(i);
+      xlabels += '<line x1="'+x.toFixed(1)+'" y1="'+P.t+'" x2="'+x.toFixed(1)+'" y2="'+(P.t+ph)+'" class="gridv"/>';
+      xlabels += '<text x="'+x.toFixed(1)+'" y="'+(H-12)+'" class="xl" text-anchor="middle">'+yr+'</text>';
+    }
+  });
+  const lineSpent = series.map((p,i)=>X(i).toFixed(1)+','+Y(p.spent).toFixed(1)).join(" ");
+  const lineRecv  = series.map((p,i)=>X(i).toFixed(1)+','+Y(p.recv).toFixed(1)).join(" ");
+
+  host.innerHTML =
+    '<svg viewBox="0 0 '+W+' '+H+'" class="chartsvg">'+
+      grid + xlabels + ylabels +
+      '<polyline class="ln spent" points="'+lineSpent+'"/>'+
+      '<polyline class="ln recv" points="'+lineRecv+'"/>'+
+      '<line id="cvline" class="cvline" x1="0" y1="'+P.t+'" x2="0" y2="'+(P.t+ph)+'" style="display:none"/>'+
+    '</svg>'+
+    '<div id="ctip" class="ctip" style="display:none"></div>';
+
+  const svg = host.querySelector("svg");
+  const tip = $("ctip"), vline = svg.querySelector("#cvline");
+  function onMove(ev){
+    const cx = (ev.touches?ev.touches[0].clientX:ev.clientX);
+    const r = svg.getBoundingClientRect();
+    const xUser = ((cx - r.left)/r.width)*W;
+    let i = Math.round(((xUser - P.l)/pw)*(n-1));
+    i = Math.max(0, Math.min(n-1, i));
+    const p = series[i], px = X(i);
+    vline.setAttribute("x1", px); vline.setAttribute("x2", px); vline.style.display="";
+    const hostRect = host.getBoundingClientRect();
+    const centerPx = (px/W)*r.width + (r.left - hostRect.left);
+    tip.style.display="";
+    tip.innerHTML =
+      '<b>'+fmtMonth(p.month)+'</b>'+
+      '<div><span class="dot s"></span>'+t("chart_spent")+': '+money(p.spent)+'</div>'+
+      '<div><span class="dot r"></span>'+t("chart_recv")+': '+money(p.recv)+'</div>'+
+      '<div><span class="dot p"></span>'+t("chart_profit")+': '+moneySigned(p.recv-p.spent)+'</div>';
+    let l = centerPx - tip.offsetWidth/2;
+    l = Math.max(0, Math.min(hostRect.width - tip.offsetWidth, l));
+    tip.style.left = l+"px";
+  }
+  svg.addEventListener("mousemove", onMove);
+  svg.addEventListener("touchstart", onMove, {passive:true});
+  svg.addEventListener("touchmove", onMove, {passive:true});
+  const hide = ()=>{ tip.style.display="none"; vline.style.display="none"; };
+  svg.addEventListener("mouseleave", hide);
+  svg.addEventListener("touchend", hide);
 }
 
 function buildGameFilter(){
   const games = [...new Set(RESULT.items.map(i=>i.game).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
   const sel = $("gameFilter");
-  sel.innerHTML = '<option value="">Todos os jogos</option>' +
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">'+t("all_games")+'</option>' +
     games.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");
+  sel.value = cur;
 }
 
 function currentRows(){
@@ -404,14 +903,14 @@ function currentRows(){
 }
 
 function itemCell(it){
-  return '<span class="item-name">'+esc(it.market)+'</span>'+(it.ru>0?'<span class="tag hold">tenho '+intFmt(it.ru)+'</span>':'');
+  return '<span class="item-name">'+esc(it.market)+'</span>'+(it.ru>0?'<span class="tag hold">'+t("hold_tag",{n:intFmt(it.ru)})+'</span>':'');
 }
 
 function renderTable(){
   const head = $("head");
   head.innerHTML = COLS.map(c=>{
     const arrow = c.key===sortKey ? ' <span class="arrow">'+(sortDir<0?'▼':'▲')+'</span>' : '';
-    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'">'+c.label+arrow+'</th>';
+    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'">'+t(c.lk)+arrow+'</th>';
   }).join("");
   head.querySelectorAll("th").forEach(th=>{
     th.onclick = ()=>{
@@ -425,7 +924,7 @@ function renderTable(){
   body.innerHTML = list.map(it=>
     "<tr>"+COLS.map(c=>'<td class="'+(c.l?'l':'')+(c.money?' money':'')+'">'+c.fmt(it)+'</td>').join("")+"</tr>"
   ).join("");
-  $("tableCount").textContent = intFmt(list.length)+" itens exibidos";
+  $("tableCount").textContent = t("items_shown",{n:intFmt(list.length)});
 }
 
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
@@ -466,7 +965,6 @@ function zipStore(files){
 function xmlEsc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c])); }
 function colRef(n){ let s=""; n++; while(n>0){ const m=(n-1)%26; s=String.fromCharCode(65+m)+s; n=Math.floor((n-1)/26); } return s; }
 function sheetXml(rowsData){
-  // rowsData: array de linhas; cada célula = {t:'s'|'n', v}
   let body="";
   for(let r=0;r<rowsData.length;r++){
     const cells=rowsData[r]; let cs="";
@@ -482,42 +980,43 @@ function sheetXml(rowsData){
     '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+body+'</sheetData></worksheet>';
 }
 function S(v){ return {t:"s", v}; }
-function N(cents){ return {t:"n", v:(cents/100)}; }   // exporta em reais (número)
+function N(cents){ return {t:"n", v:(cents/100)}; }
 function Ni(v){ return {t:"n", v}; }
 
 function exportXlsx(){
   if(!RESULT) return;
-  const t = RESULT.totals;
+  const tot = RESULT.totals;
   const resumo = [
-    [S("Análise do Mercado Steam")],
-    [S("Moeda"), S(CUR.symbol)],
+    [S(t("title_market")+" Steam")],
+    [S(t("lbl_currency")), S(CUR.symbol)],
     [],
-    [S("Transações"), Ni(t.rows)],
-    [S("Compras"), Ni(t.nBuy)],
-    [S("Vendas"), Ni(t.nSell)],
-    [S("Itens distintos"), Ni(t.distinct)],
+    [S(t("lbl_tx")), Ni(tot.rows)],
+    [S(t("lbl_buys")), Ni(tot.nBuy)],
+    [S(t("lbl_sells")), Ni(tot.nSell)],
+    [S(t("lbl_distinct")), Ni(tot.distinct)],
     [],
-    [S("Total gasto em compras"), N(t.totBuy)],
-    [S("Total recebido em vendas"), N(t.totSell)],
-    [S("Lucro realizado"), N(t.lucro)],
-    [S("Prejuízo realizado"), N(t.prej)],
-    [S("Resultado líquido realizado"), N(t.realTot)],
+    [S(t("card_spent")), N(tot.totBuy)],
+    [S(t("card_recv")), N(tot.totSell)],
+    [S(t("card_profit")), N(tot.lucro)],
+    [S(t("card_loss")), N(tot.prej)],
+    [S(t("card_net")), N(tot.realTot)],
     [],
-    [S("Itens ainda na carteira"), Ni(t.held)],
-    [S("Unidades restantes"), Ni(t.remUnits)],
-    [S("Custo parado (preço de compra)"), N(t.remCost)],
+    [S(t("card_wallet")), Ni(tot.held)],
+    [S(t("lbl_units_left")), Ni(tot.remUnits)],
+    [S(t("card_parked")), N(tot.remCost)],
   ];
-  const header = ["Item","Jogo","Comprei (un)","Vendi (un)","Restam (un)","Gastei","Recebi","Resultado","Custo parado"];
+  const header = [t("th_item"),t("th_game"),t("th_bought"),t("th_sold"),t("th_left"),t("th_spent"),t("th_recv"),t("th_result"),t("th_parked")];
   const itens = [ header.map(S) ];
   const sorted = RESULT.items.slice().sort((a,b)=>b.realized-a.realized);
   for(const it of sorted){
     itens.push([ S(it.market), S(it.game), Ni(it.ub), Ni(it.us), Ni(it.ru), N(it.vb), N(it.vs), N(it.realized), N(it.rc) ]);
   }
   const enc = new TextEncoder();
+  const wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="'+xmlEsc(t("lbl_summary"))+'" sheetId="1" r:id="rId1"/><sheet name="'+xmlEsc(t("lbl_items"))+'" sheetId="2" r:id="rId2"/></sheets></workbook>';
   const files = [
     { name:"[Content_Types].xml", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>') },
     { name:"_rels/.rels", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>') },
-    { name:"xl/workbook.xml", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Resumo" sheetId="1" r:id="rId1"/><sheet name="Itens" sheetId="2" r:id="rId2"/></sheets></workbook>') },
+    { name:"xl/workbook.xml", data:enc.encode(wb) },
     { name:"xl/_rels/workbook.xml.rels", data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/></Relationships>') },
     { name:"xl/worksheets/sheet1.xml", data:enc.encode(sheetXml(resumo)) },
     { name:"xl/worksheets/sheet2.xml", data:enc.encode(sheetXml(itens)) },
@@ -526,7 +1025,7 @@ function exportXlsx(){
   const blob = new Blob([zip], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "analise-mercado-steam.xlsx";
+  a.download = "steam-trades.xlsx";
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
 }
@@ -538,15 +1037,29 @@ fi.addEventListener("change", e=>{ if(e.target.files[0]) handleFile(e.target.fil
 ["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add("over"); }));
 ["dragleave","drop"].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove("over"); }));
 dz.addEventListener("drop", e=>{ const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
-$("resetBtn").onclick = ()=>{ RESULT=null; fi.value=""; $("results").classList.add("hidden"); $("landing").classList.remove("hidden"); clearError(); };
+$("resetBtn").onclick = ()=>{ RESULT=null; fi.value=""; FILENAME=""; $("results").classList.add("hidden"); $("landing").classList.remove("hidden"); clearError(); };
 $("exportBtn").onclick = exportXlsx;
 $("search").addEventListener("input", ()=>{ if(RESULT) renderTable(); });
 $("gameFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 $("statusFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 
-/* hook para testes automatizados */
+const langSel = $("langSel");
+langSel.addEventListener("change", ()=>{
+  LANG = langSel.value;
+  try{ localStorage.setItem("smpl_lang", LANG); }catch(e){}
+  applyI18n();
+});
+
+/* init */
+LANG = detectLang();
+langSel.value = LANG;
+applyI18n();
+
+/* hooks de teste */
 window.__loadCSVText = handleCSVText;
 window.__getResult = ()=>RESULT && RESULT.totals;
+window.__setLang = (l)=>{ LANG=l; langSel.value=l; applyI18n(); };
+window.__diag = ()=>RESULT ? { seriesLen:RESULT.series.length, firstMonth:RESULT.series[0]&&RESULT.series[0].month, lastMonth:RESULT.series[RESULT.series.length-1]&&RESULT.series[RESULT.series.length-1].month, lang:LANG } : null;
 </script>
 </body>
 </html>
