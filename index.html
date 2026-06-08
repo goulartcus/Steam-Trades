@@ -212,6 +212,8 @@
   <section id="results" class="hidden">
     <div class="toolbar" style="margin-bottom:4px">
       <button class="btn ghost" id="resetBtn" data-i18n="btn_reset">↺ Trocar arquivo</button>
+      <label class="btn ghost" id="invImportBtn" style="cursor:pointer" data-i18n="add_inventory">+ Inventário<input type="file" id="invFileInput" accept=".csv,text/csv" style="display:none"></label>
+      <button class="btn ghost hidden" id="invResetBtn" data-i18n="btn_inv_reset">↺ Trocar inventário</button>
       <span class="count" id="fileInfo"></span>
       <span class="spacer"></span>
       <button class="btn green" id="exportBtn" data-i18n="btn_export">⬇ Baixar Excel (.xlsx)</button>
@@ -252,6 +254,27 @@
         <tbody id="body"></tbody>
       </table>
     </div>
+
+    <section id="invSection" class="hidden" style="margin-top:24px">
+      <div class="toolbar" style="margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:10px">
+        <h3 style="margin:0;font-size:15px;font-weight:700;color:var(--acc)" data-i18n="inv_title">Inventário</h3>
+      </div>
+      <div id="invCards" class="cards" style="margin-bottom:14px"></div>
+      <div class="toolbar">
+        <input type="text" id="invSearch" data-i18n-ph="search_ph" placeholder="🔎 Buscar item…">
+        <select id="invGameFilter"></select>
+        <span class="spacer"></span>
+        <span class="count" id="invCount"></span>
+      </div>
+      <div class="tablewrap" style="margin-bottom:10px">
+        <table id="invTbl">
+          <thead><tr id="invHead"></tr></thead>
+          <tbody id="invBody"></tbody>
+        </table>
+      </div>
+      <p id="invNote" class="chart-note" style="display:none" data-i18n="inv_note"></p>
+      <p id="invNoHistNote" class="chart-note" style="display:none" data-i18n="inv_no_history_note"></p>
+    </section>
 
     <details class="method">
       <summary data-i18n="method_title">Como os números são calculados (metodologia)</summary>
@@ -342,7 +365,14 @@ const I18N = {
     err_empty:"Arquivo vazio.",
     err_cols:"Não encontrei as colunas esperadas (Type / Price in Cents). Esse CSV é o histórico do Mercado Steam?",
     err_none:"Nenhuma compra/venda reconhecida no arquivo.", err_read:"Não consegui ler o arquivo.",
-    th_pricechk:"Price Check", pc_warn:"⚠ Clique devagar — a Steam bloqueia consultas em excesso. Aguarde alguns segundos entre cada clique.", pc_error:"erro"
+    th_pricechk:"Price Check", pc_warn:"⚠ Clique devagar — a Steam bloqueia consultas em excesso. Aguarde alguns segundos entre cada clique.", pc_error:"erro",
+    inv_title:"Inventário", add_inventory:"+ Inventário", btn_inv_reset:"↺ Trocar inventário",
+    inv_err_cols:"Não encontrei coluna de nome do item. Esse CSV é um inventário Steam?", inv_err_empty:"Inventário vazio.",
+    inv_card_items:"Itens no inventário", inv_card_games:"Jogos distintos",
+    inv_card_cost:"Custo total (inventário)", inv_card_cost_sm:"custo médio × qtd dos itens encontrados no histórico",
+    th_qty:"Qtd", th_type:"Tipo", th_avgcost:"Custo médio", th_totalcost:"Custo total",
+    inv_note:"Custo calculado com base no histórico do Mercado carregado.",
+    inv_no_history_note:"Carregue também o histórico do Mercado para ver o custo de cada item."
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -396,7 +426,14 @@ const I18N = {
     err_empty:"Empty file.",
     err_cols:"Couldn't find the expected columns (Type / Price in Cents). Is this CSV your Steam Market history?",
     err_none:"No purchase/sale recognized in the file.", err_read:"Couldn't read the file.",
-    th_pricechk:"Price Check", pc_warn:"⚠ Click slowly — Steam blocks too many requests. Wait a few seconds between each click.", pc_error:"error"
+    th_pricechk:"Price Check", pc_warn:"⚠ Click slowly — Steam blocks too many requests. Wait a few seconds between each click.", pc_error:"error",
+    inv_title:"Inventory", add_inventory:"+ Inventory", btn_inv_reset:"↺ Change inventory",
+    inv_err_cols:"Couldn't find an item name column. Is this CSV a Steam inventory?", inv_err_empty:"Empty inventory.",
+    inv_card_items:"Items in inventory", inv_card_games:"Distinct games",
+    inv_card_cost:"Total cost (inventory)", inv_card_cost_sm:"avg cost × qty for items found in history",
+    th_qty:"Qty", th_type:"Type", th_avgcost:"Avg. cost", th_totalcost:"Total cost",
+    inv_note:"Cost calculated from the loaded Market history.",
+    inv_no_history_note:"Load the Market history to see the cost per item."
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -450,7 +487,14 @@ const I18N = {
     err_empty:"Archivo vacío.",
     err_cols:"No encontré las columnas esperadas (Type / Price in Cents). ¿Este CSV es tu historial del Mercado de Steam?",
     err_none:"No se reconoció ninguna compra/venta en el archivo.", err_read:"No pude leer el archivo.",
-    th_pricechk:"Price Check", pc_warn:"⚠ Haz clic despacio — Steam bloquea demasiadas consultas. Espera unos segundos entre cada clic.", pc_error:"error"
+    th_pricechk:"Price Check", pc_warn:"⚠ Haz clic despacio — Steam bloquea demasiadas consultas. Espera unos segundos entre cada clic.", pc_error:"error",
+    inv_title:"Inventario", add_inventory:"+ Inventario", btn_inv_reset:"↺ Cambiar inventario",
+    inv_err_cols:"No encontré columna de nombre de ítem. ¿Este CSV es un inventario de Steam?", inv_err_empty:"Inventario vacío.",
+    inv_card_items:"Ítems en inventario", inv_card_games:"Juegos distintos",
+    inv_card_cost:"Costo total (inventario)", inv_card_cost_sm:"costo promedio × cant de ítems en historial",
+    th_qty:"Cant", th_type:"Tipo", th_avgcost:"Costo prom.", th_totalcost:"Costo total",
+    inv_note:"Costo calculado en base al historial del Mercado cargado.",
+    inv_no_history_note:"Carga el historial del Mercado para ver el costo de cada ítem."
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -504,7 +548,14 @@ const I18N = {
     err_empty:"Fichier vide.",
     err_cols:"Colonnes attendues introuvables (Type / Price in Cents). Ce CSV est-il votre historique du Marché Steam ?",
     err_none:"Aucun achat/vente reconnu dans le fichier.", err_read:"Impossible de lire le fichier.",
-    th_pricechk:"Price Check", pc_warn:"⚠ Cliquez lentement — Steam bloque les requêtes excessives. Attendez quelques secondes entre chaque clic.", pc_error:"erreur"
+    th_pricechk:"Price Check", pc_warn:"⚠ Cliquez lentement — Steam bloque les requêtes excessives. Attendez quelques secondes entre chaque clic.", pc_error:"erreur",
+    inv_title:"Inventaire", add_inventory:"+ Inventaire", btn_inv_reset:"↺ Changer l'inventaire",
+    inv_err_cols:"Colonne de nom d'objet introuvable. Ce CSV est-il un inventaire Steam ?", inv_err_empty:"Inventaire vide.",
+    inv_card_items:"Objets en inventaire", inv_card_games:"Jeux distincts",
+    inv_card_cost:"Coût total (inventaire)", inv_card_cost_sm:"coût moy × qté des objets trouvés dans l'historique",
+    th_qty:"Qté", th_type:"Type", th_avgcost:"Coût moy.", th_totalcost:"Coût total",
+    inv_note:"Coût calculé d'après l'historique du Marché chargé.",
+    inv_no_history_note:"Chargez l'historique du Marché pour voir le coût par objet."
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -558,7 +609,14 @@ const I18N = {
     err_empty:"Leere Datei.",
     err_cols:"Erwartete Spalten nicht gefunden (Type / Price in Cents). Ist diese CSV dein Steam-Markt-Verlauf?",
     err_none:"Kein Kauf/Verkauf in der Datei erkannt.", err_read:"Datei konnte nicht gelesen werden.",
-    th_pricechk:"Price Check", pc_warn:"⚠ Langsam klicken — Steam blockiert zu viele Anfragen. Warte einige Sekunden zwischen den Klicks.", pc_error:"Fehler"
+    th_pricechk:"Price Check", pc_warn:"⚠ Langsam klicken — Steam blockiert zu viele Anfragen. Warte einige Sekunden zwischen den Klicks.", pc_error:"Fehler",
+    inv_title:"Inventar", add_inventory:"+ Inventar", btn_inv_reset:"↺ Inventar wechseln",
+    inv_err_cols:"Artikel-Namensspalte nicht gefunden. Ist diese CSV ein Steam-Inventar?", inv_err_empty:"Leeres Inventar.",
+    inv_card_items:"Artikel im Inventar", inv_card_games:"Verschiedene Spiele",
+    inv_card_cost:"Gesamtkosten (Inventar)", inv_card_cost_sm:"Ø-Preis × Anzahl der Artikel aus dem Verlauf",
+    th_qty:"Anz.", th_type:"Typ", th_avgcost:"Ø-Kosten", th_totalcost:"Gesamtkosten",
+    inv_note:"Kosten berechnet aus dem geladenen Markt-Verlauf.",
+    inv_no_history_note:"Lade den Markt-Verlauf, um die Kosten pro Artikel zu sehen."
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -612,7 +670,14 @@ const I18N = {
     err_empty:"文件为空。",
     err_cols:"找不到预期的列（Type / Price in Cents）。这个 CSV 是你的 Steam 市场历史记录吗？",
     err_none:"文件中未识别到任何购买/出售。", err_read:"无法读取该文件。",
-    th_pricechk:"Price Check", pc_warn:"⚠ 请慢点点击 — Steam 会封锁频繁的价格查询。每次点击之间请等待几秒。", pc_error:"错误"
+    th_pricechk:"Price Check", pc_warn:"⚠ 请慢点点击 — Steam 会封锁频繁的价格查询。每次点击之间请等待几秒。", pc_error:"错误",
+    inv_title:"库存", add_inventory:"+ 库存", btn_inv_reset:"↺ 更换库存",
+    inv_err_cols:"找不到物品名称列。此 CSV 是 Steam 库存吗？", inv_err_empty:"库存为空。",
+    inv_card_items:"库存物品", inv_card_games:"不同游戏",
+    inv_card_cost:"总成本（库存）", inv_card_cost_sm:"历史记录中找到的物品：均价 × 数量",
+    th_qty:"数量", th_type:"类型", th_avgcost:"均价", th_totalcost:"总成本",
+    inv_note:"成本根据已加载的市场历史记录计算。",
+    inv_no_history_note:"加载市场历史记录以查看每件物品的成本。"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -666,7 +731,14 @@ const I18N = {
     err_empty:"Пустой файл.",
     err_cols:"Не найдены ожидаемые столбцы (Type / Price in Cents). Это CSV истории торговой площадки Steam?",
     err_none:"В файле не распознано ни одной покупки/продажи.", err_read:"Не удалось прочитать файл.",
-    th_pricechk:"Price Check", pc_warn:"⚠ Нажимайте медленно — Steam блокирует лишние запросы. Подождите несколько секунд между кликами.", pc_error:"ошибка"
+    th_pricechk:"Price Check", pc_warn:"⚠ Нажимайте медленно — Steam блокирует лишние запросы. Подождите несколько секунд между кликами.", pc_error:"ошибка",
+    inv_title:"Инвентарь", add_inventory:"+ Инвентарь", btn_inv_reset:"↺ Сменить инвентарь",
+    inv_err_cols:"Столбец с названием предмета не найден. Это CSV инвентаря Steam?", inv_err_empty:"Пустой инвентарь.",
+    inv_card_items:"Предметов в инвентаре", inv_card_games:"Различных игр",
+    inv_card_cost:"Общая стоимость (инвентарь)", inv_card_cost_sm:"средняя цена × кол-во по предметам из истории",
+    th_qty:"Кол-во", th_type:"Тип", th_avgcost:"Средняя цена", th_totalcost:"Общая стоимость",
+    inv_note:"Стоимость рассчитана на основе загруженной истории торговой площадки.",
+    inv_no_history_note:"Загрузите историю торговой площадки, чтобы увидеть стоимость каждого предмета."
   }
 };
 
@@ -689,6 +761,7 @@ function applyI18n(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{ el.innerHTML = t(el.getAttribute("data-i18n")); });
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
   if(RESULT){ buildGameFilter(); renderCards(); renderChart(); renderTable(); updateFileInfo(); }
+  if(INV_RESULT){ buildInvGameFilter(); renderInvSection(); }
 }
 
 /* ============== Detecção de moeda ============== */
@@ -1015,6 +1088,156 @@ function itemCell(it){
   return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'">'+esc(it.market)+'<span class="ext">↗</span></a>'+tag;
 }
 
+/* ============== Inventário ============== */
+let INV_RESULT = null, INV_FILENAME = "";
+let invSortKey = "market", invSortDir = 1;
+
+const INV_COLS = [
+  { key:"market",    lk:"th_item",      l:true,       fmt:(it)=>invItemCell(it) },
+  { key:"game",      lk:"th_game",      l:true,       fmt:(it)=>esc(it.game) },
+  { key:"type",      lk:"th_type",      l:true,       fmt:(it)=>esc(it.type) },
+  { key:"qty",       lk:"th_qty",                     fmt:(it)=>intFmt(it.qty) },
+  { key:"avgcost",   lk:"th_avgcost",   money:true,   fmt:(it)=>it.avgcost!=null?money(it.avgcost):'—' },
+  { key:"totalcost", lk:"th_totalcost", money:true,   fmt:(it)=>it.totalcost!=null?money(it.totalcost):'—' },
+  { key:"pricecheck",lk:"th_pricechk",  l:true, nosort:true, fmt:(it)=>priceCheckCell(it) },
+];
+
+function invItemCell(it){
+  const url = it.appid
+    ? "https://steamcommunity.com/market/listings/"+encodeURIComponent(it.appid)+"/"+encodeURIComponent(it.market)
+    : "https://steamcommunity.com/market/search?q="+encodeURIComponent(it.market);
+  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'">'+esc(it.market)+'<span class="ext">↗</span></a>';
+}
+
+function analyzeInventory(rows){
+  if(!rows.length) throw new Error(t("inv_err_empty"));
+  const header = rows[0].map(h=>h.trim().toLowerCase().replace(/[\s_-]/g,""));
+  const tryCol = (...names) => { for(const n of names){ const i=header.indexOf(n); if(i>=0) return i; } return -1; };
+  const nameIdx    = tryCol("markethashname","marketname","name","itemname","market");
+  const appIdx     = tryCol("appid","appid","gameid");
+  const gameIdx    = tryCol("game","gamename","appname");
+  const typeIdx    = tryCol("type");
+  const qtyIdx     = tryCol("count","amount","quantity","qty");
+  if(nameIdx < 0) throw new Error(t("inv_err_cols"));
+
+  // build a quick lookup from market history (appid|market → item)
+  const histMap = new Map();
+  if(RESULT){ for(const it of RESULT.items) histMap.set(it.appid+"|"+it.market, it); }
+
+  const items = [];
+  for(let r=1; r<rows.length; r++){
+    const row = rows[r];
+    if(row.length < 2) continue;
+    const market = (row[nameIdx]||"").trim();
+    if(!market) continue;
+    const appid = appIdx>=0  ? (row[appIdx]||"").trim()  : "";
+    const game  = gameIdx>=0 ? (row[gameIdx]||"").trim() : "";
+    const type  = typeIdx>=0 ? (row[typeIdx]||"").trim() : "";
+    const qty   = qtyIdx>=0  ? (parseInt(row[qtyIdx])||1): 1;
+    let avgcost = null, totalcost = null;
+    const hist = histMap.get(appid+"|"+market);
+    if(hist && hist.ub > 0){ avgcost = hist.vb/hist.ub; totalcost = avgcost * qty; }
+    items.push({ market, appid, game, type, qty, avgcost, totalcost });
+  }
+  if(!items.length) throw new Error(t("inv_err_empty"));
+  return { items };
+}
+
+function handleInvFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const rows = parseCSV(e.target.result);
+      INV_RESULT = analyzeInventory(rows);
+      INV_FILENAME = file.name;
+      renderInvSection();
+      $("invImportBtn").classList.add("hidden");
+      $("invResetBtn").classList.remove("hidden");
+    }catch(err){
+      INV_RESULT = null;
+      showError(err.message || String(err));
+    }
+  };
+  reader.onerror = () => showError(t("err_read"));
+  reader.readAsText(file, "UTF-8");
+}
+
+function renderInvSection(){
+  if(!INV_RESULT) return;
+  const items = INV_RESULT.items;
+  const hasHistory = !!RESULT;
+  const totalItems = items.reduce((s,it)=>s+it.qty, 0);
+  const games = new Set(items.map(i=>i.game).filter(Boolean)).size;
+  const totalCost = items.reduce((s,it)=>s+(it.totalcost||0), 0);
+  const hasCost = items.some(it=>it.totalcost!=null);
+
+  const cards = [
+    { lbl:t("inv_card_items"), val:intFmt(totalItems) },
+    { lbl:t("inv_card_games"), val:intFmt(games) },
+  ];
+  if(hasCost) cards.push({ lbl:t("inv_card_cost"), val:money(totalCost), sm:t("inv_card_cost_sm") });
+  $("invCards").innerHTML = cards.map(c=>
+    '<div class="card"><div class="lbl">'+c.lbl+'</div><div class="val">'+c.val+'</div>'+
+    (c.sm?'<div class="sm">'+c.sm+'</div>':'')+'</div>'
+  ).join("");
+
+  const note = $("invNote"), noHistNote = $("invNoHistNote");
+  if(note) note.style.display = hasCost ? "" : "none";
+  if(noHistNote) noHistNote.style.display = (!hasHistory) ? "" : "none";
+
+  buildInvGameFilter();
+  renderInvTable();
+  $("invSection").classList.remove("hidden");
+}
+
+function buildInvGameFilter(){
+  if(!INV_RESULT) return;
+  const games = [...new Set(INV_RESULT.items.map(i=>i.game).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const sel = $("invGameFilter");
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">'+t("all_games")+'</option>'+
+    games.map(g=>'<option value="'+esc(g)+'">'+esc(g)+'</option>').join("");
+  sel.value = cur;
+}
+
+function renderInvTable(){
+  if(!INV_RESULT) return;
+  const head = $("invHead");
+  head.innerHTML = INV_COLS.map(c=>{
+    const arrow = c.key===invSortKey ? ' <span class="arrow">'+(invSortDir<0?'▼':'▲')+'</span>' : '';
+    const ns = c.nosort ? ' data-nosort="1"' : '';
+    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'"'+ns+'>'+t(c.lk)+arrow+'</th>';
+  }).join("");
+  head.querySelectorAll("th").forEach(th=>{
+    if(th.dataset.nosort){ th.style.cursor="default"; return; }
+    th.onclick = ()=>{
+      const k = th.dataset.k;
+      if(k===invSortKey) invSortDir=-invSortDir;
+      else { invSortKey=k; invSortDir=(k==="market"||k==="game"||k==="type")?1:-1; }
+      renderInvTable();
+    };
+  });
+  const q = $("invSearch").value.trim().toLowerCase();
+  const game = $("invGameFilter").value;
+  let list = INV_RESULT.items.filter(it=>{
+    if(q && !it.market.toLowerCase().includes(q)) return false;
+    if(game && it.game !== game) return false;
+    return true;
+  });
+  list.sort((a,b)=>{
+    let x=a[invSortKey], y=b[invSortKey];
+    if(x==null) x=invSortDir>0?-Infinity:Infinity;
+    if(y==null) y=invSortDir>0?-Infinity:Infinity;
+    if(typeof x==="string") return x.localeCompare(y)*invSortDir;
+    return (x-y)*invSortDir;
+  });
+  $("invBody").innerHTML = list.map(it=>
+    "<tr>"+INV_COLS.map(c=>'<td class="'+(c.l?'l':'')+(c.money?' money':'')+'">'+c.fmt(it)+'</td>').join("")+"</tr>"
+  ).join("");
+  $("invCount").textContent = t("items_shown",{n:intFmt(list.length)});
+}
+
 function priceCheckCell(it){
   if(!it.appid) return '—';
   return '<button class="pc-btn" data-appid="'+esc(it.appid)+'" data-mkt="'+esc(it.market)+'">🔍</button><span class="pc-val"></span>';
@@ -1159,7 +1382,7 @@ $("search").addEventListener("input", ()=>{ if(RESULT) renderTable(); });
 $("gameFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 $("statusFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 
-$("tbl").addEventListener("click", async function(e){
+document.addEventListener("click", async function(e){
   const btn = e.target.closest(".pc-btn");
   if(!btn || btn.disabled) return;
   const appid = btn.dataset.appid, mkt = btn.dataset.mkt;
@@ -1179,6 +1402,17 @@ $("tbl").addEventListener("click", async function(e){
   }catch(ex){ btn.textContent = "🔍"; val.textContent = t("pc_error"); }
   btn.disabled = false;
 });
+
+const invFi = $("invFileInput");
+invFi.addEventListener("change", e=>{ if(e.target.files[0]) handleInvFile(e.target.files[0]); });
+$("invResetBtn").onclick = ()=>{
+  INV_RESULT=null; invFi.value=""; INV_FILENAME="";
+  $("invSection").classList.add("hidden");
+  $("invResetBtn").classList.add("hidden");
+  $("invImportBtn").classList.remove("hidden");
+};
+$("invSearch").addEventListener("input", ()=>{ if(INV_RESULT) renderInvTable(); });
+$("invGameFilter").addEventListener("change", ()=>{ if(INV_RESULT) renderInvTable(); });
 
 const langSel = $("langSel");
 langSel.addEventListener("change", ()=>{
