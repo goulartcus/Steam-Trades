@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Análise do Mercado Steam — Lucro & Prejuízo</title>
+<title>Steam Market Analysis — Profit & Loss</title>
 <style>
   :root{
     --bg:#0e1622; --bg2:#16212e; --card:#1b2735; --line:#2a3b4d;
@@ -162,6 +162,7 @@
       <option value="fr">🇫🇷 Français</option>
       <option value="de">🇩🇪 Deutsch</option>
       <option value="zh">🇨🇳 中文</option>
+      <option value="ru">🇷🇺 Русский</option>
     </select>
   </header>
   <p class="sub" data-i18n="subtitle">Importe seu histórico do Mercado (CSV) e veja lucro realizado, prejuízo e o que ainda está na sua carteira.</p>
@@ -268,7 +269,7 @@
 /* ============== Idiomas (i18n) ============== */
 const LANGS = {
   pt:{ htmlLang:"pt-BR" }, en:{ htmlLang:"en" }, es:{ htmlLang:"es" },
-  fr:{ htmlLang:"fr" }, de:{ htmlLang:"de" }, zh:{ htmlLang:"zh-CN" }
+  fr:{ htmlLang:"fr" }, de:{ htmlLang:"de" }, zh:{ htmlLang:"zh-CN" }, ru:{ htmlLang:"ru" }
 };
 const I18N = {
   pt:{
@@ -594,6 +595,60 @@ const I18N = {
     err_empty:"文件为空。",
     err_cols:"找不到预期的列（Type / Price in Cents）。这个 CSV 是你的 Steam 市场历史记录吗？",
     err_none:"文件中未识别到任何购买/出售。", err_read:"无法读取该文件。"
+  },
+  ru:{
+    doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
+    title_market:"Анализ торговой площадки Steam",
+    privacy:"🔒 Ваши данные остаются только в вашем браузере",
+    subtitle:"Импортируйте историю торговой площадки (CSV) и смотрите реализованную прибыль, убытки и то, что ещё в вашем инвентаре.",
+    drop_title:"Нажмите здесь или перетащите CSV-файл",
+    drop_sub:"Файл <code>my_market_history_…csv</code> из вашей истории торговой площадки Steam.",
+    drop_btn:"Выбрать CSV-файл",
+    tut_title:"❓ Как создать свой CSV-файл",
+    tut_1:"Установите расширение <a href='https://steaminventoryhelper.com/' target='_blank' rel='noopener'>Steam Inventory Helper</a> в браузере (Chrome, Edge или Firefox).",
+    tut_2:"Откройте Steam и зайдите в <b>Сообщество → Торговая площадка</b>.",
+    tut_3:"Откройте свою <b>историю торговой площадки</b> (ссылка «Просмотреть историю торговой площадки»).",
+    tut_4:"Расширение добавляет кнопку <b>Export .csv file</b> — нажмите на неё.",
+    tut_5:"Сохраните файл <code>my_market_history_….csv</code> и загрузите его выше. 🔒 Он не покидает ваш браузер.",
+    tut_tip1:"💡 Если загрузка не сработала с первого раза, обновите страницу истории и нажмите кнопку снова. Большая история может занять несколько секунд.",
+    tut_tip2:"Также работает с CSV от аналогичных расширений с теми же столбцами (например, <i>Steam Market History Helper</i> или <i>CSGO Trader</i>).",
+    btn_reset:"↺ Сменить файл", btn_export:"⬇ Скачать Excel (.xlsx)",
+    fileinfo:"{tx} операций · {items} предметов · валюта {cur}",
+    search_ph:"🔎 Поиск предмета…", all_games:"Все игры",
+    st_all:"Все предметы", st_hold:"Ещё в наличии (в инвентаре)", st_profit:"С прибылью",
+    st_loss:"С убытком", st_soldout:"Всё продано", st_onlybuy:"Только куплено (не продано)",
+    items_shown:"Показано предметов: {n}",
+    card_net:"Чистый реализованный результат", card_net_sm:"то, что вы уже продали, минус себестоимость",
+    card_pct:"Доходность", card_pct_sm:"от себестоимости проданного",
+    card_profit:"Реализованная прибыль", card_profit_sm:"сумма прибыльных предметов",
+    card_loss:"Реализованный убыток", card_loss_sm:"сумма убыточных предметов",
+    card_spent:"Всего потрачено (покупки)", card_spent_sm:"{n} покупок",
+    card_recv:"Всего получено (продажи)", card_recv_sm:"{n} продаж",
+    card_wallet:"Ещё в инвентаре", card_wallet_val:"{n} предметов", card_wallet_sm:"осталось единиц: {n}",
+    card_parked:"Замороженная себестоимость в инвентаре", card_parked_sm:"цена покупки (не текущий рынок)",
+    chart_title:"Динамика: расходы и поступления во времени",
+    chart_spent:"Расходы (накопительно)", chart_recv:"Поступления (накопительно)", chart_profit:"Прибыль (получено − потрачено)",
+    chart_note:"Разница между линиями — это денежный остаток (приход − расход). Он отличается от «реализованного результата», потому что часть расходов вложена в ещё не проданные предметы.",
+    chart_empty:"Недостаточно дат для построения графика.",
+    th_item:"Предмет", th_game:"Игра", th_bought:"Куплено", th_sold:"Продано", th_left:"Осталось",
+    th_spent:"Потрачено", th_recv:"Получено", th_result:"Результат", th_parked:"Замор. стоим.",
+    hold_tag:"есть {n}",
+    method_title:"Как рассчитываются цифры (методология)",
+    method_1:"<b>Средняя себестоимость:</b> для каждого предмета используется средняя цена всех ваших покупок этого предмета.",
+    method_2:"<b>Реализованная прибыль/убыток</b> = полученное с продаж − средняя себестоимость проданных единиц. Учитывается только уже проданное.",
+    method_3:"<b>Продажа = чистая сумма:</b> цена продажи в CSV — это уже сумма, которую вы получили (комиссия Steam уже вычтена).",
+    method_4:"<b>Оставшиеся предметы</b> = куплено − продано. «Замороженная себестоимость» — это цена покупки этих предметов, <b>а не</b> текущая рыночная цена.",
+    method_5:"<b>Дропы</b> (предметы, полученные и проданные без покупки) считаются чистой прибылью.",
+    method_6:"<b>Количество:</b> названия вроде «2 Pearl» читаются как 2 единицы. Расчёты используют столбец <code>Price in Cents</code>, поэтому работает с любой валютой.",
+    method_note:"Примечание: поскольку карточки превращаются в значки, предметы расходуются в игре и т. д., инвентарь — это оценка на основе операций торговой площадки.",
+    footer:"Сделано для проверки вашей истории торговой площадки Steam · работает на 100% офлайн в вашем браузере",
+    donate:"Понравилось приложение? Поддержите донатом ❤️", copied:"Скопировано!",
+    lbl_currency:"Валюта", lbl_tx:"Операции", lbl_buys:"Покупки", lbl_sells:"Продажи",
+    lbl_distinct:"Уникальные предметы", lbl_units_left:"Осталось единиц",
+    lbl_summary:"Сводка", lbl_items:"Предметы",
+    err_empty:"Пустой файл.",
+    err_cols:"Не найдены ожидаемые столбцы (Type / Price in Cents). Это CSV истории торговой площадки Steam?",
+    err_none:"В файле не распознано ни одной покупки/продажи.", err_read:"Не удалось прочитать файл."
   }
 };
 
@@ -606,9 +661,9 @@ function t(key, vars){
   return s;
 }
 function detectLang(){
+  // padrão do site: inglês. Respeita apenas a escolha salva do usuário.
   try{ const saved = localStorage.getItem("smpl_lang"); if(saved && I18N[saved]) return saved; }catch(e){}
-  const nav = (navigator.language || "pt").slice(0,2).toLowerCase();
-  return I18N[nav] ? nav : "pt";
+  return "en";
 }
 function applyI18n(){
   document.documentElement.lang = LANGS[LANG].htmlLang;
