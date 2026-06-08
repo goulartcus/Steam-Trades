@@ -655,7 +655,7 @@ const I18N = {
   }
 };
 
-let LANG = "pt";
+let LANG = "en";
 function t(key, vars){
   let s = (I18N[LANG] && I18N[LANG][key]);
   if(s == null) s = I18N.pt[key];
@@ -1178,6 +1178,24 @@ window.__loadCSVText = handleCSVText;
 window.__getResult = ()=>RESULT && RESULT.totals;
 window.__setLang = (l)=>{ LANG=l; langSel.value=l; applyI18n(); };
 window.__diag = ()=>RESULT ? { seriesLen:RESULT.series.length, firstMonth:RESULT.series[0]&&RESULT.series[0].month, lastMonth:RESULT.series[RESULT.series.length-1]&&RESULT.series[RESULT.series.length-1].month, lang:LANG } : null;
+
+/* devtools protection */
+(function(){
+  const THRESH = 160;
+  function devOpen(){
+    return window.outerWidth - window.innerWidth > THRESH ||
+           window.outerHeight - window.innerHeight > THRESH;
+  }
+  function redirect(){ window.location.replace("about:blank"); }
+  if(devOpen()) redirect();
+  setInterval(function(){ if(devOpen()) redirect(); }, 500);
+  document.addEventListener("keydown", function(e){
+    if(e.key === "F12"){ e.preventDefault(); e.stopImmediatePropagation(); return false; }
+    if(e.ctrlKey && e.shiftKey && /^[IJCK]$/.test(e.key.toUpperCase())){ e.preventDefault(); e.stopImmediatePropagation(); return false; }
+    if(e.ctrlKey && e.key.toUpperCase() === "U"){ e.preventDefault(); e.stopImmediatePropagation(); return false; }
+  }, true);
+  document.addEventListener("contextmenu", function(e){ e.preventDefault(); return false; });
+})();
 </script>
 </body>
 </html>
