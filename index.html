@@ -132,6 +132,20 @@
   details.method div{font-size:13px; color:var(--mut); padding:0 0 12px}
   details.method li{margin:4px 0}
   footer.ft{text-align:center; color:#5d7188; font-size:12px; margin-top:26px}
+  .donate{margin-bottom:14px}
+  .donate-label{display:block; color:var(--mut); font-size:13px; margin-bottom:9px}
+  .wallets{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+  .wallet{display:inline-flex; align-items:center; gap:9px; cursor:pointer; background:var(--bg2);
+    border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:8px 12px;
+    font-family:inherit; font-size:12px; transition:.15s; max-width:100%}
+  .wallet:hover{border-color:var(--acc)}
+  .wallet .coin{font-weight:700; font-size:11px; padding:2px 7px; border-radius:6px; white-space:nowrap}
+  .wallet .coin.btc{background:rgba(247,147,26,.13); color:#f7931a; border:1px solid rgba(247,147,26,.4)}
+  .wallet .coin.bnb{background:rgba(243,186,47,.13); color:#f3ba2f; border:1px solid rgba(243,186,47,.4)}
+  .wallet code{color:var(--txt); font-size:11px; word-break:break-all; font-family:Consolas,"Courier New",monospace; user-select:all; -webkit-user-select:all}
+  .wallet .cp{color:var(--mut); font-size:12px; white-space:nowrap}
+  .wallet.copied{border-color:var(--green)}
+  .wallet.copied .cp{color:var(--green)}
 </style>
 </head>
 <body>
@@ -236,7 +250,16 @@
     </details>
   </section>
 
-  <footer class="ft" data-i18n="footer">Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador</footer>
+  <footer class="ft">
+    <div class="donate">
+      <span class="donate-label" data-i18n="donate">Curtiu o app? Faça uma doação ❤️</span>
+      <div class="wallets">
+        <button type="button" class="wallet" data-addr="bc1qpfw2nd63h0vsld5dnkk9z3pwdgxge3w4q2y988"><span class="coin btc">₿ BTC</span><code>bc1qpfw2nd63h0vsld5dnkk9z3pwdgxge3w4q2y988</code><span class="cp">⧉</span></button>
+        <button type="button" class="wallet" data-addr="0x595985Ef21f3595fB3419Bd6542820190E4Db7e4"><span class="coin bnb">BNB</span><code>0x595985Ef21f3595fB3419Bd6542820190E4Db7e4</code><span class="cp">⧉</span></button>
+      </div>
+    </div>
+    <div class="ft-tag" data-i18n="footer">Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador</div>
+  </footer>
 </div>
 
 <script>
@@ -294,6 +317,7 @@ const I18N = {
     method_6:"<b>Quantidade:</b> nomes como “2 Pearl” são lidos como 2 unidades. Os cálculos usam a coluna <code>Price in Cents</code>, então funciona em qualquer moeda.",
     method_note:"Observação: como cartas viram emblemas, itens são consumidos no jogo, etc., a carteira é uma estimativa baseada nas transações do Mercado.",
     footer:"Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador",
+    donate:"Curtiu o app? Faça uma doação ❤️", copied:"Copiado!",
     lbl_currency:"Moeda", lbl_tx:"Transações", lbl_buys:"Compras", lbl_sells:"Vendas",
     lbl_distinct:"Itens distintos", lbl_units_left:"Unidades restantes",
     lbl_summary:"Resumo", lbl_items:"Itens",
@@ -347,6 +371,7 @@ const I18N = {
     method_6:"<b>Quantity:</b> names like “2 Pearl” are read as 2 units. Calculations use the <code>Price in Cents</code> column, so it works in any currency.",
     method_note:"Note: since cards become badges, items are consumed in-game, etc., the inventory is an estimate based on Market transactions.",
     footer:"Made to review your Steam Market history · runs 100% offline in your browser",
+    donate:"Like the app? Leave a donation ❤️", copied:"Copied!",
     lbl_currency:"Currency", lbl_tx:"Transactions", lbl_buys:"Purchases", lbl_sells:"Sales",
     lbl_distinct:"Distinct items", lbl_units_left:"Units remaining",
     lbl_summary:"Summary", lbl_items:"Items",
@@ -400,6 +425,7 @@ const I18N = {
     method_6:"<b>Cantidad:</b> nombres como “2 Pearl” se leen como 2 unidades. Los cálculos usan la columna <code>Price in Cents</code>, así que funciona en cualquier moneda.",
     method_note:"Nota: como los cromos se convierten en insignias, los ítems se consumen en el juego, etc., el inventario es una estimación basada en las transacciones del Mercado.",
     footer:"Hecho para revisar tu historial del Mercado de Steam · funciona 100% sin conexión en tu navegador",
+    donate:"¿Te gustó la app? Haz una donación ❤️", copied:"¡Copiado!",
     lbl_currency:"Moneda", lbl_tx:"Transacciones", lbl_buys:"Compras", lbl_sells:"Ventas",
     lbl_distinct:"Ítems distintos", lbl_units_left:"Unidades restantes",
     lbl_summary:"Resumen", lbl_items:"Ítems",
@@ -453,6 +479,7 @@ const I18N = {
     method_6:"<b>Quantité :</b> des noms comme « 2 Pearl » sont lus comme 2 unités. Les calculs utilisent la colonne <code>Price in Cents</code>, donc ça marche dans n'importe quelle devise.",
     method_note:"Note : comme les cartes deviennent des badges, les objets sont consommés en jeu, etc., l'inventaire est une estimation basée sur les transactions du Marché.",
     footer:"Conçu pour vérifier votre historique du Marché Steam · fonctionne 100% hors ligne dans votre navigateur",
+    donate:"Vous aimez l'app ? Faites un don ❤️", copied:"Copié !",
     lbl_currency:"Devise", lbl_tx:"Transactions", lbl_buys:"Achats", lbl_sells:"Ventes",
     lbl_distinct:"Objets distincts", lbl_units_left:"Unités restantes",
     lbl_summary:"Résumé", lbl_items:"Objets",
@@ -506,6 +533,7 @@ const I18N = {
     method_6:"<b>Menge:</b> Namen wie „2 Pearl“ werden als 2 Einheiten gelesen. Berechnungen nutzen die Spalte <code>Price in Cents</code>, daher funktioniert es in jeder Währung.",
     method_note:"Hinweis: Da Karten zu Abzeichen werden, Artikel im Spiel verbraucht werden usw., ist das Inventar eine Schätzung auf Basis der Markt-Transaktionen.",
     footer:"Erstellt, um deinen Steam-Markt-Verlauf zu prüfen · läuft 100% offline in deinem Browser",
+    donate:"Gefällt dir die App? Spende gerne ❤️", copied:"Kopiert!",
     lbl_currency:"Währung", lbl_tx:"Transaktionen", lbl_buys:"Käufe", lbl_sells:"Verkäufe",
     lbl_distinct:"Verschiedene Artikel", lbl_units_left:"Einheiten übrig",
     lbl_summary:"Übersicht", lbl_items:"Artikel",
@@ -559,6 +587,7 @@ const I18N = {
     method_6:"<b>数量：</b>诸如“2 Pearl”的名称会被读作 2 件。计算使用 <code>Price in Cents</code> 列，因此适用于任何货币。",
     method_note:"注意：由于卡牌会合成徽章、物品会在游戏中消耗等，库存是基于市场交易的估算值。",
     footer:"用于核对你的 Steam 市场历史 · 在你的浏览器中 100% 离线运行",
+    donate:"喜欢这个应用？欢迎捐赠 ❤️", copied:"已复制！",
     lbl_currency:"货币", lbl_tx:"交易", lbl_buys:"购买", lbl_sells:"出售",
     lbl_distinct:"不同物品", lbl_units_left:"剩余件数",
     lbl_summary:"摘要", lbl_items:"物品",
@@ -1048,6 +1077,31 @@ langSel.addEventListener("change", ()=>{
   LANG = langSel.value;
   try{ localStorage.setItem("smpl_lang", LANG); }catch(e){}
   applyI18n();
+});
+
+/* copiar carteira de doação */
+function copyText(txt){
+  return new Promise(resolve=>{
+    const fallback = ()=>{
+      try{ const ta=document.createElement("textarea"); ta.value=txt; ta.style.position="fixed"; ta.style.top="-9999px";
+        document.body.appendChild(ta); ta.focus(); ta.select(); const ok=document.execCommand("copy"); ta.remove(); resolve(ok!==false); }
+      catch(e){ resolve(false); }
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText)
+      navigator.clipboard.writeText(txt).then(()=>resolve(true), fallback);
+    else fallback();
+  });
+}
+document.querySelectorAll(".wallet").forEach(w=>{
+  const cp = w.querySelector(".cp"); cp.setAttribute("data-base", cp.textContent);
+  w.addEventListener("click", ()=>{
+    copyText(w.getAttribute("data-addr")).then(ok=>{
+      if(!ok) return;
+      w.classList.add("copied"); cp.textContent = "✓ "+t("copied");
+      clearTimeout(w._tmr);
+      w._tmr = setTimeout(()=>{ w.classList.remove("copied"); cp.textContent = cp.getAttribute("data-base"); }, 1600);
+    });
+  });
 });
 
 /* init */
