@@ -122,7 +122,10 @@
   tbody td{padding:9px 12px; text-align:right; border-bottom:1px solid #21303f; white-space:nowrap}
   tbody td.l{text-align:left; white-space:normal}
   tbody tr:hover{background:#18293a}
-  .item-name{font-weight:600}
+  a.item-name{font-weight:600; color:var(--txt); text-decoration:none; border-bottom:1px dotted rgba(102,192,244,.35)}
+  a.item-name:hover{color:var(--acc); border-bottom-color:var(--acc)}
+  a.item-name .ext{font-size:10px; color:var(--mut); margin-left:4px}
+  a.item-name:hover .ext{color:var(--acc)}
   .tag{display:inline-block; font-size:10px; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:middle}
   .tag.hold{background:#13303f; color:var(--acc)}
   td.money{font-variant-numeric:tabular-nums}
@@ -318,7 +321,7 @@ const I18N = {
     method_6:"<b>Quantidade:</b> nomes como “2 Pearl” são lidos como 2 unidades. Os cálculos usam a coluna <code>Price in Cents</code>, então funciona em qualquer moeda.",
     method_note:"Observação: como cartas viram emblemas, itens são consumidos no jogo, etc., a carteira é uma estimativa baseada nas transações do Mercado.",
     footer:"Feito para conferir seu histórico do Mercado Steam · roda 100% offline no seu navegador",
-    donate:"Curtiu o app? Faça uma doação ❤️", copied:"Copiado!",
+    donate:"Curtiu o app? Faça uma doação ❤️", copied:"Copiado!", open_market:"Ver no Mercado Steam",
     lbl_currency:"Moeda", lbl_tx:"Transações", lbl_buys:"Compras", lbl_sells:"Vendas",
     lbl_distinct:"Itens distintos", lbl_units_left:"Unidades restantes",
     lbl_summary:"Resumo", lbl_items:"Itens",
@@ -372,7 +375,7 @@ const I18N = {
     method_6:"<b>Quantity:</b> names like “2 Pearl” are read as 2 units. Calculations use the <code>Price in Cents</code> column, so it works in any currency.",
     method_note:"Note: since cards become badges, items are consumed in-game, etc., the inventory is an estimate based on Market transactions.",
     footer:"Made to review your Steam Market history · runs 100% offline in your browser",
-    donate:"Like the app? Leave a donation ❤️", copied:"Copied!",
+    donate:"Like the app? Leave a donation ❤️", copied:"Copied!", open_market:"View on Steam Market",
     lbl_currency:"Currency", lbl_tx:"Transactions", lbl_buys:"Purchases", lbl_sells:"Sales",
     lbl_distinct:"Distinct items", lbl_units_left:"Units remaining",
     lbl_summary:"Summary", lbl_items:"Items",
@@ -426,7 +429,7 @@ const I18N = {
     method_6:"<b>Cantidad:</b> nombres como “2 Pearl” se leen como 2 unidades. Los cálculos usan la columna <code>Price in Cents</code>, así que funciona en cualquier moneda.",
     method_note:"Nota: como los cromos se convierten en insignias, los ítems se consumen en el juego, etc., el inventario es una estimación basada en las transacciones del Mercado.",
     footer:"Hecho para revisar tu historial del Mercado de Steam · funciona 100% sin conexión en tu navegador",
-    donate:"¿Te gustó la app? Haz una donación ❤️", copied:"¡Copiado!",
+    donate:"¿Te gustó la app? Haz una donación ❤️", copied:"¡Copiado!", open_market:"Ver en el Mercado de Steam",
     lbl_currency:"Moneda", lbl_tx:"Transacciones", lbl_buys:"Compras", lbl_sells:"Ventas",
     lbl_distinct:"Ítems distintos", lbl_units_left:"Unidades restantes",
     lbl_summary:"Resumen", lbl_items:"Ítems",
@@ -480,7 +483,7 @@ const I18N = {
     method_6:"<b>Quantité :</b> des noms comme « 2 Pearl » sont lus comme 2 unités. Les calculs utilisent la colonne <code>Price in Cents</code>, donc ça marche dans n'importe quelle devise.",
     method_note:"Note : comme les cartes deviennent des badges, les objets sont consommés en jeu, etc., l'inventaire est une estimation basée sur les transactions du Marché.",
     footer:"Conçu pour vérifier votre historique du Marché Steam · fonctionne 100% hors ligne dans votre navigateur",
-    donate:"Vous aimez l'app ? Faites un don ❤️", copied:"Copié !",
+    donate:"Vous aimez l'app ? Faites un don ❤️", copied:"Copié !", open_market:"Voir sur le Marché Steam",
     lbl_currency:"Devise", lbl_tx:"Transactions", lbl_buys:"Achats", lbl_sells:"Ventes",
     lbl_distinct:"Objets distincts", lbl_units_left:"Unités restantes",
     lbl_summary:"Résumé", lbl_items:"Objets",
@@ -534,7 +537,7 @@ const I18N = {
     method_6:"<b>Menge:</b> Namen wie „2 Pearl“ werden als 2 Einheiten gelesen. Berechnungen nutzen die Spalte <code>Price in Cents</code>, daher funktioniert es in jeder Währung.",
     method_note:"Hinweis: Da Karten zu Abzeichen werden, Artikel im Spiel verbraucht werden usw., ist das Inventar eine Schätzung auf Basis der Markt-Transaktionen.",
     footer:"Erstellt, um deinen Steam-Markt-Verlauf zu prüfen · läuft 100% offline in deinem Browser",
-    donate:"Gefällt dir die App? Spende gerne ❤️", copied:"Kopiert!",
+    donate:"Gefällt dir die App? Spende gerne ❤️", copied:"Kopiert!", open_market:"Im Steam-Markt ansehen",
     lbl_currency:"Währung", lbl_tx:"Transaktionen", lbl_buys:"Käufe", lbl_sells:"Verkäufe",
     lbl_distinct:"Verschiedene Artikel", lbl_units_left:"Einheiten übrig",
     lbl_summary:"Übersicht", lbl_items:"Artikel",
@@ -588,7 +591,7 @@ const I18N = {
     method_6:"<b>数量：</b>诸如“2 Pearl”的名称会被读作 2 件。计算使用 <code>Price in Cents</code> 列，因此适用于任何货币。",
     method_note:"注意：由于卡牌会合成徽章、物品会在游戏中消耗等，库存是基于市场交易的估算值。",
     footer:"用于核对你的 Steam 市场历史 · 在你的浏览器中 100% 离线运行",
-    donate:"喜欢这个应用？欢迎捐赠 ❤️", copied:"已复制！",
+    donate:"喜欢这个应用？欢迎捐赠 ❤️", copied:"已复制！", open_market:"在 Steam 市场查看",
     lbl_currency:"货币", lbl_tx:"交易", lbl_buys:"购买", lbl_sells:"出售",
     lbl_distinct:"不同物品", lbl_units_left:"剩余件数",
     lbl_summary:"摘要", lbl_items:"物品",
@@ -642,7 +645,7 @@ const I18N = {
     method_6:"<b>Количество:</b> названия вроде «2 Pearl» читаются как 2 единицы. Расчёты используют столбец <code>Price in Cents</code>, поэтому работает с любой валютой.",
     method_note:"Примечание: поскольку карточки превращаются в значки, предметы расходуются в игре и т. д., инвентарь — это оценка на основе операций торговой площадки.",
     footer:"Сделано для проверки вашей истории торговой площадки Steam · работает на 100% офлайн в вашем браузере",
-    donate:"Понравилось приложение? Поддержите донатом ❤️", copied:"Скопировано!",
+    donate:"Понравилось приложение? Поддержите донатом ❤️", copied:"Скопировано!", open_market:"Открыть в торговой площадке Steam",
     lbl_currency:"Валюта", lbl_tx:"Операции", lbl_buys:"Покупки", lbl_sells:"Продажи",
     lbl_distinct:"Уникальные предметы", lbl_units_left:"Осталось единиц",
     lbl_summary:"Сводка", lbl_items:"Предметы",
@@ -783,10 +786,11 @@ function analyze(rows){
       cogs = a.us * avg; ru = a.ub - a.us; rc = a.vb - cogs;
     }
     const realized = a.vs - cogs;
+    const pct = cogs>0 ? (realized/cogs*100) : null;   // % sobre o que foi pago (custo do que vendeu)
     totBuy += a.vb; totSell += a.vs; realTot += realized;
     if(realized > 0) lucro += realized; else if(realized < 0) prej += realized;
     remUnits += ru; remCost += rc; if(ru > 0) held++;
-    items.push({ market:a.market, game:a.game, ub:a.ub, us:a.us, ru, vb:a.vb, vs:a.vs, rc, realized });
+    items.push({ market:a.market, game:a.game, appid:a.appid, ub:a.ub, us:a.us, ru, vb:a.vb, vs:a.vs, rc, realized, pct });
   }
 
   // séries acumuladas por mês
@@ -813,6 +817,7 @@ const COLS = [
   { key:"vb",       lk:"th_spent",  money:true, fmt:(it)=>money(it.vb) },
   { key:"vs",       lk:"th_recv",   money:true, fmt:(it)=>money(it.vs) },
   { key:"realized", lk:"th_result", money:true, fmt:(it)=>'<span class="'+(it.realized>=0?'pos':'neg')+'">'+moneySigned(it.realized)+'</span>' },
+  { key:"pct",      lk:"th_pct",    fmt:(it)=>{ if(it.pct==null) return '—'; const rp=Math.round(it.pct); const cls=rp>0?'pos':(rp<0?'neg':''); const sg=rp>0?'+':(rp<0?'−':''); return '<span class="'+cls+'">'+sg+Math.abs(rp).toLocaleString(CUR.locale)+'%</span>'; } },
   { key:"rc",       lk:"th_parked", money:true, fmt:(it)=>it.rc>0?money(it.rc):'—' },
 ];
 let sortKey = "realized", sortDir = -1;
@@ -987,14 +992,18 @@ function currentRows(){
 }
 
 function itemCell(it){
-  return '<span class="item-name">'+esc(it.market)+'</span>'+(it.ru>0?'<span class="tag hold">'+t("hold_tag",{n:intFmt(it.ru)})+'</span>':'');
+  const url = it.appid
+    ? "https://steamcommunity.com/market/listings/"+encodeURIComponent(it.appid)+"/"+encodeURIComponent(it.market)
+    : "https://steamcommunity.com/market/search?q="+encodeURIComponent(it.market);
+  const tag = it.ru>0 ? '<span class="tag hold">'+t("hold_tag",{n:intFmt(it.ru)})+'</span>' : '';
+  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'">'+esc(it.market)+'<span class="ext">↗</span></a>'+tag;
 }
 
 function renderTable(){
   const head = $("head");
   head.innerHTML = COLS.map(c=>{
     const arrow = c.key===sortKey ? ' <span class="arrow">'+(sortDir<0?'▼':'▲')+'</span>' : '';
-    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'">'+t(c.lk)+arrow+'</th>';
+    return '<th data-k="'+c.key+'" class="'+(c.l?'l':'')+'">'+(c.key==="pct"?t("card_pct")+" %":t(c.lk))+arrow+'</th>';
   }).join("");
   head.querySelectorAll("th").forEach(th=>{
     th.onclick = ()=>{
@@ -1089,11 +1098,11 @@ function exportXlsx(){
     [S(t("lbl_units_left")), Ni(tot.remUnits)],
     [S(t("card_parked")), N(tot.remCost)],
   ];
-  const header = [t("th_item"),t("th_game"),t("th_bought"),t("th_sold"),t("th_left"),t("th_spent"),t("th_recv"),t("th_result"),t("th_parked")];
+  const header = [t("th_item"),t("th_game"),t("th_bought"),t("th_sold"),t("th_left"),t("th_spent"),t("th_recv"),t("th_result"),t("card_pct")+" %",t("th_parked")];
   const itens = [ header.map(S) ];
   const sorted = RESULT.items.slice().sort((a,b)=>b.realized-a.realized);
   for(const it of sorted){
-    itens.push([ S(it.market), S(it.game), Ni(it.ub), Ni(it.us), Ni(it.ru), N(it.vb), N(it.vs), N(it.realized), N(it.rc) ]);
+    itens.push([ S(it.market), S(it.game), Ni(it.ub), Ni(it.us), Ni(it.ru), N(it.vb), N(it.vs), N(it.realized), (it.pct==null?null:Ni(Math.round(it.pct*10)/10)), N(it.rc) ]);
   }
   const enc = new TextEncoder();
   const wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="'+xmlEsc(t("lbl_summary"))+'" sheetId="1" r:id="rId1"/><sheet name="'+xmlEsc(t("lbl_items"))+'" sheetId="2" r:id="rId2"/></sheets></workbook>';
