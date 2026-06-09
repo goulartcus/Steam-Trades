@@ -164,6 +164,14 @@
   .pc-warn{font-size:11px;color:var(--orange);background:rgba(247,160,114,.08);
     border:1px solid rgba(247,160,114,.22);border-radius:8px;padding:6px 10px;margin-bottom:8px;display:none}
   .pc-warn.vis{display:block}
+
+  /* item hover tooltip */
+  .item-tip{position:fixed;z-index:9999;background:#0d1622;border:1px solid var(--acc);border-radius:10px;
+    padding:10px 12px;min-width:130px;max-width:220px;box-shadow:0 8px 28px rgba(0,0,0,.65);
+    pointer-events:none;font-size:12px;color:var(--txt);line-height:1.4}
+  .item-tip-img{display:block;width:128px;height:128px;object-fit:contain;border-radius:6px;margin-bottom:7px}
+  .item-tip-name{font-weight:600;word-break:break-word}
+  .item-tip-sub{color:var(--mut);font-size:11px;margin-top:3px}
 </style>
 </head>
 <body>
@@ -254,6 +262,18 @@
         <tbody id="body"></tbody>
       </table>
     </div>
+
+    <details class="method" id="gameSummaryDetails" style="display:none">
+      <summary data-i18n="game_summary_title">Resumo por Jogo</summary>
+      <div style="padding-bottom:4px">
+        <div class="tablewrap" style="max-height:none;margin-top:8px">
+          <table id="gameSummaryTbl" style="min-width:500px">
+            <thead><tr id="gameSummaryHead"></tr></thead>
+            <tbody id="gameSummaryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
 
     <section id="invSection" class="hidden" style="margin-top:24px">
       <div class="toolbar" style="margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:10px">
@@ -372,7 +392,8 @@ const I18N = {
     inv_card_cost:"Custo total (inventário)", inv_card_cost_sm:"custo médio × qtd dos itens encontrados no histórico",
     th_qty:"Qtd", th_type:"Tipo", th_avgcost:"Custo médio", th_totalcost:"Custo total",
     inv_note:"Custo calculado com base no histórico do Mercado carregado.",
-    inv_no_history_note:"Carregue também o histórico do Mercado para ver o custo de cada item."
+    inv_no_history_note:"Carregue também o histórico do Mercado para ver o custo de cada item.",
+    game_summary_title:"Resumo por Jogo"
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -433,7 +454,8 @@ const I18N = {
     inv_card_cost:"Total cost (inventory)", inv_card_cost_sm:"avg cost × qty for items found in history",
     th_qty:"Qty", th_type:"Type", th_avgcost:"Avg. cost", th_totalcost:"Total cost",
     inv_note:"Cost calculated from the loaded Market history.",
-    inv_no_history_note:"Load the Market history to see the cost per item."
+    inv_no_history_note:"Load the Market history to see the cost per item.",
+    game_summary_title:"Summary by Game"
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -494,7 +516,8 @@ const I18N = {
     inv_card_cost:"Costo total (inventario)", inv_card_cost_sm:"costo promedio × cant de ítems en historial",
     th_qty:"Cant", th_type:"Tipo", th_avgcost:"Costo prom.", th_totalcost:"Costo total",
     inv_note:"Costo calculado en base al historial del Mercado cargado.",
-    inv_no_history_note:"Carga el historial del Mercado para ver el costo de cada ítem."
+    inv_no_history_note:"Carga el historial del Mercado para ver el costo de cada ítem.",
+    game_summary_title:"Resumen por Juego"
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -555,7 +578,8 @@ const I18N = {
     inv_card_cost:"Coût total (inventaire)", inv_card_cost_sm:"coût moy × qté des objets trouvés dans l'historique",
     th_qty:"Qté", th_type:"Type", th_avgcost:"Coût moy.", th_totalcost:"Coût total",
     inv_note:"Coût calculé d'après l'historique du Marché chargé.",
-    inv_no_history_note:"Chargez l'historique du Marché pour voir le coût par objet."
+    inv_no_history_note:"Chargez l'historique du Marché pour voir le coût par objet.",
+    game_summary_title:"Résumé par Jeu"
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -616,7 +640,8 @@ const I18N = {
     inv_card_cost:"Gesamtkosten (Inventar)", inv_card_cost_sm:"Ø-Preis × Anzahl der Artikel aus dem Verlauf",
     th_qty:"Anz.", th_type:"Typ", th_avgcost:"Ø-Kosten", th_totalcost:"Gesamtkosten",
     inv_note:"Kosten berechnet aus dem geladenen Markt-Verlauf.",
-    inv_no_history_note:"Lade den Markt-Verlauf, um die Kosten pro Artikel zu sehen."
+    inv_no_history_note:"Lade den Markt-Verlauf, um die Kosten pro Artikel zu sehen.",
+    game_summary_title:"Zusammenfassung nach Spiel"
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -677,7 +702,8 @@ const I18N = {
     inv_card_cost:"总成本（库存）", inv_card_cost_sm:"历史记录中找到的物品：均价 × 数量",
     th_qty:"数量", th_type:"类型", th_avgcost:"均价", th_totalcost:"总成本",
     inv_note:"成本根据已加载的市场历史记录计算。",
-    inv_no_history_note:"加载市场历史记录以查看每件物品的成本。"
+    inv_no_history_note:"加载市场历史记录以查看每件物品的成本。",
+    game_summary_title:"按游戏汇总"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -738,7 +764,8 @@ const I18N = {
     inv_card_cost:"Общая стоимость (инвентарь)", inv_card_cost_sm:"средняя цена × кол-во по предметам из истории",
     th_qty:"Кол-во", th_type:"Тип", th_avgcost:"Средняя цена", th_totalcost:"Общая стоимость",
     inv_note:"Стоимость рассчитана на основе загруженной истории торговой площадки.",
-    inv_no_history_note:"Загрузите историю торговой площадки, чтобы увидеть стоимость каждого предмета."
+    inv_no_history_note:"Загрузите историю торговой площадки, чтобы увидеть стоимость каждого предмета.",
+    game_summary_title:"Итоги по играм"
   }
 };
 
@@ -760,7 +787,7 @@ function applyI18n(){
   document.title = t("doc_title");
   document.querySelectorAll("[data-i18n]").forEach(el=>{ el.innerHTML = t(el.getAttribute("data-i18n")); });
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{ el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph"))); });
-  if(RESULT){ buildGameFilter(); renderCards(); renderChart(); renderTable(); updateFileInfo(); }
+  if(RESULT){ buildGameFilter(); renderCards(); renderChart(); renderTable(); renderGameSummary(); updateFileInfo(); }
   if(INV_RESULT){ buildInvGameFilter(); renderInvSection(); }
 }
 
@@ -934,6 +961,7 @@ function handleCSVText(text, filename){
     renderCards();
     renderChart();
     renderTable();
+    renderGameSummary();
     $("landing").classList.add("hidden");
     $("results").classList.remove("hidden");
   }catch(err){
@@ -1085,7 +1113,7 @@ function itemCell(it){
     ? "https://steamcommunity.com/market/listings/"+encodeURIComponent(it.appid)+"/"+encodeURIComponent(it.market)
     : "https://steamcommunity.com/market/search?q="+encodeURIComponent(it.market);
   const tag = it.ru>0 ? '<span class="tag hold">'+t("hold_tag",{n:intFmt(it.ru)})+'</span>' : '';
-  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'">'+esc(it.market)+'<span class="ext">↗</span></a>'+tag;
+  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'" data-mkt="'+esc(it.market)+'" data-appid="'+esc(it.appid||'')+'">'+esc(it.market)+'<span class="ext">↗</span></a>'+tag;
 }
 
 /* ============== Inventário ============== */
@@ -1106,7 +1134,7 @@ function invItemCell(it){
   const url = it.appid
     ? "https://steamcommunity.com/market/listings/"+encodeURIComponent(it.appid)+"/"+encodeURIComponent(it.market)
     : "https://steamcommunity.com/market/search?q="+encodeURIComponent(it.market);
-  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'">'+esc(it.market)+'<span class="ext">↗</span></a>';
+  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'" data-mkt="'+esc(it.market)+'" data-appid="'+esc(it.appid||'')+'">'+esc(it.market)+'<span class="ext">↗</span></a>';
 }
 
 function analyzeInventory(rows){
@@ -1382,6 +1410,59 @@ $("search").addEventListener("input", ()=>{ if(RESULT) renderTable(); });
 $("gameFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 $("statusFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 
+/* ============== JSONP helper (bypassa CORS p/ APIs da Steam) ============== */
+function jsonpFetch(url){
+  return new Promise((resolve, reject)=>{
+    const cb = "_jpc"+Date.now().toString(36)+Math.random().toString(36).slice(2);
+    const s = document.createElement("script");
+    const t2 = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 9000);
+    const cleanup = ()=>{ clearTimeout(t2); delete window[cb]; if(s.parentNode) s.remove(); };
+    window[cb] = data => { cleanup(); resolve(data); };
+    s.onerror = ()=>{ cleanup(); reject(new Error("load")); };
+    s.src = url + (url.includes("?")?"&":"?") + "callback="+cb;
+    document.head.appendChild(s);
+  });
+}
+
+/* ============== Resumo por Jogo ============== */
+function renderGameSummary(){
+  const det = $("gameSummaryDetails");
+  if(!RESULT || !det) return;
+  det.style.display = "";
+  const byGame = new Map();
+  for(const it of RESULT.items){
+    const g = it.game||"—";
+    let d = byGame.get(g);
+    if(!d){ d={game:g,items:0,vb:0,vs:0,realized:0,rc:0}; byGame.set(g,d); }
+    d.items++; d.vb+=it.vb; d.vs+=it.vs; d.realized+=it.realized; d.rc+=it.rc;
+  }
+  const rows = [...byGame.values()].sort((a,b)=>b.vb-a.vb);
+  const head = $("gameSummaryHead");
+  if(head) head.innerHTML =
+    '<th class="l">'+t("th_game")+'</th>'+
+    '<th>'+t("lbl_distinct")+'</th>'+
+    '<th>'+t("th_spent")+'</th>'+
+    '<th>'+t("th_recv")+'</th>'+
+    '<th>'+t("th_result")+'</th>'+
+    '<th>'+t("card_pct")+'</th>';
+  const body = $("gameSummaryBody");
+  if(body) body.innerHTML = rows.map(r=>{
+    const cogs = r.vb - r.rc;
+    const pct = cogs>0 ? (r.realized/cogs*100) : null;
+    const resCls = r.realized>=0?"pos":"neg";
+    const pctStr = pct==null?"—":'<span class="'+(pct>=0?"pos":"neg")+'">'+(pct>=0?"+":"−")+Math.abs(pct).toLocaleString(CUR.locale,{minimumFractionDigits:1,maximumFractionDigits:1})+"%</span>";
+    return "<tr>"+
+      '<td class="l">'+esc(r.game)+"</td>"+
+      "<td>"+intFmt(r.items)+"</td>"+
+      '<td class="money">'+money(r.vb)+"</td>"+
+      '<td class="money">'+money(r.vs)+"</td>"+
+      '<td class="money"><span class="'+resCls+'">'+moneySigned(r.realized)+"</span></td>"+
+      "<td>"+pctStr+"</td>"+
+    "</tr>";
+  }).join("");
+}
+
+/* ============== Price Check (via JSONP) ============== */
 document.addEventListener("click", async function(e){
   const btn = e.target.closest(".pc-btn");
   if(!btn || btn.disabled) return;
@@ -1392,15 +1473,59 @@ document.addEventListener("click", async function(e){
   if(warn) warn.classList.add("vis");
   try{
     const url = "https://steamcommunity.com/market/priceoverview/?appid="+encodeURIComponent(appid)+"&market_hash_name="+encodeURIComponent(mkt)+"&currency=1";
-    const res = await fetch(url);
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    const j = await res.json();
+    const j = await jsonpFetch(url);
     if(j.success && j.lowest_price){
       btn.textContent = "✓";
       val.innerHTML = "<b>"+esc(j.lowest_price)+"</b>"+(j.median_price?" <span class='pc-med'>med "+esc(j.median_price)+"</span>":"");
     } else { btn.textContent = "🔍"; val.textContent = "—"; }
   }catch(ex){ btn.textContent = "🔍"; val.textContent = t("pc_error"); }
   btn.disabled = false;
+});
+
+/* ============== Hover preview de item ============== */
+let _hTimer=null, _hTip=null;
+function _destroyTip(){ clearTimeout(_hTimer); _hTimer=null; if(_hTip){ _hTip.remove(); _hTip=null; } }
+document.addEventListener("mouseover", function(e){
+  const a = e.target.closest("a.item-name");
+  if(!a){ if(!_hTip?.contains(e.target)) _destroyTip(); return; }
+  _destroyTip();
+  _hTimer = setTimeout(()=>{
+    const mkt = a.dataset.mkt||a.textContent.replace("↗","").trim();
+    const appid = a.dataset.appid||(a.href.match(/listings\/(\d+)\//)||[])[1]||"";
+    _hTip = document.createElement("div"); _hTip.className = "item-tip";
+    _hTip.innerHTML = '<div class="item-tip-name">'+esc(mkt)+'</div><div class="item-tip-sub">'+esc(appid?"App "+appid:"Steam Market")+'</div>';
+    document.body.appendChild(_hTip);
+    const rect = a.getBoundingClientRect();
+    let top = rect.bottom+8, left = rect.left;
+    const tw=_hTip.offsetWidth, th2=_hTip.offsetHeight;
+    if(top+th2>window.innerHeight) top=rect.top-th2-8;
+    if(left+tw>window.innerWidth) left=window.innerWidth-tw-8;
+    _hTip.style.top=Math.max(4,top)+"px"; _hTip.style.left=Math.max(4,left)+"px";
+    // tenta carregar imagem via JSONP
+    if(appid && mkt){
+      const imgUrl="https://steamcommunity.com/market/listings/"+encodeURIComponent(appid)+"/"+encodeURIComponent(mkt)+"/render?currency=1&language=english&country=US&format=json&start=0&count=1";
+      jsonpFetch(imgUrl).then(data=>{
+        if(!_hTip) return;
+        let icon=null;
+        try{
+          // assets: { appid: { contextid: { assetid: { icon_url } } } }
+          for(const ctx of Object.values(data.assets||{}))
+            for(const grp of Object.values(ctx))
+              for(const asset of Object.values(grp))
+                if(asset.icon_url){ icon=asset.icon_url; break; }
+        }catch(_){}
+        if(icon){
+          const img=document.createElement("img");
+          img.className="item-tip-img";
+          img.src="https://community.fastly.steamstatic.com/economy/image/"+icon+"/128fx128f";
+          _hTip.prepend(img);
+        }
+      }).catch(()=>{});
+    }
+  }, 900);
+});
+document.addEventListener("mouseout", function(e){
+  if(e.target.closest("a.item-name") && !e.relatedTarget?.closest("a.item-name")) _destroyTip();
 });
 
 const invFi = $("invFileInput");
