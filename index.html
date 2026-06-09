@@ -281,7 +281,7 @@
       </div>
     </details>
 
-    <section id="invSection" class="hidden" style="margin-top:24px">
+    <section id="invSection" style="margin-top:24px">
       <div class="toolbar" style="margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:10px">
         <h3 style="margin:0;font-size:15px;font-weight:700;color:var(--acc)" data-i18n="inv_title">Inventário</h3>
         <button class="btn" id="priceAllBtn" style="display:none" data-i18n="inv_price_all">💰 Precificar Todos</button>
@@ -305,26 +305,29 @@
           </div>
         </div>
       </details>
-      <!-- barra de progresso da precificação em lote -->
-      <div id="priceAllProgressWrap" style="display:none" class="progress-row">
-        <div class="progress-wrap"><div class="progress-fill" id="priceAllFill"></div></div>
-        <span id="priceAllStatus"></span>
+      <p id="invEmpty" class="chart-note" data-i18n="inv_empty_state">Carregue um inventário usando o CSV do Steam Inventory Helper ou informe a URL da Steam acima.</p>
+      <div id="invLoadedContent" style="display:none">
+        <!-- barra de progresso da precificação em lote -->
+        <div id="priceAllProgressWrap" style="display:none" class="progress-row">
+          <div class="progress-wrap"><div class="progress-fill" id="priceAllFill"></div></div>
+          <span id="priceAllStatus"></span>
+        </div>
+        <div id="invCards" class="cards" style="margin-bottom:14px"></div>
+        <div class="toolbar">
+          <input type="text" id="invSearch" data-i18n-ph="search_ph" placeholder="🔎 Buscar item…">
+          <select id="invGameFilter"></select>
+          <span class="spacer"></span>
+          <span class="count" id="invCount"></span>
+        </div>
+        <div class="tablewrap" style="margin-bottom:10px">
+          <table id="invTbl">
+            <thead><tr id="invHead"></tr></thead>
+            <tbody id="invBody"></tbody>
+          </table>
+        </div>
+        <p id="invNote" class="chart-note" style="display:none" data-i18n="inv_note"></p>
+        <p id="invNoHistNote" class="chart-note" style="display:none" data-i18n="inv_no_history_note"></p>
       </div>
-      <div id="invCards" class="cards" style="margin-bottom:14px"></div>
-      <div class="toolbar">
-        <input type="text" id="invSearch" data-i18n-ph="search_ph" placeholder="🔎 Buscar item…">
-        <select id="invGameFilter"></select>
-        <span class="spacer"></span>
-        <span class="count" id="invCount"></span>
-      </div>
-      <div class="tablewrap" style="margin-bottom:10px">
-        <table id="invTbl">
-          <thead><tr id="invHead"></tr></thead>
-          <tbody id="invBody"></tbody>
-        </table>
-      </div>
-      <p id="invNote" class="chart-note" style="display:none" data-i18n="inv_note"></p>
-      <p id="invNoHistNote" class="chart-note" style="display:none" data-i18n="inv_no_history_note"></p>
     </section>
 
     <details class="method">
@@ -424,6 +427,7 @@ const I18N = {
     th_qty:"Qtd", th_type:"Tipo", th_avgcost:"Custo médio", th_totalcost:"Custo total",
     inv_note:"Custo calculado com base no histórico do Mercado carregado.",
     inv_no_history_note:"Carregue também o histórico do Mercado para ver o custo de cada item.",
+    inv_empty_state:"Carregue um inventário usando o CSV do Steam Inventory Helper ou informe a URL da Steam acima.",
     game_summary_title:"Resumo por Jogo",
     inv_steam_section:"🔗 Buscar direto da Steam",
     inv_url_ph:"URL do perfil (steamcommunity.com/profiles/76561198…)",
@@ -494,6 +498,7 @@ const I18N = {
     th_qty:"Qty", th_type:"Type", th_avgcost:"Avg. cost", th_totalcost:"Total cost",
     inv_note:"Cost calculated from the loaded Market history.",
     inv_no_history_note:"Load the Market history to see the cost per item.",
+    inv_empty_state:"Load an inventory using the Steam Inventory Helper CSV or enter your Steam profile URL above.",
     game_summary_title:"Summary by Game",
     inv_steam_section:"🔗 Fetch from Steam",
     inv_url_ph:"Profile URL (steamcommunity.com/profiles/76561198…)",
@@ -564,6 +569,7 @@ const I18N = {
     th_qty:"Cant", th_type:"Tipo", th_avgcost:"Costo prom.", th_totalcost:"Costo total",
     inv_note:"Costo calculado en base al historial del Mercado cargado.",
     inv_no_history_note:"Carga el historial del Mercado para ver el costo de cada ítem.",
+    inv_empty_state:"Carga un inventario usando el CSV de Steam Inventory Helper o ingresa la URL de Steam arriba.",
     game_summary_title:"Resumen por Juego",
     inv_steam_section:"🔗 Obtener desde Steam",
     inv_url_ph:"URL de perfil (steamcommunity.com/profiles/76561198…)",
@@ -634,6 +640,7 @@ const I18N = {
     th_qty:"Qté", th_type:"Type", th_avgcost:"Coût moy.", th_totalcost:"Coût total",
     inv_note:"Coût calculé d'après l'historique du Marché chargé.",
     inv_no_history_note:"Chargez l'historique du Marché pour voir le coût par objet.",
+    inv_empty_state:"Chargez un inventaire via le CSV Steam Inventory Helper ou entrez l'URL Steam ci-dessus.",
     game_summary_title:"Résumé par Jeu",
     inv_steam_section:"🔗 Récupérer depuis Steam",
     inv_url_ph:"URL du profil (steamcommunity.com/profiles/76561198…)",
@@ -704,6 +711,7 @@ const I18N = {
     th_qty:"Anz.", th_type:"Typ", th_avgcost:"Ø-Kosten", th_totalcost:"Gesamtkosten",
     inv_note:"Kosten berechnet aus dem geladenen Markt-Verlauf.",
     inv_no_history_note:"Lade den Markt-Verlauf, um die Kosten pro Artikel zu sehen.",
+    inv_empty_state:"Lade ein Inventar mit dem Steam Inventory Helper CSV oder gib oben die Steam-Profil-URL ein.",
     game_summary_title:"Zusammenfassung nach Spiel",
     inv_steam_section:"🔗 Von Steam laden",
     inv_url_ph:"Profil-URL (steamcommunity.com/profiles/76561198…)",
@@ -774,6 +782,7 @@ const I18N = {
     th_qty:"数量", th_type:"类型", th_avgcost:"均价", th_totalcost:"总成本",
     inv_note:"成本根据已加载的市场历史记录计算。",
     inv_no_history_note:"加载市场历史记录以查看每件物品的成本。",
+    inv_empty_state:"请上传 Steam Inventory Helper CSV 文件或在上方输入 Steam 主页链接。",
     game_summary_title:"按游戏汇总",
     inv_steam_section:"🔗 从Steam获取",
     inv_url_ph:"个人资料链接 (steamcommunity.com/profiles/76561198…)",
@@ -844,6 +853,7 @@ const I18N = {
     th_qty:"Кол-во", th_type:"Тип", th_avgcost:"Средняя цена", th_totalcost:"Общая стоимость",
     inv_note:"Стоимость рассчитана на основе загруженной истории торговой площадки.",
     inv_no_history_note:"Загрузите историю торговой площадки, чтобы увидеть стоимость каждого предмета.",
+    inv_empty_state:"Загрузите инвентарь через CSV Steam Inventory Helper или укажите URL профиля Steam выше.",
     game_summary_title:"Итоги по играм",
     inv_steam_section:"🔗 Загрузить из Steam",
     inv_url_ph:"URL профиля (steamcommunity.com/profiles/76561198…)",
@@ -1221,7 +1231,7 @@ function invItemCell(it){
   const url = it.appid
     ? "https://steamcommunity.com/market/listings/"+encodeURIComponent(it.appid)+"/"+encodeURIComponent(it.market)
     : "https://steamcommunity.com/market/search?q="+encodeURIComponent(it.market);
-  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'" data-mkt="'+esc(it.market)+'" data-appid="'+esc(it.appid||'')+'">'+esc(it.market)+'<span class="ext">↗</span></a>';
+  return '<a class="item-name" href="'+url+'" target="_blank" rel="noopener" title="'+esc(t("open_market"))+'" data-mkt="'+esc(it.market)+'" data-appid="'+esc(it.appid||'')+'" data-icon="'+esc(it.icon_url||'')+'">'+esc(it.market)+'<span class="ext">↗</span></a>';
 }
 
 function analyzeInventory(rows){
@@ -1303,7 +1313,8 @@ function renderInvSection(){
 
   buildInvGameFilter();
   renderInvTable();
-  $("invSection").classList.remove("hidden");
+  $("invEmpty").style.display = "none";
+  $("invLoadedContent").style.display = "";
   const pab = $("priceAllBtn");
   if(pab) pab.style.display = INV_RESULT.items.some(it=>it.appid) ? "" : "none";
 }
@@ -1703,7 +1714,15 @@ document.addEventListener("click", async function(e){
 
 /* ============== Hover preview de item ============== */
 let _hTimer=null, _hTip=null;
+const iconCache = new Map();
 function _destroyTip(){ clearTimeout(_hTimer); _hTimer=null; if(_hTip){ _hTip.remove(); _hTip=null; } }
+function _showIcon(icon){
+  if(!_hTip || !icon) return;
+  const img=document.createElement("img");
+  img.className="item-tip-img";
+  img.src="https://community.fastly.steamstatic.com/economy/image/"+icon+"/128fx128f";
+  _hTip.prepend(img);
+}
 document.addEventListener("mouseover", function(e){
   const a = e.target.closest("a.item-name");
   if(!a){ if(!_hTip?.contains(e.target)) _destroyTip(); return; }
@@ -1720,28 +1739,20 @@ document.addEventListener("mouseover", function(e){
     if(top+th2>window.innerHeight) top=rect.top-th2-8;
     if(left+tw>window.innerWidth) left=window.innerWidth-tw-8;
     _hTip.style.top=Math.max(4,top)+"px"; _hTip.style.left=Math.max(4,left)+"px";
-    // tenta carregar imagem via JSONP
     if(appid && mkt){
-      const imgUrl="https://steamcommunity.com/market/listings/"+encodeURIComponent(appid)+"/"+encodeURIComponent(mkt)+"/render?currency=1&language=english&country=US&format=json&start=0&count=1";
+      const icon0 = a.dataset.icon||"";
+      if(icon0){ _showIcon(icon0); return; }
+      const cacheKey = appid+"|"+mkt;
+      if(iconCache.has(cacheKey)){ _showIcon(iconCache.get(cacheKey)); return; }
+      const imgUrl="https://steamcommunity.com/market/search/render/?appid="+encodeURIComponent(appid)+"&query="+encodeURIComponent(mkt)+"&count=1&norender=1";
       jsonpFetch(imgUrl).then(data=>{
-        if(!_hTip) return;
         let icon=null;
-        try{
-          // assets: { appid: { contextid: { assetid: { icon_url } } } }
-          for(const ctx of Object.values(data.assets||{}))
-            for(const grp of Object.values(ctx))
-              for(const asset of Object.values(grp))
-                if(asset.icon_url){ icon=asset.icon_url; break; }
-        }catch(_){}
-        if(icon){
-          const img=document.createElement("img");
-          img.className="item-tip-img";
-          img.src="https://community.fastly.steamstatic.com/economy/image/"+icon+"/128fx128f";
-          _hTip.prepend(img);
-        }
-      }).catch(()=>{});
+        try{ icon=((data.results||[])[0]||{}).asset_description?.icon_url||null; }catch(_){}
+        iconCache.set(cacheKey, icon||"");
+        _showIcon(icon);
+      }).catch(()=>{ iconCache.set(cacheKey, ""); });
     }
-  }, 900);
+  }, 500);
 });
 document.addEventListener("mouseout", function(e){
   if(e.target.closest("a.item-name") && !e.relatedTarget?.closest("a.item-name")) _destroyTip();
@@ -1751,11 +1762,11 @@ const invFi = $("invFileInput");
 invFi.addEventListener("change", e=>{ if(e.target.files[0]) handleInvFile(e.target.files[0]); });
 $("invResetBtn").onclick = ()=>{
   INV_RESULT=null; invFi.value=""; INV_FILENAME="";
-  $("invSection").classList.add("hidden");
+  $("invEmpty").style.display = "";
+  $("invLoadedContent").style.display = "none";
   $("invResetBtn").classList.add("hidden");
   $("invImportBtn").classList.remove("hidden");
-  const pb = $("priceAllProgressWrap");
-  if(pb) pb.style.display="none";
+  $("priceAllBtn").style.display = "none";
 };
 $("invSearch").addEventListener("input", ()=>{ if(INV_RESULT) renderInvTable(); });
 $("invGameFilter").addEventListener("change", ()=>{ if(INV_RESULT) renderInvTable(); });
