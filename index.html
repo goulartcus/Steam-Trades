@@ -189,6 +189,10 @@
   .act-drop{padding:20px 14px;margin-bottom:0;width:100%;box-sizing:border-box}
   .act-inv-or{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:11px;margin:10px 0;width:100%}
   .act-inv-or::before,.act-inv-or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .url-help{width:100%;text-align:left;margin-top:4px;border:none;background:none;padding:0}
+  .url-help summary{font-size:11px;color:var(--acc);cursor:pointer;list-style:none;padding:2px 0;user-select:none}
+  .url-help summary::-webkit-details-marker{display:none}
+  .url-help p{font-size:12px;color:var(--mut);margin:6px 0 0;line-height:1.6;padding:0 2px}
 </style>
 </head>
 <body>
@@ -243,6 +247,10 @@
           <button class="btn" id="steamFetchBtnLanding" data-i18n="inv_fetch_btn">Buscar Inventário</button>
         </div>
       </div>
+      <details class="url-help">
+        <summary data-i18n="inv_url_how">❓ Como encontrar meu link?</summary>
+        <p data-i18n="inv_url_help">No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço do navegador. Ela precisa conter <code>/profiles/76561198…</code><br>Se a sua URL tiver <code>/id/seunome</code> (URL customizada), abra <b>Steam → Configurações → Conta</b> para ver o seu SteamID64 numérico.</p>
+      </details>
       <div class="act-inv-or" data-i18n="act_inv_or">ou</div>
       <label class="btn ghost" style="cursor:pointer"><span data-i18n="act_inv_csv">+ CSV do Inventário</span><input type="file" id="invFileLanding" accept=".csv,text/csv" style="display:none"></label>
     </div>
@@ -346,6 +354,10 @@
             <input type="text" id="steamCustomAppid" placeholder="App ID" style="display:none;width:90px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:8px 11px;border-radius:9px;font-size:13px;outline:none">
             <button class="btn" id="steamFetchBtn" data-i18n="inv_fetch_btn">Buscar Inventário</button>
           </div>
+          <details class="url-help" style="margin-top:6px">
+            <summary data-i18n="inv_url_how">❓ Como encontrar meu link?</summary>
+            <p data-i18n="inv_url_help">No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço do navegador. Ela precisa conter <code>/profiles/76561198…</code><br>Se a sua URL tiver <code>/id/seunome</code> (URL customizada), abra <b>Steam → Configurações → Conta</b> para ver o seu SteamID64 numérico.</p>
+          </details>
         </div>
       </details>
       <p id="invEmpty" class="chart-note" data-i18n="inv_empty_state">Carregue um inventário usando o CSV do Steam Inventory Helper ou informe a URL da Steam acima.</p>
@@ -483,6 +495,8 @@ const I18N = {
     inv_pricing:"Precificando… {done} / {total}",
     inv_pricing_done:"✓ {n} itens precificados",
     inv_err_profile:"URL inválida. Use /profiles/76561... ou só o SteamID64",
+    inv_url_how:"❓ Como encontrar meu link?",
+    inv_url_help:"No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço. Ela precisa conter <code>/profiles/76561198…</code><br>Se tiver <code>/id/seunome</code> (URL customizada), abra <b>Steam → Configurações → Conta</b> para ver o SteamID64 numérico.",
     inv_err_inv:"Não foi possível carregar. Perfil público?"
   },
   en:{
@@ -558,6 +572,8 @@ const I18N = {
     inv_pricing:"Pricing… {done} / {total}",
     inv_pricing_done:"✓ {n} items priced",
     inv_err_profile:"Invalid URL. Use /profiles/76561... or just the SteamID64",
+    inv_url_how:"❓ How to find my link?",
+    inv_url_help:"In Steam, click your name → <b>View Profile</b> → copy the URL from the address bar. It must contain <code>/profiles/76561198…</code><br>If it shows <code>/id/username</code> (custom URL), go to <b>Steam → Settings → Account</b> to find your numeric SteamID64.",
     inv_err_inv:"Could not load inventory. Is the profile public?"
   },
   es:{
@@ -633,6 +649,8 @@ const I18N = {
     inv_pricing:"Precificando… {done} / {total}",
     inv_pricing_done:"✓ {n} ítems precificados",
     inv_err_profile:"URL inválida. Usa /profiles/76561... o solo el SteamID64",
+    inv_url_how:"❓ ¿Cómo encontrar mi enlace?",
+    inv_url_help:"En Steam, haz clic en tu nombre → <b>Ver perfil</b> → copia la URL de la barra de direcciones. Debe contener <code>/profiles/76561198…</code><br>Si muestra <code>/id/nombre</code> (URL personalizada), ve a <b>Steam → Ajustes → Cuenta</b> para ver tu SteamID64 numérico.",
     inv_err_inv:"No se pudo cargar. ¿El perfil es público?"
   },
   fr:{
@@ -708,6 +726,8 @@ const I18N = {
     inv_pricing:"Tarification… {done} / {total}",
     inv_pricing_done:"✓ {n} objets tarifés",
     inv_err_profile:"URL invalide. Utilisez /profiles/76561... ou le SteamID64",
+    inv_url_how:"❓ Comment trouver mon lien ?",
+    inv_url_help:"Dans Steam, cliquez sur votre nom → <b>Voir le profil</b> → copiez l'URL dans la barre d'adresse. Elle doit contenir <code>/profiles/76561198…</code><br>Si elle affiche <code>/id/nom</code> (URL personnalisée), allez dans <b>Steam → Paramètres → Compte</b> pour trouver votre SteamID64 numérique.",
     inv_err_inv:"Impossible de charger. Le profil est-il public ?"
   },
   de:{
@@ -783,6 +803,8 @@ const I18N = {
     inv_pricing:"Bewertung… {done} / {total}",
     inv_pricing_done:"✓ {n} Artikel bewertet",
     inv_err_profile:"Ungültige URL. Verwende /profiles/76561... oder die SteamID64",
+    inv_url_how:"❓ Wie finde ich meinen Link?",
+    inv_url_help:"In Steam, klicke auf deinen Namen → <b>Profil anzeigen</b> → kopiere die URL aus der Adressleiste. Sie muss <code>/profiles/76561198…</code> enthalten.<br>Bei <code>/id/name</code> (benutzerdefinierte URL) gehe zu <b>Steam → Einstellungen → Konto</b>, um deine numerische SteamID64 zu sehen.",
     inv_err_inv:"Konnte nicht laden. Ist das Profil öffentlich?"
   },
   zh:{
@@ -858,6 +880,8 @@ const I18N = {
     inv_pricing:"定价中… {done} / {total}",
     inv_pricing_done:"✓ 已完成 {n} 件",
     inv_err_profile:"链接无效，请使用 /profiles/76561... 或直接粘贴 SteamID64",
+    inv_url_how:"❓ 如何找到我的链接？",
+    inv_url_help:"在 Steam 中，点击您的名字 → <b>查看个人资料</b> → 复制浏览器地址栏中的 URL。它必须包含 <code>/profiles/76561198…</code><br>如果显示 <code>/id/用户名</code>（自定义 URL），请前往 <b>Steam → 设置 → 账户</b> 查看您的数字 SteamID64。",
     inv_err_inv:"无法加载库存，请确认个人资料为公开状态"
   },
   ru:{
@@ -933,6 +957,8 @@ const I18N = {
     inv_pricing:"Оценка… {done} / {total}",
     inv_pricing_done:"✓ {n} предметов оценено",
     inv_err_profile:"Неверный URL. Используйте /profiles/76561... или SteamID64",
+    inv_url_how:"❓ Как найти мою ссылку?",
+    inv_url_help:"В Steam нажмите на своё имя → <b>Просмотреть профиль</b> → скопируйте URL из адресной строки. Он должен содержать <code>/profiles/76561198…</code><br>Если отображается <code>/id/имя</code> (пользовательский URL), перейдите в <b>Steam → Настройки → Аккаунт</b>, чтобы найти числовой SteamID64.",
     inv_err_inv:"Не удалось загрузить. Профиль публичный?"
   }
 };
