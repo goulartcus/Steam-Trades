@@ -165,6 +165,12 @@
     border:1px solid rgba(247,160,114,.22);border-radius:8px;padding:6px 10px;margin-bottom:8px;display:none}
   .pc-warn.vis{display:block}
 
+  /* batch price progress bar */
+  .progress-wrap{background:var(--line);border-radius:999px;height:6px;margin:6px 0 2px;overflow:hidden;flex:1}
+  .progress-fill{height:100%;background:var(--green);border-radius:999px;transition:width .35s;width:0}
+  .progress-row{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mut);margin-bottom:6px}
+  .pc-done{color:var(--green);font-size:11px}
+
   /* item hover tooltip */
   .item-tip{position:fixed;z-index:9999;background:#0d1622;border:1px solid var(--acc);border-radius:10px;
     padding:10px 12px;min-width:130px;max-width:220px;box-shadow:0 8px 28px rgba(0,0,0,.65);
@@ -278,6 +284,31 @@
     <section id="invSection" class="hidden" style="margin-top:24px">
       <div class="toolbar" style="margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:10px">
         <h3 style="margin:0;font-size:15px;font-weight:700;color:var(--acc)" data-i18n="inv_title">Inventário</h3>
+        <button class="btn" id="priceAllBtn" style="display:none" data-i18n="inv_price_all">💰 Precificar Todos</button>
+      </div>
+      <!-- painel Steam URL (alternativa ao CSV) -->
+      <details class="method" id="steamFetchPanel" style="margin-bottom:14px">
+        <summary data-i18n="inv_steam_section">🔗 Buscar direto da Steam</summary>
+        <div style="padding:8px 0 4px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input type="text" id="steamUrlInput" data-i18n-ph="inv_url_ph" placeholder="steamcommunity.com/profiles/76561198…" style="flex:1;min-width:220px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:8px 11px;border-radius:9px;font-size:13px;outline:none">
+            <select id="steamGameSel" style="background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:8px 10px;border-radius:9px;font-size:13px;outline:none">
+              <option value="730">CS2 (730)</option>
+              <option value="570">Dota 2 (570)</option>
+              <option value="440">TF2 (440)</option>
+              <option value="252490">Rust (252490)</option>
+              <option value="578080">PUBG (578080)</option>
+              <option value="custom">Outro…</option>
+            </select>
+            <input type="text" id="steamCustomAppid" placeholder="App ID" style="display:none;width:90px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:8px 11px;border-radius:9px;font-size:13px;outline:none">
+            <button class="btn" id="steamFetchBtn" data-i18n="inv_fetch_btn">Buscar Inventário</button>
+          </div>
+        </div>
+      </details>
+      <!-- barra de progresso da precificação em lote -->
+      <div id="priceAllProgressWrap" style="display:none" class="progress-row">
+        <div class="progress-wrap"><div class="progress-fill" id="priceAllFill"></div></div>
+        <span id="priceAllStatus"></span>
       </div>
       <div id="invCards" class="cards" style="margin-bottom:14px"></div>
       <div class="toolbar">
@@ -393,7 +424,15 @@ const I18N = {
     th_qty:"Qtd", th_type:"Tipo", th_avgcost:"Custo médio", th_totalcost:"Custo total",
     inv_note:"Custo calculado com base no histórico do Mercado carregado.",
     inv_no_history_note:"Carregue também o histórico do Mercado para ver o custo de cada item.",
-    game_summary_title:"Resumo por Jogo"
+    game_summary_title:"Resumo por Jogo",
+    inv_steam_section:"🔗 Buscar direto da Steam",
+    inv_url_ph:"URL do perfil (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"Buscar Inventário",
+    inv_price_all:"💰 Precificar Todos",
+    inv_pricing:"Precificando… {done} / {total}",
+    inv_pricing_done:"✓ {n} itens precificados",
+    inv_err_profile:"URL inválida. Use /profiles/76561... ou só o SteamID64",
+    inv_err_inv:"Não foi possível carregar. Perfil público?"
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -455,7 +494,15 @@ const I18N = {
     th_qty:"Qty", th_type:"Type", th_avgcost:"Avg. cost", th_totalcost:"Total cost",
     inv_note:"Cost calculated from the loaded Market history.",
     inv_no_history_note:"Load the Market history to see the cost per item.",
-    game_summary_title:"Summary by Game"
+    game_summary_title:"Summary by Game",
+    inv_steam_section:"🔗 Fetch from Steam",
+    inv_url_ph:"Profile URL (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"Fetch Inventory",
+    inv_price_all:"💰 Price All",
+    inv_pricing:"Pricing… {done} / {total}",
+    inv_pricing_done:"✓ {n} items priced",
+    inv_err_profile:"Invalid URL. Use /profiles/76561... or just the SteamID64",
+    inv_err_inv:"Could not load inventory. Is the profile public?"
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -517,7 +564,15 @@ const I18N = {
     th_qty:"Cant", th_type:"Tipo", th_avgcost:"Costo prom.", th_totalcost:"Costo total",
     inv_note:"Costo calculado en base al historial del Mercado cargado.",
     inv_no_history_note:"Carga el historial del Mercado para ver el costo de cada ítem.",
-    game_summary_title:"Resumen por Juego"
+    game_summary_title:"Resumen por Juego",
+    inv_steam_section:"🔗 Obtener desde Steam",
+    inv_url_ph:"URL de perfil (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"Obtener inventario",
+    inv_price_all:"💰 Precificar todo",
+    inv_pricing:"Precificando… {done} / {total}",
+    inv_pricing_done:"✓ {n} ítems precificados",
+    inv_err_profile:"URL inválida. Usa /profiles/76561... o solo el SteamID64",
+    inv_err_inv:"No se pudo cargar. ¿El perfil es público?"
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -579,7 +634,15 @@ const I18N = {
     th_qty:"Qté", th_type:"Type", th_avgcost:"Coût moy.", th_totalcost:"Coût total",
     inv_note:"Coût calculé d'après l'historique du Marché chargé.",
     inv_no_history_note:"Chargez l'historique du Marché pour voir le coût par objet.",
-    game_summary_title:"Résumé par Jeu"
+    game_summary_title:"Résumé par Jeu",
+    inv_steam_section:"🔗 Récupérer depuis Steam",
+    inv_url_ph:"URL du profil (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"Récupérer l'inventaire",
+    inv_price_all:"💰 Tout tarifier",
+    inv_pricing:"Tarification… {done} / {total}",
+    inv_pricing_done:"✓ {n} objets tarifés",
+    inv_err_profile:"URL invalide. Utilisez /profiles/76561... ou le SteamID64",
+    inv_err_inv:"Impossible de charger. Le profil est-il public ?"
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -641,7 +704,15 @@ const I18N = {
     th_qty:"Anz.", th_type:"Typ", th_avgcost:"Ø-Kosten", th_totalcost:"Gesamtkosten",
     inv_note:"Kosten berechnet aus dem geladenen Markt-Verlauf.",
     inv_no_history_note:"Lade den Markt-Verlauf, um die Kosten pro Artikel zu sehen.",
-    game_summary_title:"Zusammenfassung nach Spiel"
+    game_summary_title:"Zusammenfassung nach Spiel",
+    inv_steam_section:"🔗 Von Steam laden",
+    inv_url_ph:"Profil-URL (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"Inventar laden",
+    inv_price_all:"💰 Alle bewerten",
+    inv_pricing:"Bewertung… {done} / {total}",
+    inv_pricing_done:"✓ {n} Artikel bewertet",
+    inv_err_profile:"Ungültige URL. Verwende /profiles/76561... oder die SteamID64",
+    inv_err_inv:"Konnte nicht laden. Ist das Profil öffentlich?"
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -703,7 +774,15 @@ const I18N = {
     th_qty:"数量", th_type:"类型", th_avgcost:"均价", th_totalcost:"总成本",
     inv_note:"成本根据已加载的市场历史记录计算。",
     inv_no_history_note:"加载市场历史记录以查看每件物品的成本。",
-    game_summary_title:"按游戏汇总"
+    game_summary_title:"按游戏汇总",
+    inv_steam_section:"🔗 从Steam获取",
+    inv_url_ph:"个人资料链接 (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"获取库存",
+    inv_price_all:"💰 全部定价",
+    inv_pricing:"定价中… {done} / {total}",
+    inv_pricing_done:"✓ 已完成 {n} 件",
+    inv_err_profile:"链接无效，请使用 /profiles/76561... 或直接粘贴 SteamID64",
+    inv_err_inv:"无法加载库存，请确认个人资料为公开状态"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -765,7 +844,15 @@ const I18N = {
     th_qty:"Кол-во", th_type:"Тип", th_avgcost:"Средняя цена", th_totalcost:"Общая стоимость",
     inv_note:"Стоимость рассчитана на основе загруженной истории торговой площадки.",
     inv_no_history_note:"Загрузите историю торговой площадки, чтобы увидеть стоимость каждого предмета.",
-    game_summary_title:"Итоги по играм"
+    game_summary_title:"Итоги по играм",
+    inv_steam_section:"🔗 Загрузить из Steam",
+    inv_url_ph:"URL профиля (steamcommunity.com/profiles/76561198…)",
+    inv_fetch_btn:"Загрузить инвентарь",
+    inv_price_all:"💰 Оценить всё",
+    inv_pricing:"Оценка… {done} / {total}",
+    inv_pricing_done:"✓ {n} предметов оценено",
+    inv_err_profile:"Неверный URL. Используйте /profiles/76561... или SteamID64",
+    inv_err_inv:"Не удалось загрузить. Профиль публичный?"
   }
 };
 
@@ -1217,6 +1304,8 @@ function renderInvSection(){
   buildInvGameFilter();
   renderInvTable();
   $("invSection").classList.remove("hidden");
+  const pab = $("priceAllBtn");
+  if(pab) pab.style.display = INV_RESULT.items.some(it=>it.appid) ? "" : "none";
 }
 
 function buildInvGameFilter(){
@@ -1266,9 +1355,138 @@ function renderInvTable(){
   $("invCount").textContent = t("items_shown",{n:intFmt(list.length)});
 }
 
+/* ============== Cache de preços (sessão) ============== */
+const priceCache = new Map(); // key: "appid|market" → {lowest_price, median_price}
+
 function priceCheckCell(it){
   if(!it.appid) return '—';
+  const cached = priceCache.get(it.appid+"|"+it.market);
+  if(cached && cached.lowest_price){
+    return '<span class="pc-done">✓</span><span class="pc-val"> <b>'+esc(cached.lowest_price)+'</b>'+(cached.median_price?' <span class="pc-med">med '+esc(cached.median_price)+'</span>':'')+'</span>';
+  }
   return '<button class="pc-btn" data-appid="'+esc(it.appid)+'" data-mkt="'+esc(it.market)+'">🔍</button><span class="pc-val"></span>';
+}
+
+/* ============== Busca inventário via Steam profile URL ============== */
+function parseSteamProfileUrl(input){
+  input = input.trim();
+  const m = input.match(/\/profiles\/(\d{17})/);
+  if(m) return m[1];
+  if(/^\d{17}$/.test(input)) return input;
+  return null;
+}
+
+async function fetchSteamInventoryFromUrl(){
+  const raw = ($("steamUrlInput")||{value:""}).value;
+  const steamid = parseSteamProfileUrl(raw);
+  if(!steamid){ showError(t("inv_err_profile")); return; }
+  const gameSel = $("steamGameSel");
+  const appid = gameSel.value === "custom"
+    ? (($("steamCustomAppid")||{value:""}).value.trim()||"730")
+    : gameSel.value;
+
+  const btn = $("steamFetchBtn");
+  btn.disabled = true; btn.textContent = "⏳";
+  clearError();
+  try{
+    const url = "https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000";
+    const data = await jsonpFetch(url);
+    if(!data || data.error || !data.assets) throw new Error(t("inv_err_inv"));
+
+    // build classid_instanceid → description map
+    const descMap = new Map();
+    for(const d of (data.descriptions||[])) descMap.set(d.classid+"_"+(d.instanceid||"0"), d);
+
+    // aggregate assets by market_hash_name
+    const byHash = new Map();
+    for(const asset of data.assets){
+      const key = asset.classid+"_"+(asset.instanceid||"0");
+      const d = descMap.get(key)||{};
+      const mkt = d.market_hash_name||d.name||"";
+      if(!mkt) continue;
+      if(byHash.has(mkt)){ byHash.get(mkt).qty += parseInt(asset.amount)||1; }
+      else {
+        byHash.set(mkt, {
+          market: mkt,
+          appid: String(appid),
+          game: d.type||"",
+          type: d.type||"",
+          qty: parseInt(asset.amount)||1,
+          icon_url: d.icon_url||"",
+          avgcost: null, totalcost: null
+        });
+      }
+    }
+
+    // cross-reference market history
+    const histMap = new Map();
+    if(RESULT) for(const it of RESULT.items) histMap.set(it.appid+"|"+it.market, it);
+
+    const items = [...byHash.values()];
+    for(const it of items){
+      const hist = histMap.get(it.appid+"|"+it.market);
+      if(hist && hist.ub > 0){ it.avgcost = hist.vb/hist.ub; it.totalcost = it.avgcost * it.qty; }
+    }
+
+    INV_RESULT = { items };
+    INV_FILENAME = "Steam "+appid;
+    renderInvSection();
+    $("invImportBtn").classList.add("hidden");
+    $("invResetBtn").classList.remove("hidden");
+    $("priceAllBtn").style.display = "";
+  }catch(err){
+    showError(err.message || t("inv_err_inv"));
+  }finally{
+    btn.disabled = false; btn.textContent = t("inv_fetch_btn");
+  }
+}
+
+/* ============== Precificação em lote ============== */
+async function batchPriceAll(){
+  if(!INV_RESULT) return;
+  const BATCH = 2, DELAY = 1100;
+  const allItems = INV_RESULT.items.filter(it=>it.appid);
+  const unique = [...new Map(allItems.map(it=>[it.appid+"|"+it.market, it])).values()]
+    .filter(it=>!priceCache.has(it.appid+"|"+it.market));
+
+  if(!unique.length){
+    // tudo já está em cache — só re-renderizar
+    renderInvSection(); return;
+  }
+
+  const progressWrap = $("priceAllProgressWrap");
+  const fill = $("priceAllFill");
+  const status = $("priceAllStatus");
+  const btn = $("priceAllBtn");
+  if(progressWrap) progressWrap.style.display = "";
+  if(btn){ btn.disabled = true; }
+
+  let done = 0;
+  const total = unique.length;
+  const upd = ()=>{
+    const pct = Math.round(done/total*100);
+    if(fill) fill.style.width = pct+"%";
+    if(status) status.textContent = t("inv_pricing",{done:intFmt(done),total:intFmt(total)});
+  };
+  upd();
+
+  for(let i=0; i<unique.length; i+=BATCH){
+    const batch = unique.slice(i, i+BATCH);
+    await Promise.all(batch.map(async it=>{
+      try{
+        const url = "https://steamcommunity.com/market/priceoverview/?appid="+encodeURIComponent(it.appid)+"&market_hash_name="+encodeURIComponent(it.market)+"&currency=1";
+        const j = await jsonpFetch(url);
+        if(j && j.lowest_price) priceCache.set(it.appid+"|"+it.market, j);
+      }catch(_){}
+      done++; upd();
+    }));
+    if(i+BATCH < unique.length) await new Promise(r=>setTimeout(r, DELAY));
+  }
+
+  if(status) status.textContent = t("inv_pricing_done",{n:intFmt(total)});
+  if(btn){ btn.disabled = false; }
+  // re-render table com preços preenchidos
+  renderInvTable();
 }
 
 function renderTable(){
@@ -1475,6 +1693,7 @@ document.addEventListener("click", async function(e){
     const url = "https://steamcommunity.com/market/priceoverview/?appid="+encodeURIComponent(appid)+"&market_hash_name="+encodeURIComponent(mkt)+"&currency=1";
     const j = await jsonpFetch(url);
     if(j.success && j.lowest_price){
+      priceCache.set(appid+"|"+mkt, j);
       btn.textContent = "✓";
       val.innerHTML = "<b>"+esc(j.lowest_price)+"</b>"+(j.median_price?" <span class='pc-med'>med "+esc(j.median_price)+"</span>":"");
     } else { btn.textContent = "🔍"; val.textContent = "—"; }
@@ -1535,9 +1754,27 @@ $("invResetBtn").onclick = ()=>{
   $("invSection").classList.add("hidden");
   $("invResetBtn").classList.add("hidden");
   $("invImportBtn").classList.remove("hidden");
+  const pb = $("priceAllProgressWrap");
+  if(pb) pb.style.display="none";
 };
 $("invSearch").addEventListener("input", ()=>{ if(INV_RESULT) renderInvTable(); });
 $("invGameFilter").addEventListener("change", ()=>{ if(INV_RESULT) renderInvTable(); });
+
+/* wiring Steam URL fetch */
+$("steamFetchBtn").onclick = fetchSteamInventoryFromUrl;
+$("steamUrlInput").addEventListener("keydown", e=>{ if(e.key==="Enter") fetchSteamInventoryFromUrl(); });
+$("steamGameSel").addEventListener("change", ()=>{
+  const custom = $("steamCustomAppid");
+  if(custom) custom.style.display = $("steamGameSel").value==="custom" ? "" : "none";
+});
+$("priceAllBtn").onclick = batchPriceAll;
+
+/* mostrar "Precificar Todos" ao carregar inventário via CSV também */
+const _origHandleInvFile = handleInvFile;
+handleInvFile = function(file){
+  _origHandleInvFile(file);
+  // o botão aparece dentro de renderInvSection, mas garantimos aqui também
+};
 
 const langSel = $("langSel");
 langSel.addEventListener("change", ()=>{
