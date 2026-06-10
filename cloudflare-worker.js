@@ -1,14 +1,6 @@
 /**
  * Steam-Trades — Proxy CORS para inventário da Steam
  * Cloudflare Worker (grátis, até 100.000 requisições/dia)
- *
- * A Steam não permite que um site estático leia o inventário direto do
- * navegador (sem CORS e sem JSONP). Este Worker faz a requisição do lado
- * do servidor e devolve a resposta com os cabeçalhos CORS corretos.
- *
- * Por segurança, só repassa requisições para steamcommunity.com.
- *
- * Deploy: veja PROXY_SETUP.md
  */
 export default {
   async fetch(request) {
@@ -16,9 +8,9 @@ export default {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, OPTIONS",
       "Access-Control-Allow-Headers": "*",
+      "Access-Control-Expose-Headers": "X-Upstream-Status",
     };
 
-    // Preflight CORS
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: cors });
     }
@@ -46,21 +38,31 @@ export default {
     try {
       upstream = await fetch(t.toString(), {
         headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; Steam-Trades/1.0)",
-          "Accept": "application/json, text/xml, */*",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+          "Accept": "application/json, text/html, text/xml, */*",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Referer": "https://steamcommunity.com/",
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin",
         },
-        cf: { cacheTtl: 60, cacheEverything: true },
+        redirect: "follow",
       });
-    } catch (_) {
-      return json({ error: "upstream fetch failed" }, 502, cors);
+    } catch (e) {
+      return json({ error: "upstream fetch failed", detail: String(e) }, 502, cors);
     }
 
     const body = await upstream.text();
-    const ct = upstream.headers.get("Content-Type") || "application/json";
+    const ct = upstream.headers.get("Content-Type") || "text/plain";
 
+    // Sempre retorna 200 pro browser; o status real da Steam vai no header X-Upstream-Status
     return new Response(body, {
-      status: upstream.status,
-      headers: { ...cors, "Content-Type": ct },
+      status: 200,
+      headers: {
+        ...cors,
+        "Content-Type": ct,
+        "X-Upstream-Status": String(upstream.status),
+      },
     });
   },
 };

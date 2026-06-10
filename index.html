@@ -527,7 +527,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"Salvar",
     inv_proxy_saved:"✓ Proxy salvo",
-    inv_err_noproxy:"Configure o proxy primeiro: abra \"⚙️ Configurar proxy\" e cole a URL do seu Cloudflare Worker."
+    inv_err_noproxy:"Configure o proxy primeiro: abra \"⚙️ Configurar proxy\" e cole a URL do seu Cloudflare Worker.",
+    inv_err_ratelimit:"A Steam está limitando requisições (429). Aguarde 1-2 minutos e tente novamente."
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -613,7 +614,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"Save",
     inv_proxy_saved:"✓ Proxy saved",
-    inv_err_noproxy:"Set up the proxy first: open \"⚙️ Set up proxy\" and paste your Cloudflare Worker URL."
+    inv_err_noproxy:"Set up the proxy first: open \"⚙️ Set up proxy\" and paste your Cloudflare Worker URL.",
+    inv_err_ratelimit:"Steam is rate-limiting requests (429). Wait 1-2 minutes and try again."
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -699,7 +701,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"Guardar",
     inv_proxy_saved:"✓ Proxy guardado",
-    inv_err_noproxy:"Configura el proxy primero: abre \"⚙️ Configurar proxy\" y pega la URL de tu Cloudflare Worker."
+    inv_err_noproxy:"Configura el proxy primero: abre \"⚙️ Configurar proxy\" y pega la URL de tu Cloudflare Worker.",
+    inv_err_ratelimit:"Steam está limitando solicitudes (429). Espera 1-2 minutos e intenta de nuevo."
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -785,7 +788,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"Enregistrer",
     inv_proxy_saved:"✓ Proxy enregistré",
-    inv_err_noproxy:"Configurez d'abord le proxy : ouvrez « ⚙️ Configurer le proxy » et collez l'URL de votre Cloudflare Worker."
+    inv_err_noproxy:"Configurez d'abord le proxy : ouvrez « ⚙️ Configurer le proxy » et collez l'URL de votre Cloudflare Worker.",
+    inv_err_ratelimit:"Steam limite les requêtes (429). Attendez 1-2 minutes et réessayez."
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -871,7 +875,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"Speichern",
     inv_proxy_saved:"✓ Proxy gespeichert",
-    inv_err_noproxy:"Richte zuerst den Proxy ein: öffne „⚙️ Proxy einrichten“ und füge deine Cloudflare-Worker-URL ein."
+    inv_err_noproxy:"Richte zuerst den Proxy ein: öffne „⚙️ Proxy einrichten“ und füge deine Cloudflare-Worker-URL ein.",
+    inv_err_ratelimit:"Steam drosselt Anfragen (429). Warte 1-2 Minuten und versuche es erneut."
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -957,7 +962,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"保存",
     inv_proxy_saved:"✓ 代理已保存",
-    inv_err_noproxy:"请先配置代理：打开“⚙️ 配置代理”并粘贴你的 Cloudflare Worker 网址。"
+    inv_err_noproxy:"请先配置代理：打开“⚙️ 配置代理”并粘贴你的 Cloudflare Worker 网址。",
+    inv_err_ratelimit:"Steam 正在限制请求（429）。请等待 1-2 分钟后重试。"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -1043,7 +1049,8 @@ const I18N = {
     inv_proxy_ph:"https://...workers.dev",
     inv_proxy_save:"Сохранить",
     inv_proxy_saved:"✓ Прокси сохранён",
-    inv_err_noproxy:"Сначала настройте прокси: откройте «⚙️ Настроить прокси» и вставьте URL вашего Cloudflare Worker."
+    inv_err_noproxy:"Сначала настройте прокси: откройте «⚙️ Настроить прокси» и вставьте URL вашего Cloudflare Worker.",
+    inv_err_ratelimit:"Steam ограничивает запросы (429). Подождите 1-2 минуты и попробуйте снова."
   }
 };
 
@@ -1633,6 +1640,10 @@ async function proxyFetch(target){
   if(!proxy) throw new Error("noproxy");
   const resp = await fetch(proxy + "?url=" + encodeURIComponent(target));
   if(!resp.ok) throw new Error("load");
+  const upStatus = parseInt(resp.headers.get("X-Upstream-Status")||"200");
+  if(upStatus === 429) throw new Error("ratelimit");
+  if(upStatus === 403) throw new Error("load");
+  if(upStatus >= 400) throw new Error("upstream_"+upStatus);
   return resp;
 }
 
@@ -1714,6 +1725,8 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
     let msg;
     if(err.message === "noproxy") msg = t("inv_err_noproxy");
     else if(err.message === "load") msg = t("inv_err_load");
+    else if(err.message === "ratelimit") msg = t("inv_err_ratelimit");
+    else if(err.message.startsWith("upstream_")) msg = "Erro "+err.message.split("_")[1]+" ao acessar a Steam.";
     else msg = err.message || t("inv_err_inv");
     showError(msg);
   }finally{
