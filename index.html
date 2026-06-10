@@ -200,7 +200,7 @@
 <div class="wrap">
 
   <header class="top">
-    <h1>📊 <span data-i18n="title_market">Análise do Mercado</span> <span class="brand">Steam</span></h1>
+    <h1>📊 <a id="homeLink" href="#" style="color:inherit;text-decoration:none"><span data-i18n="title_market">Análise do Mercado</span> <span class="brand">Steam</span></a></h1>
     <span class="privacy" data-i18n="privacy">🔒 Seus dados ficam só no seu navegador</span>
     <span class="spacer"></span>
     <select id="langSel" class="langsel" aria-label="Language">
@@ -285,7 +285,7 @@
     <div class="toolbar" style="margin-bottom:4px">
       <button class="btn ghost" id="resetBtn" data-i18n="btn_reset">↺ Trocar histórico</button>
       <label class="btn ghost" id="addMarketBtn" style="cursor:pointer;display:none" data-i18n="add_market">+ Histórico<input type="file" id="addMarketInput" accept=".csv,text/csv" style="display:none"></label>
-      <label class="btn ghost" id="invImportBtn" style="cursor:pointer" data-i18n="add_inventory">+ Inventário<input type="file" id="invFileInput" accept=".csv,text/csv" style="display:none"></label>
+      <input type="file" id="invFileInput" accept=".csv,text/csv" style="display:none">
       <button class="btn ghost hidden" id="invResetBtn" data-i18n="btn_inv_reset">↺ Trocar inventário</button>
       <span class="count" id="fileInfo"></span>
       <span class="spacer"></span>
@@ -392,6 +392,7 @@
         <div class="toolbar">
           <input type="text" id="invSearch" data-i18n-ph="search_ph" placeholder="🔎 Buscar item…">
           <select id="invGameFilter"></select>
+          <select id="invTypeFilter"></select>
           <span class="spacer"></span>
           <span class="count" id="invCount"></span>
         </div>
@@ -1121,8 +1122,9 @@ function parseCSV(text){
 function detectCategory(market){
   if(market.startsWith("★")) return "knife";
   if(market.startsWith("Souvenir ")) return "souvenir";
-  if(market.startsWith("Sticker |")) return "sticker";
+  if(/^(Sticker|Patch) \|/i.test(market)) return "sticker";
   if(/\b(Case|Capsule|Package|Crate)\b/i.test(market)) return "case";
+  if(/ \| /.test(market)) return "weapon";
   return "other";
 }
 
@@ -1492,7 +1494,7 @@ function analyzeInventory(rows){
     let avgcost = null, totalcost = null;
     const hist = histMap.get(appid+"|"+market);
     if(hist && hist.ub > 0){ avgcost = hist.vb/hist.ub; totalcost = avgcost * qty; }
-    items.push({ market, appid, game, type, qty, avgcost, totalcost });
+    items.push({ market, appid, game, type, qty, avgcost, totalcost, category: detectCategory(market) });
   }
   if(!items.length) throw new Error(t("inv_err_empty"));
   return { items };
@@ -1543,11 +1545,23 @@ function renderInvSection(){
   if(noHistNote) noHistNote.style.display = (!hasHistory) ? "" : "none";
 
   buildInvGameFilter();
+  buildInvTypeFilter();
   renderInvTable();
   $("invEmpty").style.display = "none";
   $("invLoadedContent").style.display = "";
   const pab = $("priceAllBtn");
   if(pab) pab.style.display = INV_RESULT.items.some(it=>it.appid) ? "" : "none";
+}
+
+function buildInvTypeFilter(){
+  if(!INV_RESULT) return;
+  const cats = [...new Set(INV_RESULT.items.map(it=>it.category).filter(Boolean))].sort();
+  const labels = { knife:t("type_knife"), weapon:t("type_weapon"), case:t("type_case"), sticker:t("type_sticker"), souvenir:t("type_souvenir"), other:t("type_other") };
+  const sel = $("invTypeFilter"); if(!sel) return;
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">'+t("type_all")+'</option>'+
+    cats.map(c=>'<option value="'+esc(c)+'">'+esc(labels[c]||c)+'</option>').join("");
+  if(cur && cats.includes(cur)) sel.value = cur;
 }
 
 function buildInvGameFilter(){
@@ -1579,9 +1593,11 @@ function renderInvTable(){
   });
   const q = $("invSearch").value.trim().toLowerCase();
   const game = $("invGameFilter").value;
+  const cat = ($("invTypeFilter")||{value:""}).value;
   let list = INV_RESULT.items.filter(it=>{
     if(q && !it.market.toLowerCase().includes(q)) return false;
     if(game && it.game !== game) return false;
+    if(cat && it.category !== cat) return false;
     return true;
   });
   list.sort((a,b)=>{
@@ -1599,6 +1615,13 @@ function renderInvTable(){
 
 /* ============== Cache de preços (sessão) ============== */
 const priceCache = new Map(); // key: "appid|market" → {lowest_price, median_price}
+
+const APPID_NAMES = {
+  "730":"Counter-Strike 2","440":"Team Fortress 2","570":"Dota 2",
+  "252490":"Rust","304930":"Unturned","550":"Left 4 Dead 2",
+  "620":"Portal 2","218620":"PAYDAY 2","1172470":"Apex Legends",
+  "578080":"PUBG","1245620":"Elden Ring","1091500":"Cyberpunk 2077",
+};
 
 function priceCheckCell(it){
   if(!it.appid) return '—';
@@ -1734,6 +1757,7 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
           appid: String(appid),
           game: d.type||"",
           type: d.type||"",
+          category: detectCategory(mkt),
           qty: parseInt(asset.amount)||1,
           icon_url: d.icon_url||"",
           avgcost: null, totalcost: null
@@ -1971,7 +1995,6 @@ function syncToolbar(){
   const hm = !!RESULT, hi = !!INV_RESULT;
   $("resetBtn").style.display = hm ? "" : "none";
   $("addMarketBtn").style.display = (!hm && hi) ? "" : "none";
-  $("invImportBtn").style.display = hi ? "none" : "";
   $("invResetBtn").classList.toggle("hidden", !hi);
   $("marketContent").style.display = hm ? "" : "none";
   if(hm) updateFileInfo();
@@ -2003,6 +2026,12 @@ $("steamUrlInputLanding").addEventListener("keydown", e=>{ if(e.key==="Enter") $
 $("invFileLanding").addEventListener("change", e=>{ if(e.target.files[0]) handleInvFile(e.target.files[0]); });
 // results: add market history when inventory-only
 $("addMarketInput").addEventListener("change", e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+$("homeLink").onclick = e => {
+  e.preventDefault();
+  RESULT=null; INV_RESULT=null;
+  $("results").classList.add("hidden");
+  $("landing").classList.remove("hidden");
+};
 $("resetBtn").onclick = ()=>{
   RESULT=null; fi.value=""; FILENAME="";
   const ami=$("addMarketInput"); if(ami) ami.value="";
@@ -2114,7 +2143,7 @@ document.addEventListener("mouseover", function(e){
     const mkt = a.dataset.mkt||a.textContent.replace("↗","").trim();
     const appid = a.dataset.appid||(a.href.match(/listings\/(\d+)\//)||[])[1]||"";
     _hTip = document.createElement("div"); _hTip.className = "item-tip";
-    _hTip.innerHTML = '<div class="item-tip-name">'+esc(mkt)+'</div><div class="item-tip-sub">'+esc(appid?"App "+appid:"Steam Market")+'</div>';
+    _hTip.innerHTML = '<div class="item-tip-name">'+esc(mkt)+'</div><div class="item-tip-sub">'+esc(appid?(APPID_NAMES[appid]||"App "+appid):"Steam Market")+'</div>';
     document.body.appendChild(_hTip);
     const rect = a.getBoundingClientRect();
     let top = rect.bottom+8, left = rect.left;
@@ -2154,6 +2183,7 @@ $("invResetBtn").onclick = ()=>{
 };
 $("invSearch").addEventListener("input", ()=>{ if(INV_RESULT) renderInvTable(); });
 $("invGameFilter").addEventListener("change", ()=>{ if(INV_RESULT) renderInvTable(); });
+$("invTypeFilter").addEventListener("change", ()=>{ if(INV_RESULT) renderInvTable(); });
 
 /* wiring Steam URL fetch */
 $("steamFetchBtn").onclick = fetchSteamInventoryFromUrl;
