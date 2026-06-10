@@ -494,15 +494,16 @@ const I18N = {
     inv_empty_state:"Carregue um inventário usando o CSV do Steam Inventory Helper ou informe a URL da Steam acima.",
     game_summary_title:"Resumo por Jogo",
     inv_steam_section:"🔗 Buscar direto da Steam",
-    inv_url_ph:"URL do perfil (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"URL do perfil (ex: steamcommunity.com/id/seunome)",
     inv_fetch_btn:"Buscar Inventário",
     inv_price_all:"💰 Precificar Todos",
     inv_pricing:"Precificando… {done} / {total}",
     inv_pricing_done:"✓ {n} itens precificados",
-    inv_err_profile:"URL inválida. Use /profiles/76561... ou só o SteamID64",
+    inv_err_profile:"URL inválida. Use /profiles/76561..., /id/seunome ou só o SteamID64",
     inv_url_how:"❓ Como encontrar meu link?",
-    inv_url_help:"No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço. Ela precisa conter <code>/profiles/76561198…</code><br>Se tiver <code>/id/seunome</code> (URL customizada), abra <b>Steam → Configurações → Conta</b> para ver o SteamID64 numérico.",
-    inv_err_inv:"Não foi possível carregar. Perfil público?"
+    inv_url_help:"No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço. Funciona com <code>/profiles/76561198…</code> e também com <code>/id/seunome</code> (URL customizada). Certifique-se que seu <b>inventário está público</b> nas configurações de privacidade do Steam.",
+    inv_err_inv:"Não foi possível carregar o inventário.",
+    inv_err_load:"Acesso negado pelo Steam. Verifique se seu perfil e inventário estão <b>públicos</b> em Steam → Configurações → Privacidade."
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -573,15 +574,16 @@ const I18N = {
     inv_empty_state:"Load an inventory using the Steam Inventory Helper CSV or enter your Steam profile URL above.",
     game_summary_title:"Summary by Game",
     inv_steam_section:"🔗 Fetch from Steam",
-    inv_url_ph:"Profile URL (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"Profile URL (e.g. steamcommunity.com/id/username)",
     inv_fetch_btn:"Fetch Inventory",
     inv_price_all:"💰 Price All",
     inv_pricing:"Pricing… {done} / {total}",
     inv_pricing_done:"✓ {n} items priced",
-    inv_err_profile:"Invalid URL. Use /profiles/76561... or just the SteamID64",
+    inv_err_profile:"Invalid URL. Use /profiles/76561..., /id/username or just the SteamID64",
     inv_url_how:"❓ How to find my link?",
-    inv_url_help:"In Steam, click your name → <b>View Profile</b> → copy the URL from the address bar. It must contain <code>/profiles/76561198…</code><br>If it shows <code>/id/username</code> (custom URL), go to <b>Steam → Settings → Account</b> to find your numeric SteamID64.",
-    inv_err_inv:"Could not load inventory. Is the profile public?"
+    inv_url_help:"In Steam, click your name → <b>View Profile</b> → copy the URL from the address bar. Both <code>/profiles/76561198…</code> and <code>/id/username</code> (custom URL) work. Make sure your <b>inventory is set to Public</b> in Steam → Settings → Privacy.",
+    inv_err_inv:"Could not load inventory.",
+    inv_err_load:"Access denied by Steam. Make sure your profile and inventory are set to <b>Public</b> in Steam → Settings → Privacy."
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -652,15 +654,16 @@ const I18N = {
     inv_empty_state:"Carga un inventario usando el CSV de Steam Inventory Helper o ingresa la URL de Steam arriba.",
     game_summary_title:"Resumen por Juego",
     inv_steam_section:"🔗 Obtener desde Steam",
-    inv_url_ph:"URL de perfil (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"URL de perfil (ej: steamcommunity.com/id/nombre)",
     inv_fetch_btn:"Obtener inventario",
     inv_price_all:"💰 Precificar todo",
     inv_pricing:"Precificando… {done} / {total}",
     inv_pricing_done:"✓ {n} ítems precificados",
-    inv_err_profile:"URL inválida. Usa /profiles/76561... o solo el SteamID64",
+    inv_err_profile:"URL inválida. Usa /profiles/76561..., /id/nombre o solo el SteamID64",
     inv_url_how:"❓ ¿Cómo encontrar mi enlace?",
-    inv_url_help:"En Steam, haz clic en tu nombre → <b>Ver perfil</b> → copia la URL de la barra de direcciones. Debe contener <code>/profiles/76561198…</code><br>Si muestra <code>/id/nombre</code> (URL personalizada), ve a <b>Steam → Ajustes → Cuenta</b> para ver tu SteamID64 numérico.",
-    inv_err_inv:"No se pudo cargar. ¿El perfil es público?"
+    inv_url_help:"En Steam, haz clic en tu nombre → <b>Ver perfil</b> → copia la URL de la barra de direcciones. Funciona con <code>/profiles/76561198…</code> y también con <code>/id/nombre</code> (URL personalizada). Asegúrate de que tu <b>inventario sea Público</b> en Steam → Ajustes → Privacidad.",
+    inv_err_inv:"No se pudo cargar el inventario.",
+    inv_err_load:"Acceso denegado por Steam. Verifica que tu perfil e inventario sean <b>Públicos</b> en Steam → Ajustes → Privacidad."
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -731,15 +734,16 @@ const I18N = {
     inv_empty_state:"Chargez un inventaire via le CSV Steam Inventory Helper ou entrez l'URL Steam ci-dessus.",
     game_summary_title:"Résumé par Jeu",
     inv_steam_section:"🔗 Récupérer depuis Steam",
-    inv_url_ph:"URL du profil (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"URL du profil (ex : steamcommunity.com/id/nom)",
     inv_fetch_btn:"Récupérer l'inventaire",
     inv_price_all:"💰 Tout tarifier",
     inv_pricing:"Tarification… {done} / {total}",
     inv_pricing_done:"✓ {n} objets tarifés",
-    inv_err_profile:"URL invalide. Utilisez /profiles/76561... ou le SteamID64",
+    inv_err_profile:"URL invalide. Utilisez /profiles/76561..., /id/nom ou le SteamID64",
     inv_url_how:"❓ Comment trouver mon lien ?",
-    inv_url_help:"Dans Steam, cliquez sur votre nom → <b>Voir le profil</b> → copiez l'URL dans la barre d'adresse. Elle doit contenir <code>/profiles/76561198…</code><br>Si elle affiche <code>/id/nom</code> (URL personnalisée), allez dans <b>Steam → Paramètres → Compte</b> pour trouver votre SteamID64 numérique.",
-    inv_err_inv:"Impossible de charger. Le profil est-il public ?"
+    inv_url_help:"Dans Steam, cliquez sur votre nom → <b>Voir le profil</b> → copiez l'URL dans la barre d'adresse. Fonctionne avec <code>/profiles/76561198…</code> et <code>/id/nom</code> (URL personnalisée). Assurez-vous que votre <b>inventaire est Public</b> dans Steam → Paramètres → Confidentialité.",
+    inv_err_inv:"Impossible de charger l'inventaire.",
+    inv_err_load:"Accès refusé par Steam. Vérifiez que votre profil et votre inventaire sont <b>Publics</b> dans Steam → Paramètres → Confidentialité."
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -810,15 +814,16 @@ const I18N = {
     inv_empty_state:"Lade ein Inventar mit dem Steam Inventory Helper CSV oder gib oben die Steam-Profil-URL ein.",
     game_summary_title:"Zusammenfassung nach Spiel",
     inv_steam_section:"🔗 Von Steam laden",
-    inv_url_ph:"Profil-URL (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"Profil-URL (z.B. steamcommunity.com/id/name)",
     inv_fetch_btn:"Inventar laden",
     inv_price_all:"💰 Alle bewerten",
     inv_pricing:"Bewertung… {done} / {total}",
     inv_pricing_done:"✓ {n} Artikel bewertet",
-    inv_err_profile:"Ungültige URL. Verwende /profiles/76561... oder die SteamID64",
+    inv_err_profile:"Ungültige URL. Verwende /profiles/76561..., /id/name oder die SteamID64",
     inv_url_how:"❓ Wie finde ich meinen Link?",
-    inv_url_help:"In Steam, klicke auf deinen Namen → <b>Profil anzeigen</b> → kopiere die URL aus der Adressleiste. Sie muss <code>/profiles/76561198…</code> enthalten.<br>Bei <code>/id/name</code> (benutzerdefinierte URL) gehe zu <b>Steam → Einstellungen → Konto</b>, um deine numerische SteamID64 zu sehen.",
-    inv_err_inv:"Konnte nicht laden. Ist das Profil öffentlich?"
+    inv_url_help:"In Steam, klicke auf deinen Namen → <b>Profil anzeigen</b> → kopiere die URL aus der Adressleiste. Funktioniert mit <code>/profiles/76561198…</code> und <code>/id/name</code> (benutzerdefinierte URL). Stelle sicher, dass dein <b>Inventar auf Öffentlich</b> gestellt ist unter Steam → Einstellungen → Privatsphäre.",
+    inv_err_inv:"Inventar konnte nicht geladen werden.",
+    inv_err_load:"Zugriff von Steam verweigert. Stelle sicher, dass Profil und Inventar unter Steam → Einstellungen → Privatsphäre auf <b>Öffentlich</b> gesetzt sind."
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -889,15 +894,16 @@ const I18N = {
     inv_empty_state:"请上传 Steam Inventory Helper CSV 文件或在上方输入 Steam 主页链接。",
     game_summary_title:"按游戏汇总",
     inv_steam_section:"🔗 从Steam获取",
-    inv_url_ph:"个人资料链接 (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"个人资料链接 (例: steamcommunity.com/id/用户名)",
     inv_fetch_btn:"获取库存",
     inv_price_all:"💰 全部定价",
     inv_pricing:"定价中… {done} / {total}",
     inv_pricing_done:"✓ 已完成 {n} 件",
-    inv_err_profile:"链接无效，请使用 /profiles/76561... 或直接粘贴 SteamID64",
+    inv_err_profile:"链接无效，支持 /profiles/76561...、/id/用户名 或直接粘贴 SteamID64",
     inv_url_how:"❓ 如何找到我的链接？",
-    inv_url_help:"在 Steam 中，点击您的名字 → <b>查看个人资料</b> → 复制浏览器地址栏中的 URL。它必须包含 <code>/profiles/76561198…</code><br>如果显示 <code>/id/用户名</code>（自定义 URL），请前往 <b>Steam → 设置 → 账户</b> 查看您的数字 SteamID64。",
-    inv_err_inv:"无法加载库存，请确认个人资料为公开状态"
+    inv_url_help:"在 Steam 中，点击您的名字 → <b>查看个人资料</b> → 复制浏览器地址栏中的 URL。支持 <code>/profiles/76561198…</code> 和 <code>/id/用户名</code>（自定义 URL）两种格式。请确保您的<b>库存设置为公开</b>（Steam → 设置 → 隐私）。",
+    inv_err_inv:"无法加载库存。",
+    inv_err_load:"Steam 拒绝访问。请前往 Steam → 设置 → 隐私，确认个人资料和库存均设为<b>公开</b>。"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -968,15 +974,16 @@ const I18N = {
     inv_empty_state:"Загрузите инвентарь через CSV Steam Inventory Helper или укажите URL профиля Steam выше.",
     game_summary_title:"Итоги по играм",
     inv_steam_section:"🔗 Загрузить из Steam",
-    inv_url_ph:"URL профиля (steamcommunity.com/profiles/76561198…)",
+    inv_url_ph:"URL профиля (напр.: steamcommunity.com/id/имяпользователя)",
     inv_fetch_btn:"Загрузить инвентарь",
     inv_price_all:"💰 Оценить всё",
     inv_pricing:"Оценка… {done} / {total}",
     inv_pricing_done:"✓ {n} предметов оценено",
-    inv_err_profile:"Неверный URL. Используйте /profiles/76561... или SteamID64",
+    inv_err_profile:"Неверный URL. Используйте /profiles/76561..., /id/имя или SteamID64",
     inv_url_how:"❓ Как найти мою ссылку?",
-    inv_url_help:"В Steam нажмите на своё имя → <b>Просмотреть профиль</b> → скопируйте URL из адресной строки. Он должен содержать <code>/profiles/76561198…</code><br>Если отображается <code>/id/имя</code> (пользовательский URL), перейдите в <b>Steam → Настройки → Аккаунт</b>, чтобы найти числовой SteamID64.",
-    inv_err_inv:"Не удалось загрузить. Профиль публичный?"
+    inv_url_help:"В Steam нажмите на своё имя → <b>Просмотреть профиль</b> → скопируйте URL из адресной строки. Работает как с <code>/profiles/76561198…</code>, так и с <code>/id/имя</code> (пользовательский URL). Убедитесь, что ваш <b>инвентарь открыт для всех</b> в Steam → Настройки → Конфиденциальность.",
+    inv_err_inv:"Не удалось загрузить инвентарь.",
+    inv_err_load:"Steam отклонил запрос. Убедитесь, что профиль и инвентарь <b>открыты для всех</b> в Steam → Настройки → Конфиденциальность."
   }
 };
 
@@ -1567,20 +1574,13 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
   clearError();
   try{
     const apiUrl = steamid
-      ? "https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000"
+      ? "https://steamcommunity.com/profiles/"+steamid+"/inventory/json/"+appid+"/2?l=english&count=5000"
       : "https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/inventory/json/"+appid+"/2?l=english&count=5000";
     const data = await jsonpFetch(apiUrl);
 
-    let assets, descriptions;
-    if(steamid){
-      if(!data || data.error || !data.assets) throw new Error(t("inv_err_inv"));
-      assets = data.assets;
-      descriptions = data.descriptions||[];
-    } else {
-      if(!data || !data.success || !data.rgInventory) throw new Error(t("inv_err_inv"));
-      assets = Object.values(data.rgInventory).map(a=>({classid:a.classid, instanceid:a.instanceid||"0", amount:a.amount||1}));
-      descriptions = Object.values(data.rgDescriptions||{});
-    }
+    if(!data || !data.success || !data.rgInventory) throw new Error(t("inv_err_inv"));
+    const assets = Object.values(data.rgInventory).map(a=>({classid:a.classid, instanceid:a.instanceid||"0", amount:a.amount||1}));
+    const descriptions = Object.values(data.rgDescriptions||{});
 
     // build classid_instanceid → description map
     const descMap = new Map();
@@ -1624,7 +1624,8 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
     renderInvSection();
     syncToolbar();
   }catch(err){
-    showError(err.message || t("inv_err_inv"));
+    const msg = err.message === "load" ? t("inv_err_load") : err.message || t("inv_err_inv");
+    showError(msg);
   }finally{
     btn.disabled = false; btn.textContent = t("inv_fetch_btn");
   }
