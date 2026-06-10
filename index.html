@@ -1454,7 +1454,7 @@ const INV_COLS = [
   { key:"qty",       lk:"th_qty",                     fmt:(it)=>intFmt(it.qty) },
   { key:"avgcost",   lk:"th_avgcost",   money:true,   fmt:(it)=>it.avgcost!=null?money(it.avgcost):'—' },
   { key:"totalcost", lk:"th_totalcost", money:true,   fmt:(it)=>it.totalcost!=null?money(it.totalcost):'—' },
-  { key:"pricecheck",lk:"th_pricechk",  l:true, nosort:true, fmt:(it)=>priceCheckCell(it) },
+  { key:"pricecheck",lk:"th_pricechk",  l:true,             fmt:(it)=>priceCheckCell(it) },
 ];
 
 function invItemCell(it){
@@ -1587,7 +1587,7 @@ function renderInvTable(){
     th.onclick = ()=>{
       const k = th.dataset.k;
       if(k===invSortKey) invSortDir=-invSortDir;
-      else { invSortKey=k; invSortDir=(k==="market"||k==="game"||k==="type")?1:-1; }
+      else { invSortKey=k; invSortDir=(k==="market"||k==="game"||k==="type")?1:-1; invSortDir=(k==="pricecheck")?-1:invSortDir; }
       renderInvTable();
     };
   });
@@ -1600,7 +1600,13 @@ function renderInvTable(){
     if(cat && it.category !== cat) return false;
     return true;
   });
+  const pcNum = it => {
+    const c = priceCache.get(it.appid+"|"+it.market);
+    if(!c || !c.lowest_price) return invSortDir > 0 ? Infinity : -Infinity;
+    return parseFloat(c.lowest_price.replace(/[^0-9.]/g,""))||0;
+  };
   list.sort((a,b)=>{
+    if(invSortKey === "pricecheck") return (pcNum(a)-pcNum(b))*invSortDir;
     let x=a[invSortKey], y=b[invSortKey];
     if(x==null) x=invSortDir>0?-Infinity:Infinity;
     if(y==null) y=invSortDir>0?-Infinity:Infinity;
