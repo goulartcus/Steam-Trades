@@ -1618,7 +1618,7 @@ function parseVanityFromUrl(input){
 }
 
 /* ============== Proxy CORS (Cloudflare Worker) ============== */
-const DEFAULT_STEAM_PROXY = ""; // preenchido após o deploy do Worker
+const DEFAULT_STEAM_PROXY = "https://square-frog-f324steam-proxy.goulartcus.workers.dev";
 const PROXY_KEY = "steamProxyUrl";
 function getSteamProxy(){
   return ((localStorage.getItem(PROXY_KEY)||DEFAULT_STEAM_PROXY)||"").trim().replace(/\/+$/,"");
