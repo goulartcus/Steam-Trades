@@ -2018,8 +2018,12 @@ $("gameFilter").addEventListener("change", ()=>{
 $("typeFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 $("statusFilter").addEventListener("change", ()=>{ if(RESULT) renderTable(); });
 
-/* ============== JSONP helper (bypassa CORS p/ APIs da Steam) ============== */
-function jsonpFetch(url){
+/* ============== JSONP helper (usa proxy se disponível, senão JSONP) ============== */
+async function jsonpFetch(url){
+  if(getSteamProxy()){
+    const r = await proxyFetch(url);
+    return r.json();
+  }
   return new Promise((resolve, reject)=>{
     const cb = "_jpc"+Date.now().toString(36)+Math.random().toString(36).slice(2);
     const s = document.createElement("script");
@@ -2070,7 +2074,7 @@ function renderGameSummary(){
   }).join("");
 }
 
-/* ============== Price Check (via JSONP) ============== */
+/* ============== Price Check ============== */
 document.addEventListener("click", async function(e){
   const btn = e.target.closest(".pc-btn");
   if(!btn || btn.disabled) return;
