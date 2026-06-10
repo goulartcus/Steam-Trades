@@ -1237,7 +1237,7 @@ let sortKey = "realized", sortDir = -1;
 
 const $ = id => document.getElementById(id);
 
-function showError(msg){ const e=$("error"); e.textContent="⚠ "+msg; e.classList.remove("hidden"); }
+function showError(msg){ const e=$("error"); e.innerHTML="⚠ "+esc(msg).replace(/\n/g,"<br>"); e.classList.remove("hidden"); }
 function clearError(){ $("error").classList.add("hidden"); }
 
 function updateFileInfo(){
@@ -1643,7 +1643,12 @@ async function proxyFetch(target){
   const upStatus = parseInt(resp.headers.get("X-Upstream-Status")||"200");
   if(upStatus === 429) throw new Error("ratelimit");
   if(upStatus === 403) throw new Error("load");
-  if(upStatus >= 400) throw new Error("upstream_"+upStatus);
+  if(upStatus >= 400){
+    let body = "";
+    try{ body = (await resp.clone().text()).slice(0, 300); }catch(_){}
+    const finalUrl = resp.headers.get("X-Final-Url")||"";
+    throw new Error("upstream_"+upStatus+"\nURL: "+finalUrl+"\nBody: "+body);
+  }
   return resp;
 }
 
