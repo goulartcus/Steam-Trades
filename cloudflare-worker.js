@@ -34,17 +34,25 @@ export default {
       return json({ error: "host not allowed" }, 403, cors);
     }
 
+    // Detect if this is a JSON API call (inventory endpoints)
+    const isInventory = t.pathname.includes("/inventory/");
+    const isOldInventory = t.pathname.includes("/inventory/json/");
+    const isJsonApi = isInventory || isOldInventory;
+
+    const reqHeaders = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+      "Accept": isJsonApi
+        ? "application/json, text/javascript, */*; q=0.01"
+        : "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.9",
+      "Referer": "https://steamcommunity.com/",
+      "Origin": "https://steamcommunity.com",
+    };
+    if (isJsonApi) reqHeaders["X-Requested-With"] = "XMLHttpRequest";
+
     let upstream;
     try {
-      upstream = await fetch(t.toString(), {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-          "Accept": "text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8",
-          "Accept-Language": "en-US,en;q=0.9",
-          "Referer": "https://steamcommunity.com/",
-        },
-        redirect: "follow",
-      });
+      upstream = await fetch(t.toString(), { headers: reqHeaders, redirect: "follow" });
     } catch (e) {
       return json({ error: "upstream fetch failed", detail: String(e) }, 502, cors);
     }

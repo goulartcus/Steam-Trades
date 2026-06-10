@@ -1635,7 +1635,7 @@ function setSteamProxy(url){
   if(url) localStorage.setItem(PROXY_KEY, url); else localStorage.removeItem(PROXY_KEY);
   document.querySelectorAll(".proxyInput").forEach(i=>{ i.value = url; });
 }
-async function proxyFetch(target){
+async function proxyFetch(target, {allowStatus=[]}={}){
   const proxy = getSteamProxy();
   if(!proxy) throw new Error("noproxy");
   const resp = await fetch(proxy + "?url=" + encodeURIComponent(target));
@@ -1643,13 +1643,21 @@ async function proxyFetch(target){
   const upStatus = parseInt(resp.headers.get("X-Upstream-Status")||"200");
   if(upStatus === 429) throw new Error("ratelimit");
   if(upStatus === 403) throw new Error("load");
-  if(upStatus >= 400){
+  if(upStatus >= 400 && !allowStatus.includes(upStatus)){
     let body = "";
     try{ body = (await resp.clone().text()).slice(0, 300); }catch(_){}
     const finalUrl = resp.headers.get("X-Final-Url")||"";
     throw new Error("upstream_"+upStatus+"\nURL: "+finalUrl+"\nBody: "+body);
   }
   return resp;
+}
+
+function convertOldInventory(raw){
+  const descriptions = Object.values(raw.rgDescriptions||{});
+  const assets = Object.entries(raw.rgInventory||{}).map(([assetid,item])=>({
+    assetid, classid: item.classid, instanceid: item.instanceid||"0", amount: item.amount||1
+  }));
+  return { assets, descriptions };
 }
 
 async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, btnId){
@@ -1684,11 +1692,27 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
       steamid = m[1];
     }
 
-    let resp;
-    try{ resp = await proxyFetch("https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000"); }
-    catch(e){ throw new Error("Erro ao buscar inventário (steamid="+steamid+"): "+e.message); }
-    const data = await resp.json();
-    if(!data || !data.assets || !data.descriptions) throw new Error(t("inv_err_inv"));
+    // Try multiple inventory endpoints in order of preference
+    const base = "https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2";
+    const invEndpoints = [
+      { url: base+"?l=english&count=2000", fmt: "new" },
+      { url: base+"?l=english&count=75",   fmt: "new" },
+      { url: base+"?count=75",             fmt: "new" },
+      { url: base,                          fmt: "new" },
+      { url: "https://steamcommunity.com/profiles/"+steamid+"/inventory/json/"+appid+"/2?trading=1", fmt: "old" },
+    ];
+    let data = null, lastInvErr = null;
+    for(const ep of invEndpoints){
+      try{
+        const r = await proxyFetch(ep.url);
+        const raw = await r.json();
+        if(ep.fmt === "new" && raw && raw.assets && raw.descriptions){ data = raw; break; }
+        if(ep.fmt === "old" && raw && raw.success && raw.rgDescriptions){ data = convertOldInventory(raw); break; }
+        lastInvErr = new Error(t("inv_err_inv"));
+      }catch(e){ lastInvErr = e; }
+    }
+    if(!data) throw new Error("Erro ao buscar inventário (steamid="+steamid+"): "+(lastInvErr ? lastInvErr.message : t("inv_err_inv")));
+
     const assets = data.assets;
     const descriptions = data.descriptions;
 
