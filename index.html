@@ -1543,13 +1543,20 @@ function parseSteamProfileUrl(input){
   if(/^\d{17}$/.test(input)) return input;
   return null;
 }
+function parseVanityFromUrl(input){
+  input = input.trim();
+  const m = input.match(/\/id\/([^\/\?#\s]+)/);
+  if(m) return m[1];
+  return null;
+}
 
 async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, btnId){
   urlInputId = urlInputId||"steamUrlInput"; gameSelId = gameSelId||"steamGameSel";
   customAppidId = customAppidId||"steamCustomAppid"; btnId = btnId||"steamFetchBtn";
   const raw = ($(urlInputId)||{value:""}).value;
   const steamid = parseSteamProfileUrl(raw);
-  if(!steamid){ showError(t("inv_err_profile")); return; }
+  const vanity = steamid ? null : parseVanityFromUrl(raw);
+  if(!steamid && !vanity){ showError(t("inv_err_profile")); return; }
   const gameSel = $(gameSelId);
   const appid = gameSel.value === "custom"
     ? ($(customAppidId)||{value:""}).value.trim()||"730"
@@ -1559,17 +1566,29 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
   btn.disabled = true; btn.textContent = "⏳";
   clearError();
   try{
-    const url = "https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000";
-    const data = await jsonpFetch(url);
-    if(!data || data.error || !data.assets) throw new Error(t("inv_err_inv"));
+    const apiUrl = steamid
+      ? "https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000"
+      : "https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/inventory/json/"+appid+"/2?l=english&count=5000";
+    const data = await jsonpFetch(apiUrl);
+
+    let assets, descriptions;
+    if(steamid){
+      if(!data || data.error || !data.assets) throw new Error(t("inv_err_inv"));
+      assets = data.assets;
+      descriptions = data.descriptions||[];
+    } else {
+      if(!data || !data.success || !data.rgInventory) throw new Error(t("inv_err_inv"));
+      assets = Object.values(data.rgInventory).map(a=>({classid:a.classid, instanceid:a.instanceid||"0", amount:a.amount||1}));
+      descriptions = Object.values(data.rgDescriptions||{});
+    }
 
     // build classid_instanceid → description map
     const descMap = new Map();
-    for(const d of (data.descriptions||[])) descMap.set(d.classid+"_"+(d.instanceid||"0"), d);
+    for(const d of descriptions) descMap.set(d.classid+"_"+(d.instanceid||"0"), d);
 
     // aggregate assets by market_hash_name
     const byHash = new Map();
-    for(const asset of data.assets){
+    for(const asset of assets){
       const key = asset.classid+"_"+(asset.instanceid||"0");
       const d = descMap.get(key)||{};
       const mkt = d.market_hash_name||d.name||"";
