@@ -18,7 +18,7 @@
     color:var(--txt); font-family:"Segoe UI",system-ui,Roboto,Arial,sans-serif;
     min-height:100vh; line-height:1.45;
   }
-  .wrap{max-width:1180px; margin:0 auto; padding:24px 18px 60px}
+  .wrap{max-width:1420px; margin:0 auto; padding:24px 18px 60px}
   header.top{display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap}
   header.top h1{font-size:22px; margin:0; font-weight:700}
   header.top h1 .brand{color:var(--acc)}
@@ -114,12 +114,12 @@
   table{border-collapse:collapse; width:100%; font-size:13px; min-width:780px}
   thead th{
     position:sticky; top:0; background:#1f2d3d; color:var(--mut); text-align:right;
-    padding:11px 12px; font-weight:600; white-space:nowrap; cursor:pointer; user-select:none; border-bottom:1px solid var(--line);
+    padding:10px 9px; font-weight:600; white-space:nowrap; cursor:pointer; user-select:none; border-bottom:1px solid var(--line);
   }
   thead th.l{text-align:left}
   thead th:hover{color:var(--acc)}
   thead th .arrow{font-size:10px; opacity:.7}
-  tbody td{padding:9px 12px; text-align:right; border-bottom:1px solid #21303f; white-space:nowrap}
+  tbody td{padding:8px 9px; text-align:right; border-bottom:1px solid #21303f; white-space:nowrap}
   tbody td.l{text-align:left; white-space:normal}
   tbody tr:hover{background:#18293a}
   a.item-name{font-weight:600; color:var(--txt); text-decoration:none; border-bottom:1px dotted rgba(102,192,244,.35)}
@@ -1800,6 +1800,31 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
   }
 }
 
+/* ============== Busca de ícone para item do mercado ============== */
+async function fetchIconForItem(appid, market){
+  // 1. Search API — fast, one request, works for most items
+  try{
+    const searchUrl = "https://steamcommunity.com/market/search/render/?appid="+encodeURIComponent(appid)+"&query="+encodeURIComponent(market)+"&count=1&norender=1";
+    const data = await jsonpFetch(searchUrl);
+    const results = (data||{}).results||[];
+    // prefer exact hash_name match, fall back to first result
+    const hit = results.find(r=>r.hash_name===market||r.name===market) || results[0];
+    const desc = (hit||{}).asset_description||{};
+    const icon = desc.icon_url || desc.icon_url_large || null;
+    if(icon) return icon;
+  }catch(_){}
+  // 2. Listing page fallback — always has the exact item icon
+  if(getSteamProxy()){
+    try{
+      const r = await proxyFetch("https://steamcommunity.com/market/listings/"+encodeURIComponent(appid)+"/"+encodeURIComponent(market));
+      const html = await r.text();
+      const m = html.match(/"icon_url"\s*:\s*"([^"\\]+)"/);
+      if(m) return m[1];
+    }catch(_){}
+  }
+  return null;
+}
+
 /* ============== Carregar imagens em lote ============== */
 async function batchIconLoad(){
   if(!RESULT) return;
@@ -1809,12 +1834,8 @@ async function batchIconLoad(){
   const BATCH=3, DELAY=500;
   for(let i=0; i<items.length; i+=BATCH){
     await Promise.all(items.slice(i,i+BATCH).map(async it=>{
-      const url="https://steamcommunity.com/market/search/render/?appid="+encodeURIComponent(it.appid)+"&query="+encodeURIComponent(it.market)+"&count=1&norender=1";
-      try{
-        const data=await jsonpFetch(url);
-        let icon=null; try{ icon=((data.results||[])[0]||{}).asset_description?.icon_url||null; }catch(_){}
-        iconCache.set(it.appid+"|"+it.market, icon||"");
-      }catch(_){ iconCache.set(it.appid+"|"+it.market,""); }
+      const icon = await fetchIconForItem(it.appid, it.market);
+      iconCache.set(it.appid+"|"+it.market, icon||"");
     }));
     if(i+BATCH<items.length) await new Promise(r=>setTimeout(r,DELAY));
   }
@@ -2161,14 +2182,14 @@ document.addEventListener("mouseover", function(e){
       const icon0 = a.dataset.icon||"";
       if(icon0){ _showIcon(icon0); return; }
       const cacheKey = appid+"|"+mkt;
-      if(iconCache.has(cacheKey)){ _showIcon(iconCache.get(cacheKey)); return; }
-      const imgUrl="https://steamcommunity.com/market/search/render/?appid="+encodeURIComponent(appid)+"&query="+encodeURIComponent(mkt)+"&count=1&norender=1";
-      jsonpFetch(imgUrl).then(data=>{
-        let icon=null;
-        try{ icon=((data.results||[])[0]||{}).asset_description?.icon_url||null; }catch(_){}
+      const cached = iconCache.get(cacheKey);
+      if(cached){ _showIcon(cached); return; }
+      // only skip if explicitly cached as empty AND no proxy available for fallback
+      if(cached === "" && !getSteamProxy()) return;
+      fetchIconForItem(appid, mkt).then(icon=>{
         iconCache.set(cacheKey, icon||"");
         _showIcon(icon);
-      }).catch(()=>{ iconCache.set(cacheKey, ""); });
+      });
     }
   }, 500);
 });
