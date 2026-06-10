@@ -250,7 +250,16 @@
       </div>
       <details class="url-help">
         <summary data-i18n="inv_url_how">❓ Como encontrar meu link?</summary>
-        <p data-i18n="inv_url_help">No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço do navegador. Ela precisa conter <code>/profiles/76561198…</code><br>Se a sua URL tiver <code>/id/seunome</code> (URL customizada), abra <b>Steam → Configurações → Conta</b> para ver o seu SteamID64 numérico.</p>
+        <p data-i18n="inv_url_help">No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço do navegador. Funciona com <code>/profiles/76561198…</code> e também com <code>/id/seunome</code> (URL customizada). Confira se o seu <b>inventário está Público</b> em Steam → Configurações → Privacidade.</p>
+      </details>
+      <details class="url-help">
+        <summary data-i18n="inv_proxy_how">⚙️ Configurar proxy (necessário 1x)</summary>
+        <p data-i18n="inv_proxy_help">A Steam não deixa o navegador buscar o inventário direto. Crie um proxy gratuito no Cloudflare (veja o arquivo <code>PROXY_SETUP.md</code>) e cole a URL aqui. Você só precisa fazer isso uma vez.</p>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+          <input type="text" class="proxyInput" data-i18n-ph="inv_proxy_ph" placeholder="https://...workers.dev" style="flex:1;min-width:150px;box-sizing:border-box;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:8px;font-size:12px;outline:none">
+          <button class="btn ghost proxySaveBtn" data-i18n="inv_proxy_save" style="font-size:12px;padding:7px 12px">Salvar</button>
+        </div>
+        <div class="proxySaved" style="display:none;color:#4ade80;font-size:11px;margin-top:5px" data-i18n="inv_proxy_saved">✓ Proxy salvo</div>
       </details>
       <div class="act-inv-or" data-i18n="act_inv_or">ou</div>
       <label class="btn ghost" style="cursor:pointer"><span data-i18n="act_inv_csv">+ CSV do Inventário</span><input type="file" id="invFileLanding" accept=".csv,text/csv" style="display:none"></label>
@@ -359,7 +368,16 @@
           </div>
           <details class="url-help" style="margin-top:6px">
             <summary data-i18n="inv_url_how">❓ Como encontrar meu link?</summary>
-            <p data-i18n="inv_url_help">No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço do navegador. Ela precisa conter <code>/profiles/76561198…</code><br>Se a sua URL tiver <code>/id/seunome</code> (URL customizada), abra <b>Steam → Configurações → Conta</b> para ver o seu SteamID64 numérico.</p>
+            <p data-i18n="inv_url_help">No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço do navegador. Funciona com <code>/profiles/76561198…</code> e também com <code>/id/seunome</code> (URL customizada). Confira se o seu <b>inventário está Público</b> em Steam → Configurações → Privacidade.</p>
+          </details>
+          <details class="url-help" style="margin-top:4px">
+            <summary data-i18n="inv_proxy_how">⚙️ Configurar proxy (necessário 1x)</summary>
+            <p data-i18n="inv_proxy_help">A Steam não deixa o navegador buscar o inventário direto. Crie um proxy gratuito no Cloudflare (veja o arquivo <code>PROXY_SETUP.md</code>) e cole a URL aqui. Você só precisa fazer isso uma vez.</p>
+            <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+              <input type="text" class="proxyInput" data-i18n-ph="inv_proxy_ph" placeholder="https://...workers.dev" style="flex:1;min-width:180px;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:8px;font-size:12px;outline:none">
+              <button class="btn ghost proxySaveBtn" data-i18n="inv_proxy_save" style="font-size:12px;padding:7px 12px">Salvar</button>
+            </div>
+            <div class="proxySaved" style="display:none;color:#4ade80;font-size:11px;margin-top:5px" data-i18n="inv_proxy_saved">✓ Proxy salvo</div>
           </details>
         </div>
       </details>
@@ -503,7 +521,13 @@ const I18N = {
     inv_url_how:"❓ Como encontrar meu link?",
     inv_url_help:"No Steam, clique no seu nome → <b>Ver Perfil</b> → copie a URL da barra de endereço. Funciona com <code>/profiles/76561198…</code> e também com <code>/id/seunome</code> (URL customizada). Certifique-se que seu <b>inventário está público</b> nas configurações de privacidade do Steam.",
     inv_err_inv:"Não foi possível carregar o inventário.",
-    inv_err_load:"Acesso negado pelo Steam. Verifique se seu perfil e inventário estão <b>públicos</b> em Steam → Configurações → Privacidade."
+    inv_err_load:"Acesso negado pelo Steam. Verifique se seu perfil e inventário estão <b>públicos</b> em Steam → Configurações → Privacidade.",
+    inv_proxy_how:"⚙️ Configurar proxy (necessário 1x)",
+    inv_proxy_help:"A Steam não deixa o navegador buscar o inventário direto. Crie um proxy gratuito no Cloudflare (veja o arquivo <code>PROXY_SETUP.md</code>) e cole a URL aqui. Você só precisa fazer isso uma vez.",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"Salvar",
+    inv_proxy_saved:"✓ Proxy salvo",
+    inv_err_noproxy:"Configure o proxy primeiro: abra \"⚙️ Configurar proxy\" e cole a URL do seu Cloudflare Worker."
   },
   en:{
     doc_title:"Steam Market Analysis — Profit & Loss",
@@ -583,7 +607,13 @@ const I18N = {
     inv_url_how:"❓ How to find my link?",
     inv_url_help:"In Steam, click your name → <b>View Profile</b> → copy the URL from the address bar. Both <code>/profiles/76561198…</code> and <code>/id/username</code> (custom URL) work. Make sure your <b>inventory is set to Public</b> in Steam → Settings → Privacy.",
     inv_err_inv:"Could not load inventory.",
-    inv_err_load:"Access denied by Steam. Make sure your profile and inventory are set to <b>Public</b> in Steam → Settings → Privacy."
+    inv_err_load:"Access denied by Steam. Make sure your profile and inventory are set to <b>Public</b> in Steam → Settings → Privacy.",
+    inv_proxy_how:"⚙️ Set up proxy (one-time)",
+    inv_proxy_help:"Steam won't let the browser fetch the inventory directly. Create a free Cloudflare proxy (see <code>PROXY_SETUP.md</code>) and paste the URL here. You only need to do this once.",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"Save",
+    inv_proxy_saved:"✓ Proxy saved",
+    inv_err_noproxy:"Set up the proxy first: open \"⚙️ Set up proxy\" and paste your Cloudflare Worker URL."
   },
   es:{
     doc_title:"Análisis del Mercado de Steam — Ganancias y Pérdidas",
@@ -663,7 +693,13 @@ const I18N = {
     inv_url_how:"❓ ¿Cómo encontrar mi enlace?",
     inv_url_help:"En Steam, haz clic en tu nombre → <b>Ver perfil</b> → copia la URL de la barra de direcciones. Funciona con <code>/profiles/76561198…</code> y también con <code>/id/nombre</code> (URL personalizada). Asegúrate de que tu <b>inventario sea Público</b> en Steam → Ajustes → Privacidad.",
     inv_err_inv:"No se pudo cargar el inventario.",
-    inv_err_load:"Acceso denegado por Steam. Verifica que tu perfil e inventario sean <b>Públicos</b> en Steam → Ajustes → Privacidad."
+    inv_err_load:"Acceso denegado por Steam. Verifica que tu perfil e inventario sean <b>Públicos</b> en Steam → Ajustes → Privacidad.",
+    inv_proxy_how:"⚙️ Configurar proxy (1 vez)",
+    inv_proxy_help:"Steam no deja que el navegador obtenga el inventario directamente. Crea un proxy gratuito en Cloudflare (ver <code>PROXY_SETUP.md</code>) y pega la URL aquí. Solo necesitas hacerlo una vez.",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"Guardar",
+    inv_proxy_saved:"✓ Proxy guardado",
+    inv_err_noproxy:"Configura el proxy primero: abre \"⚙️ Configurar proxy\" y pega la URL de tu Cloudflare Worker."
   },
   fr:{
     doc_title:"Analyse du Marché Steam — Profits & Pertes",
@@ -743,7 +779,13 @@ const I18N = {
     inv_url_how:"❓ Comment trouver mon lien ?",
     inv_url_help:"Dans Steam, cliquez sur votre nom → <b>Voir le profil</b> → copiez l'URL dans la barre d'adresse. Fonctionne avec <code>/profiles/76561198…</code> et <code>/id/nom</code> (URL personnalisée). Assurez-vous que votre <b>inventaire est Public</b> dans Steam → Paramètres → Confidentialité.",
     inv_err_inv:"Impossible de charger l'inventaire.",
-    inv_err_load:"Accès refusé par Steam. Vérifiez que votre profil et votre inventaire sont <b>Publics</b> dans Steam → Paramètres → Confidentialité."
+    inv_err_load:"Accès refusé par Steam. Vérifiez que votre profil et votre inventaire sont <b>Publics</b> dans Steam → Paramètres → Confidentialité.",
+    inv_proxy_how:"⚙️ Configurer le proxy (une fois)",
+    inv_proxy_help:"Steam empêche le navigateur de récupérer l'inventaire directement. Créez un proxy Cloudflare gratuit (voir <code>PROXY_SETUP.md</code>) et collez l'URL ici. À faire une seule fois.",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"Enregistrer",
+    inv_proxy_saved:"✓ Proxy enregistré",
+    inv_err_noproxy:"Configurez d'abord le proxy : ouvrez « ⚙️ Configurer le proxy » et collez l'URL de votre Cloudflare Worker."
   },
   de:{
     doc_title:"Steam-Markt-Analyse — Gewinn & Verlust",
@@ -823,7 +865,13 @@ const I18N = {
     inv_url_how:"❓ Wie finde ich meinen Link?",
     inv_url_help:"In Steam, klicke auf deinen Namen → <b>Profil anzeigen</b> → kopiere die URL aus der Adressleiste. Funktioniert mit <code>/profiles/76561198…</code> und <code>/id/name</code> (benutzerdefinierte URL). Stelle sicher, dass dein <b>Inventar auf Öffentlich</b> gestellt ist unter Steam → Einstellungen → Privatsphäre.",
     inv_err_inv:"Inventar konnte nicht geladen werden.",
-    inv_err_load:"Zugriff von Steam verweigert. Stelle sicher, dass Profil und Inventar unter Steam → Einstellungen → Privatsphäre auf <b>Öffentlich</b> gesetzt sind."
+    inv_err_load:"Zugriff von Steam verweigert. Stelle sicher, dass Profil und Inventar unter Steam → Einstellungen → Privatsphäre auf <b>Öffentlich</b> gesetzt sind.",
+    inv_proxy_how:"⚙️ Proxy einrichten (einmalig)",
+    inv_proxy_help:"Steam lässt den Browser das Inventar nicht direkt laden. Erstelle einen kostenlosen Cloudflare-Proxy (siehe <code>PROXY_SETUP.md</code>) und füge die URL hier ein. Nur einmal nötig.",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"Speichern",
+    inv_proxy_saved:"✓ Proxy gespeichert",
+    inv_err_noproxy:"Richte zuerst den Proxy ein: öffne „⚙️ Proxy einrichten“ und füge deine Cloudflare-Worker-URL ein."
   },
   zh:{
     doc_title:"Steam 市场分析 — 盈亏",
@@ -903,7 +951,13 @@ const I18N = {
     inv_url_how:"❓ 如何找到我的链接？",
     inv_url_help:"在 Steam 中，点击您的名字 → <b>查看个人资料</b> → 复制浏览器地址栏中的 URL。支持 <code>/profiles/76561198…</code> 和 <code>/id/用户名</code>（自定义 URL）两种格式。请确保您的<b>库存设置为公开</b>（Steam → 设置 → 隐私）。",
     inv_err_inv:"无法加载库存。",
-    inv_err_load:"Steam 拒绝访问。请前往 Steam → 设置 → 隐私，确认个人资料和库存均设为<b>公开</b>。"
+    inv_err_load:"Steam 拒绝访问。请前往 Steam → 设置 → 隐私，确认个人资料和库存均设为<b>公开</b>。",
+    inv_proxy_how:"⚙️ 配置代理（仅需一次）",
+    inv_proxy_help:"Steam 不允许浏览器直接获取库存。请在 Cloudflare 创建一个免费代理（见 <code>PROXY_SETUP.md</code>），并将网址粘贴到此处。只需操作一次。",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"保存",
+    inv_proxy_saved:"✓ 代理已保存",
+    inv_err_noproxy:"请先配置代理：打开“⚙️ 配置代理”并粘贴你的 Cloudflare Worker 网址。"
   },
   ru:{
     doc_title:"Анализ торговой площадки Steam — прибыль и убыток",
@@ -983,7 +1037,13 @@ const I18N = {
     inv_url_how:"❓ Как найти мою ссылку?",
     inv_url_help:"В Steam нажмите на своё имя → <b>Просмотреть профиль</b> → скопируйте URL из адресной строки. Работает как с <code>/profiles/76561198…</code>, так и с <code>/id/имя</code> (пользовательский URL). Убедитесь, что ваш <b>инвентарь открыт для всех</b> в Steam → Настройки → Конфиденциальность.",
     inv_err_inv:"Не удалось загрузить инвентарь.",
-    inv_err_load:"Steam отклонил запрос. Убедитесь, что профиль и инвентарь <b>открыты для всех</b> в Steam → Настройки → Конфиденциальность."
+    inv_err_load:"Steam отклонил запрос. Убедитесь, что профиль и инвентарь <b>открыты для всех</b> в Steam → Настройки → Конфиденциальность.",
+    inv_proxy_how:"⚙️ Настроить прокси (один раз)",
+    inv_proxy_help:"Steam не позволяет браузеру загружать инвентарь напрямую. Создайте бесплатный прокси на Cloudflare (см. <code>PROXY_SETUP.md</code>) и вставьте URL сюда. Это нужно сделать один раз.",
+    inv_proxy_ph:"https://...workers.dev",
+    inv_proxy_save:"Сохранить",
+    inv_proxy_saved:"✓ Прокси сохранён",
+    inv_err_noproxy:"Сначала настройте прокси: откройте «⚙️ Настроить прокси» и вставьте URL вашего Cloudflare Worker."
   }
 };
 
@@ -1557,13 +1617,33 @@ function parseVanityFromUrl(input){
   return null;
 }
 
+/* ============== Proxy CORS (Cloudflare Worker) ============== */
+const DEFAULT_STEAM_PROXY = ""; // preenchido após o deploy do Worker
+const PROXY_KEY = "steamProxyUrl";
+function getSteamProxy(){
+  return ((localStorage.getItem(PROXY_KEY)||DEFAULT_STEAM_PROXY)||"").trim().replace(/\/+$/,"");
+}
+function setSteamProxy(url){
+  url = (url||"").trim().replace(/\/+$/,"");
+  if(url) localStorage.setItem(PROXY_KEY, url); else localStorage.removeItem(PROXY_KEY);
+  document.querySelectorAll(".proxyInput").forEach(i=>{ i.value = url; });
+}
+async function proxyFetch(target){
+  const proxy = getSteamProxy();
+  if(!proxy) throw new Error("noproxy");
+  const resp = await fetch(proxy + "?url=" + encodeURIComponent(target));
+  if(!resp.ok) throw new Error("load");
+  return resp;
+}
+
 async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, btnId){
   urlInputId = urlInputId||"steamUrlInput"; gameSelId = gameSelId||"steamGameSel";
   customAppidId = customAppidId||"steamCustomAppid"; btnId = btnId||"steamFetchBtn";
   const raw = ($(urlInputId)||{value:""}).value;
-  const steamid = parseSteamProfileUrl(raw);
-  const vanity = steamid ? null : parseVanityFromUrl(raw);
-  if(!steamid && !vanity){ showError(t("inv_err_profile")); return; }
+  const steamid0 = parseSteamProfileUrl(raw);
+  const vanity = steamid0 ? null : parseVanityFromUrl(raw);
+  if(!steamid0 && !vanity){ showError(t("inv_err_profile")); return; }
+  if(!getSteamProxy()){ showError(t("inv_err_noproxy")); return; }
   const gameSel = $(gameSelId);
   const appid = gameSel.value === "custom"
     ? ($(customAppidId)||{value:""}).value.trim()||"730"
@@ -1573,14 +1653,21 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
   btn.disabled = true; btn.textContent = "⏳";
   clearError();
   try{
-    const apiUrl = steamid
-      ? "https://steamcommunity.com/profiles/"+steamid+"/inventory/json/"+appid+"/2?l=english&count=5000"
-      : "https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/inventory/json/"+appid+"/2?l=english&count=5000";
-    const data = await jsonpFetch(apiUrl);
+    // resolve vanity (/id/nome) → SteamID64 via XML do perfil
+    let steamid = steamid0;
+    if(!steamid){
+      const xresp = await proxyFetch("https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/?xml=1");
+      const xtext = await xresp.text();
+      const m = xtext.match(/<steamID64>(\d{17})<\/steamID64>/);
+      if(!m) throw new Error(t("inv_err_profile"));
+      steamid = m[1];
+    }
 
-    if(!data || !data.success || !data.rgInventory) throw new Error(t("inv_err_inv"));
-    const assets = Object.values(data.rgInventory).map(a=>({classid:a.classid, instanceid:a.instanceid||"0", amount:a.amount||1}));
-    const descriptions = Object.values(data.rgDescriptions||{});
+    const resp = await proxyFetch("https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000");
+    const data = await resp.json();
+    if(!data || !data.assets || !data.descriptions) throw new Error(t("inv_err_inv"));
+    const assets = data.assets;
+    const descriptions = data.descriptions;
 
     // build classid_instanceid → description map
     const descMap = new Map();
@@ -1624,7 +1711,10 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
     renderInvSection();
     syncToolbar();
   }catch(err){
-    const msg = err.message === "load" ? t("inv_err_load") : err.message || t("inv_err_inv");
+    let msg;
+    if(err.message === "noproxy") msg = t("inv_err_noproxy");
+    else if(err.message === "load") msg = t("inv_err_load");
+    else msg = err.message || t("inv_err_inv");
     showError(msg);
   }finally{
     btn.disabled = false; btn.textContent = t("inv_fetch_btn");
@@ -1839,6 +1929,18 @@ function syncToolbar(){
 }
 
 /* ============== Wiring ============== */
+// proxy config (sincroniza os dois painéis via localStorage)
+document.querySelectorAll(".proxySaveBtn").forEach(b=>b.addEventListener("click", ()=>{
+  const inp = b.parentNode.querySelector(".proxyInput");
+  setSteamProxy(inp ? inp.value : "");
+  document.querySelectorAll(".proxySaved").forEach(s=>{ s.style.display=""; });
+  setTimeout(()=>document.querySelectorAll(".proxySaved").forEach(s=>{ s.style.display="none"; }), 2200);
+}));
+document.querySelectorAll(".proxyInput").forEach(i=>i.addEventListener("keydown", e=>{
+  if(e.key==="Enter"){ e.preventDefault(); const b=i.parentNode.querySelector(".proxySaveBtn"); if(b) b.click(); }
+}));
+setSteamProxy(getSteamProxy()); // popula os inputs com valor salvo
+
 const dz = $("dropzone"), fi = $("fileInput");
 dz.addEventListener("click", ()=>fi.click());
 fi.addEventListener("change", e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
