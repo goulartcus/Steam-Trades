@@ -507,6 +507,7 @@ const I18N = {
     inv_err_cols:"Não encontrei coluna de nome do item. Esse CSV é um inventário Steam?", inv_err_empty:"Inventário vazio.",
     inv_card_items:"Itens no inventário", inv_card_games:"Jogos distintos",
     inv_card_cost:"Custo total (inventário)", inv_card_cost_sm:"custo médio × qtd dos itens encontrados no histórico",
+    inv_card_market:"Valor de mercado (USD)", inv_card_market_sm:"{priced}/{total} itens precificados",
     th_qty:"Qtd", th_type:"Tipo", th_avgcost:"Custo médio", th_totalcost:"Custo total",
     inv_note:"Custo calculado com base no histórico do Mercado carregado.",
     inv_no_history_note:"Carregue também o histórico do Mercado para ver o custo de cada item.",
@@ -594,6 +595,7 @@ const I18N = {
     inv_err_cols:"Couldn't find an item name column. Is this CSV a Steam inventory?", inv_err_empty:"Empty inventory.",
     inv_card_items:"Items in inventory", inv_card_games:"Distinct games",
     inv_card_cost:"Total cost (inventory)", inv_card_cost_sm:"avg cost × qty for items found in history",
+    inv_card_market:"Market value (USD)", inv_card_market_sm:"{priced}/{total} items priced",
     th_qty:"Qty", th_type:"Type", th_avgcost:"Avg. cost", th_totalcost:"Total cost",
     inv_note:"Cost calculated from the loaded Market history.",
     inv_no_history_note:"Load the Market history to see the cost per item.",
@@ -681,6 +683,7 @@ const I18N = {
     inv_err_cols:"No encontré columna de nombre de ítem. ¿Este CSV es un inventario de Steam?", inv_err_empty:"Inventario vacío.",
     inv_card_items:"Ítems en inventario", inv_card_games:"Juegos distintos",
     inv_card_cost:"Costo total (inventario)", inv_card_cost_sm:"costo promedio × cant de ítems en historial",
+    inv_card_market:"Valor de mercado (USD)", inv_card_market_sm:"{priced}/{total} ítems valorados",
     th_qty:"Cant", th_type:"Tipo", th_avgcost:"Costo prom.", th_totalcost:"Costo total",
     inv_note:"Costo calculado en base al historial del Mercado cargado.",
     inv_no_history_note:"Carga el historial del Mercado para ver el costo de cada ítem.",
@@ -768,6 +771,7 @@ const I18N = {
     inv_err_cols:"Colonne de nom d'objet introuvable. Ce CSV est-il un inventaire Steam ?", inv_err_empty:"Inventaire vide.",
     inv_card_items:"Objets en inventaire", inv_card_games:"Jeux distincts",
     inv_card_cost:"Coût total (inventaire)", inv_card_cost_sm:"coût moy × qté des objets trouvés dans l'historique",
+    inv_card_market:"Valeur marchande (USD)", inv_card_market_sm:"{priced}/{total} objets évalués",
     th_qty:"Qté", th_type:"Type", th_avgcost:"Coût moy.", th_totalcost:"Coût total",
     inv_note:"Coût calculé d'après l'historique du Marché chargé.",
     inv_no_history_note:"Chargez l'historique du Marché pour voir le coût par objet.",
@@ -855,6 +859,7 @@ const I18N = {
     inv_err_cols:"Artikel-Namensspalte nicht gefunden. Ist diese CSV ein Steam-Inventar?", inv_err_empty:"Leeres Inventar.",
     inv_card_items:"Artikel im Inventar", inv_card_games:"Verschiedene Spiele",
     inv_card_cost:"Gesamtkosten (Inventar)", inv_card_cost_sm:"Ø-Preis × Anzahl der Artikel aus dem Verlauf",
+    inv_card_market:"Marktwert (USD)", inv_card_market_sm:"{priced}/{total} Artikel bewertet",
     th_qty:"Anz.", th_type:"Typ", th_avgcost:"Ø-Kosten", th_totalcost:"Gesamtkosten",
     inv_note:"Kosten berechnet aus dem geladenen Markt-Verlauf.",
     inv_no_history_note:"Lade den Markt-Verlauf, um die Kosten pro Artikel zu sehen.",
@@ -942,6 +947,7 @@ const I18N = {
     inv_err_cols:"找不到物品名称列。此 CSV 是 Steam 库存吗？", inv_err_empty:"库存为空。",
     inv_card_items:"库存物品", inv_card_games:"不同游戏",
     inv_card_cost:"总成本（库存）", inv_card_cost_sm:"历史记录中找到的物品：均价 × 数量",
+    inv_card_market:"市场价值（USD）", inv_card_market_sm:"{priced}/{total} 件已定价",
     th_qty:"数量", th_type:"类型", th_avgcost:"均价", th_totalcost:"总成本",
     inv_note:"成本根据已加载的市场历史记录计算。",
     inv_no_history_note:"加载市场历史记录以查看每件物品的成本。",
@@ -1029,6 +1035,7 @@ const I18N = {
     inv_err_cols:"Столбец с названием предмета не найден. Это CSV инвентаря Steam?", inv_err_empty:"Пустой инвентарь.",
     inv_card_items:"Предметов в инвентаре", inv_card_games:"Различных игр",
     inv_card_cost:"Общая стоимость (инвентарь)", inv_card_cost_sm:"средняя цена × кол-во по предметам из истории",
+    inv_card_market:"Рыночная стоимость (USD)", inv_card_market_sm:"{priced}/{total} предметов оценено",
     th_qty:"Кол-во", th_type:"Тип", th_avgcost:"Средняя цена", th_totalcost:"Общая стоимость",
     inv_note:"Стоимость рассчитана на основе загруженной истории торговой площадки.",
     inv_no_history_note:"Загрузите историю торговой площадки, чтобы увидеть стоимость каждого предмета.",
@@ -1521,25 +1528,52 @@ function handleInvFile(file){
   reader.readAsText(file, "UTF-8");
 }
 
-function renderInvSection(){
+function parsePriceNum(str){
+  if(!str) return 0;
+  const s = str.replace(/[^\d.,]/g,"");
+  if(!s) return 0;
+  if(s.includes(",") && s.lastIndexOf(",") > s.lastIndexOf("."))
+    return parseFloat(s.replace(/\./g,"").replace(",","."))||0;
+  return parseFloat(s.replace(/,/g,""))||0;
+}
+
+function renderInvCards(){
   if(!INV_RESULT) return;
   const items = INV_RESULT.items;
-  const hasHistory = !!RESULT;
   const totalItems = items.reduce((s,it)=>s+it.qty, 0);
   const games = new Set(items.map(i=>i.game).filter(Boolean)).size;
   const totalCost = items.reduce((s,it)=>s+(it.totalcost||0), 0);
   const hasCost = items.some(it=>it.totalcost!=null);
+
+  let marketTotal = 0, pricedCount = 0;
+  for(const it of items){
+    const c = priceCache.get(it.appid+"|"+it.market);
+    if(c && c.lowest_price){ marketTotal += parsePriceNum(c.lowest_price) * (it.qty||1); pricedCount++; }
+  }
 
   const cards = [
     { lbl:t("inv_card_items"), val:intFmt(totalItems) },
     { lbl:t("inv_card_games"), val:intFmt(games) },
   ];
   if(hasCost) cards.push({ lbl:t("inv_card_cost"), val:money(totalCost), sm:t("inv_card_cost_sm") });
+  if(pricedCount > 0){
+    const sym = ([...priceCache.values()][0]?.lowest_price||"$").replace(/[\d\s.,]/g,"").trim()||"$";
+    cards.push({ lbl:t("inv_card_market"), val:sym+" "+marketTotal.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}), sm:t("inv_card_market_sm",{priced:intFmt(pricedCount),total:intFmt(items.length)}) });
+  }
+
   $("invCards").innerHTML = cards.map(c=>
     '<div class="card"><div class="lbl">'+c.lbl+'</div><div class="val">'+c.val+'</div>'+
     (c.sm?'<div class="sm">'+c.sm+'</div>':'')+'</div>'
   ).join("");
+}
 
+function renderInvSection(){
+  if(!INV_RESULT) return;
+  const items = INV_RESULT.items;
+  const hasHistory = !!RESULT;
+  const hasCost = items.some(it=>it.totalcost!=null);
+
+  renderInvCards();
   const note = $("invNote"), noHistNote = $("invNoHistNote");
   if(note) note.style.display = hasCost ? "" : "none";
   if(noHistNote) noHistNote.style.display = (!hasHistory) ? "" : "none";
@@ -1807,18 +1841,19 @@ async function fetchIconForItem(appid, market){
     const searchUrl = "https://steamcommunity.com/market/search/render/?appid="+encodeURIComponent(appid)+"&query="+encodeURIComponent(market)+"&count=1&norender=1";
     const data = await jsonpFetch(searchUrl);
     const results = (data||{}).results||[];
-    // prefer exact hash_name match, fall back to first result
-    const hit = results.find(r=>r.hash_name===market||r.name===market) || results[0];
+    // only use exact hash_name match to avoid wrong variant icons
+    const hit = results.find(r=>r.hash_name===market||r.name===market);
     const desc = (hit||{}).asset_description||{};
     const icon = desc.icon_url || desc.icon_url_large || null;
     if(icon) return icon;
   }catch(_){}
-  // 2. Listing page fallback — always has the exact item icon
+  // 2. Listing page fallback — parses the exact item's icon from HTML
   if(getSteamProxy()){
     try{
       const r = await proxyFetch("https://steamcommunity.com/market/listings/"+encodeURIComponent(appid)+"/"+encodeURIComponent(market));
       const html = await r.text();
-      const m = html.match(/"icon_url"\s*:\s*"([^"\\]+)"/);
+      const m = html.match(/"icon_url"\s*:\s*"([^"\\]+)"/)
+              || html.match(/\/economy\/image\/([A-Za-z0-9_\-]+)\/(?:330x192|128fx128f)/);
       if(m) return m[1];
     }catch(_){}
   }
@@ -1887,7 +1922,7 @@ async function batchPriceAll(){
 
   if(status) status.textContent = t("inv_pricing_done",{n:intFmt(total)});
   if(btn){ btn.disabled = false; }
-  // re-render table com preços preenchidos
+  renderInvCards();
   renderInvTable();
 }
 
@@ -2146,6 +2181,7 @@ document.addEventListener("click", async function(e){
       priceCache.set(appid+"|"+mkt, j);
       btn.textContent = "✓";
       val.innerHTML = "<b>"+esc(j.lowest_price)+"</b>"+(j.median_price?" <span class='pc-med'>med "+esc(j.median_price)+"</span>":"");
+      renderInvCards();
     } else { btn.textContent = "🔍"; val.textContent = "—"; }
   }catch(ex){ btn.textContent = "🔍"; val.textContent = t("pc_error"); }
   btn.disabled = false;
