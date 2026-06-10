@@ -8,7 +8,7 @@ export default {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, OPTIONS",
       "Access-Control-Allow-Headers": "*",
-      "Access-Control-Expose-Headers": "X-Upstream-Status",
+      "Access-Control-Expose-Headers": "X-Upstream-Status, X-Final-Url",
     };
 
     if (request.method === "OPTIONS") {
@@ -39,12 +39,9 @@ export default {
       upstream = await fetch(t.toString(), {
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-          "Accept": "application/json, text/html, text/xml, */*",
+          "Accept": "text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8",
           "Accept-Language": "en-US,en;q=0.9",
           "Referer": "https://steamcommunity.com/",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin",
         },
         redirect: "follow",
       });
@@ -54,14 +51,16 @@ export default {
 
     const body = await upstream.text();
     const ct = upstream.headers.get("Content-Type") || "text/plain";
+    const finalUrl = upstream.url || t.toString();
 
-    // Sempre retorna 200 pro browser; o status real da Steam vai no header X-Upstream-Status
+    // Sempre retorna 200 pro browser; status real da Steam vai no X-Upstream-Status
     return new Response(body, {
       status: 200,
       headers: {
         ...cors,
         "Content-Type": ct,
         "X-Upstream-Status": String(upstream.status),
+        "X-Final-Url": finalUrl,
       },
     });
   },

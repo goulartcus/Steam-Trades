@@ -1667,17 +1667,21 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
     // resolve vanity (/id/nome) → SteamID64 via perfil HTML
     let steamid = steamid0;
     if(!steamid){
-      const xresp = await proxyFetch("https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/");
+      let xresp;
+      try{ xresp = await proxyFetch("https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/"); }
+      catch(e){ throw new Error("Erro ao buscar perfil: "+e.message); }
       const xtext = await xresp.text();
       const m = xtext.match(/data-steamid="(\d{17})"/)
              || xtext.match(/"steamid"\s*:\s*"(\d{17})"/)
              || xtext.match(/g_steamID\s*=\s*"(\d{17})"/)
              || xtext.match(/\/profiles\/(\d{17})/);
-      if(!m) throw new Error(t("inv_err_profile"));
+      if(!m) throw new Error("Perfil não encontrado. Tente com a URL /profiles/76561198…");
       steamid = m[1];
     }
 
-    const resp = await proxyFetch("https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000");
+    let resp;
+    try{ resp = await proxyFetch("https://steamcommunity.com/inventory/"+steamid+"/"+appid+"/2?l=english&count=5000"); }
+    catch(e){ throw new Error("Erro ao buscar inventário (steamid="+steamid+"): "+e.message); }
     const data = await resp.json();
     if(!data || !data.assets || !data.descriptions) throw new Error(t("inv_err_inv"));
     const assets = data.assets;
