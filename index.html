@@ -1664,12 +1664,15 @@ async function fetchSteamInventoryFromUrl(urlInputId, gameSelId, customAppidId, 
   btn.disabled = true; btn.textContent = "⏳";
   clearError();
   try{
-    // resolve vanity (/id/nome) → SteamID64 via XML do perfil
+    // resolve vanity (/id/nome) → SteamID64 via perfil HTML
     let steamid = steamid0;
     if(!steamid){
-      const xresp = await proxyFetch("https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/?xml=1");
+      const xresp = await proxyFetch("https://steamcommunity.com/id/"+encodeURIComponent(vanity)+"/");
       const xtext = await xresp.text();
-      const m = xtext.match(/<steamID64>(\d{17})<\/steamID64>/);
+      const m = xtext.match(/data-steamid="(\d{17})"/)
+             || xtext.match(/"steamid"\s*:\s*"(\d{17})"/)
+             || xtext.match(/g_steamID\s*=\s*"(\d{17})"/)
+             || xtext.match(/\/profiles\/(\d{17})/);
       if(!m) throw new Error(t("inv_err_profile"));
       steamid = m[1];
     }
